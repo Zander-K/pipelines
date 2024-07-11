@@ -48,8 +48,8 @@ jobs:
       - name: Extract pubspec.yaml information
         id: extract_pubspec_info
         run: |
-          pubspec_info=$(cat apps/grosvenor_prod/pubspec.yaml)
-          echo "Pubspec.yaml Information:"
+          pubspec_info=$(cat apps/multichoice/pubspec.yaml | base64)
+          echo "Pubspec.yaml Information (base64):"
           echo "${pubspec_info}"
           echo "pubspec_info=${pubspec_info}" >> $GITHUB_ENV
 
