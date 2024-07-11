@@ -1,0 +1,81 @@
+---
+name: Build
+on:
+  push:
+    branches:
+      - main
+  pull_request: 
+    branches: 
+      - main
+  workflow_dispatch:
+
+jobs: 
+  extract:
+    name: gather and build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Extract label information
+        id: extract_label_info
+        run: |
+          label_name="${{ github.event.label.name }}"
+          label_type=$([[ "${label_name}" == "mecca" || "${label_name}" == "grosvenor" ]] && echo "${label_name}" || echo "unknown")
+          echo "Label: ${label_name}"
+          echo "Type: ${label_type}"
+          echo "label_name=${label_name}" >> $GITHUB_ENV
+          echo "label_type=${label_type}" >> $GITHUB_ENV
+
+      - name: Extract last commit hash
+        id: extract_commit_hash
+        run: |
+          last_commit="${{ github.sha }}"
+          echo "Last Commit: ${last_commit}"
+          echo "last_commit=${last_commit}" >> $GITHUB_ENV
+      
+      - name: Extract total build time
+        id: extract_build_time
+        run: |
+          build_url="https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          build_info=$(curl -s -H "Accept: application/vnd.github.v3+json" "${build_url}")
+          start_time=$(echo "${build_info}" | jq -r '.workflow_run.created_at')
+          end_time=$(echo "${build_info}" | jq -r '.workflow_run.updated_at')
+          total_build_time=$(($(date -d "${end_time}" +%s) - $(date -d "${start_time}" +%s)))
+          echo "Total Build Time: ${total_build_time} seconds"
+          echo "total_build_time=${total_build_time}" >> $GITHUB_ENV
+
+      - name: Extract pubspec.yaml information
+        id: extract_pubspec_info
+        run: |
+          pubspec_info=$(cat apps/grosvenor_prod/pubspec.yaml)
+          echo "Pubspec.yaml Information:"
+          echo "${pubspec_info}"
+          echo "pubspec_info=${pubspec_info}" >> $GITHUB_ENV
+
+      - name: Extract current date and time
+        id: extract_date_time
+        run: |
+          current_date=$(date +"%Y-%m-%d")
+          current_time=$(date +"%H:%M:%S")
+          echo "Current Date: ${current_date}"
+          echo "Current Time: ${current_time}"
+          echo "current_date=${current_date}" >> $GITHUB_ENV
+          echo "current_time=${current_time}" >> $GITHUB_ENV
+
+      - name: Write to build-info.txt
+        run: |
+          echo "Label: ${label_name}" > build-info.txt
+          echo "Type: ${label_type}" >> build-info.txt
+          echo "Last Commit: ${last_commit}" >> build-info.txt
+          echo "Total Build Time: ${total_build_time} seconds" >> build-info.txt
+          echo "Pubspec.yaml Information:" >> build-info.txt
+          echo "${pubspec_info}" >> build-info.txt
+          echo "Current Date: ${current_date}" >> build-info.txt
+          echo "Current Time: ${current_time}" >> build-info.txt
+
+      - name: Upload build-info.txt
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-info
+          path: build-info.txt
