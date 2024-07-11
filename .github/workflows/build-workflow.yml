@@ -1,5 +1,5 @@
 ---
-name: Build-ios
+name: Build-android
 on:
   push:
     branches:
@@ -99,8 +99,8 @@ jobs:
       - name: Extract version and build numbers
         id: extract-version-build
         run: |
-          VERSION=$(grep 'version:' apps/grosvenor_prod/pubspec.yaml | awk '{print $2}')
-          BUILD=$(grep 'build:' pubspec.yaml | awk '{print $2}')
+          VERSION=$(grep 'version:' apps/grosvenor_prod/pubspec.yaml | awk '{split($2, a, "+"); print a[1]}')
+          BUILD=$(grep 'version:' apps/grosvenor_prod/pubspec.yaml | awk '{split($2, a, "+"); print a[2]}')
           echo "Version: ${VERSION}"
           echo "Build: ${BUILD}"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
@@ -109,19 +109,19 @@ jobs:
       - name: Determine platform type and format output
         run: |
           if [[ $WORKFLOW_NAME == *ios* ]]; then
-            version_build_nr="Version Nr: $VERSION \n Build Nr: $BUILD \n"
-            echo -e "Version Nr: $VERSION \n Build Nr: $BUILD \n"
+            version_build_nr="Version Nr: $VERSION\n Build Nr: $BUILD\n"
+            echo -e "Version Nr: $VERSION\n Build Nr: $BUILD\n"
             echo -e "version_build_nr=${version_build_nr}" >> $GITHUB_ENV
 
           elif [[ $WORKFLOW_NAME == *android* ]]; then
-            version_build_nr="Build Nr: $BUILD \n"
-            echo -e "Build Nr: $BUILD \n"
+            version_build_nr="Build Nr: $BUILD\n"
+            echo -e "Build Nr: $BUILD\n"
             echo -e "version_build_nr=${version_build_nr}" >> $GITHUB_ENV
 
           else
             echo "Platform not recognized."
-            version_build_nr="Version Nr: - \n Build Nr: - \n"
-            echo -e "Version Nr: - \n Build Nr: - \n"
+            version_build_nr="Version Nr: -\n Build Nr: -\n"
+            echo -e "Version Nr: -\n Build Nr: -\n"
             echo "version_build_nr=${version_build_nr}" >> $GITHUB_ENV
           fi
         env:
