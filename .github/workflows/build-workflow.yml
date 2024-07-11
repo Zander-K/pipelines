@@ -18,10 +18,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Extract label information
-        if: contains(github.event.*.labels.*.name, 'Grosvenor') || contains(github.event.*.labels.*.name, 'grosvenor') 
+        if: contains(github.event.pull_request.labels.*.name, 'Grosvenor') || contains(github.event.pull_request.labels.*.name, 'grosvenor') 
         id: gc-extract_label_info
         run: |
-          label_name="${{ github.event.*.labels.*.name }}"
+          label_name="${{ github.event.pull_request.labels.*.name }}"
           label_type=$([[ "${label_name}" == "mecca" || "${label_name}" == "grosvenor" ]] && echo "${label_name}" || echo "unknown")
           echo "Label: ${label_name}"
           echo "Type: ${label_type}"
@@ -29,10 +29,10 @@ jobs:
           echo "label_type=${label_type}" >> $GITHUB_ENV
 
       - name: Extract label information
-        if: contains(github.event.*.labels.*.name, 'Mecca') || contains(github.event.*.labels.*.name, 'mecca')
+        if: contains(github.event.pull_request.labels.*.name, 'Mecca') || contains(github.event.pull_request.labels.*.name, 'mecca')
         id: mb-extract_label_info
         run: |
-          label_name="${{ github.event.*.labels.*.name }}"
+          label_name="${{ github.event.pull_request.labels.*.name }}"
           label_type=$([[ "${label_name}" == "mecca" || "${label_name}" == "grosvenor" ]] && echo "${label_name}" || echo "unknown")
           echo "Label: ${label_name}"
           echo "Type: ${label_type}"
@@ -76,7 +76,7 @@ jobs:
       - name: Read pubspec.yaml contents
         id: read-pubspec
         run: |
-          PUBSPEC_CONTENTS=$(cat pubspec.yaml)
+          PUBSPEC_CONTENTS=$(cat apps/grosvenor_prod/pubspec.yaml)
           echo "PUBSPEC_CONTENTS<<EOF" >> $GITHUB_ENV
           echo "$PUBSPEC_CONTENTS" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
