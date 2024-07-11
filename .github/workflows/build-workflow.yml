@@ -38,10 +38,13 @@ jobs:
         run: |
           if [[ $WORKFLOW_NAME == *ios* ]]; then
             PLATFORM_TYPE="iOS"
+            echo "Platform: ${PLATFORM_TYPE}"
           elif [[ $WORKFLOW_NAME == *android* ]]; then
             PLATFORM_TYPE="Android"
+            echo "Platform: ${PLATFORM_TYPE}"
           else
             PLATFORM_TYPE="Unknown"
+            echo "Platform: ${PLATFORM_TYPE}"
           fi
           echo "PLATFORM_TYPE=$PLATFORM_TYPE" >> $GITHUB_ENV
 
@@ -96,7 +99,7 @@ jobs:
       - name: Extract version and build numbers
         id: extract-version-build
         run: |
-          VERSION=$(grep 'version:' pubspec.yaml | awk '{print $2}')
+          VERSION=$(grep 'version:' apps/grosvenor_prod/pubspec.yaml | awk '{print $2}')
           BUILD=$(grep 'build:' pubspec.yaml | awk '{print $2}')
           echo "Version: ${VERSION}"
           echo "Build: ${BUILD}"
