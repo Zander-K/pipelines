@@ -18,9 +18,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Extract label information
-        id: extract_label_info
+        if: contains(github.event.*.labels.*.name, 'Grosvenor') || contains(github.event.*.labels.*.name, 'grosvenor') 
+        id: gc-extract_label_info
         run: |
-          label_name="${{ github.event.label.name }}"
+          label_name="${{ github.event.*.labels.*.name }}"
+          label_type=$([[ "${label_name}" == "mecca" || "${label_name}" == "grosvenor" ]] && echo "${label_name}" || echo "unknown")
+          echo "Label: ${label_name}"
+          echo "Type: ${label_type}"
+          echo "label_name=${label_name}" >> $GITHUB_ENV
+          echo "label_type=${label_type}" >> $GITHUB_ENV
+
+      - name: Extract label information
+        if: contains(github.event.*.labels.*.name, 'Mecca') || contains(github.event.*.labels.*.name, 'mecca')
+        id: mb-extract_label_info
+        run: |
+          label_name="${{ github.event.*.labels.*.name }}"
           label_type=$([[ "${label_name}" == "mecca" || "${label_name}" == "grosvenor" ]] && echo "${label_name}" || echo "unknown")
           echo "Label: ${label_name}"
           echo "Type: ${label_type}"
@@ -49,17 +61,25 @@ jobs:
           echo "Total Build Time: ${total_build_time} seconds"
           echo "total_build_time=${total_build_time}" >> $GITHUB_ENV
 
-      - name: Extract pubspec.yaml information
-        id: extract_pubspec_info
+      # - name: Extract pubspec.yaml information
+      #   id: extract_pubspec_info
+      #   run: |
+      #     if [ -f "apps/multichoice/pubspec.yaml" ]; then
+      #       pubspec_info=$(cat apps/multichoice/pubspec.yaml | base64)
+      #       echo "Pubspec.yaml Information (base64):"
+      #       echo "${pubspec_info}" base64 --decode
+      #       echo "pubspec_info=${pubspec_info}" >> $GITHUB_ENV
+      #     else
+      #       echo "pubspec_info=" >> $GITHUB_ENV
+      #     fi
+
+      - name: Read pubspec.yaml contents
+        id: read-pubspec
         run: |
-          if [ -f "apps/multichoice/pubspec.yaml" ]; then
-            pubspec_info=$(cat apps/multichoice/pubspec.yaml | base64)
-            echo "Pubspec.yaml Information (base64):"
-            echo "${pubspec_info}" base64 --decode
-            echo "pubspec_info=${pubspec_info}" >> $GITHUB_ENV
-          else
-            echo "pubspec_info=" >> $GITHUB_ENV
-          fi
+          PUBSPEC_CONTENTS=$(cat pubspec.yaml)
+          echo "PUBSPEC_CONTENTS<<EOF" >> $GITHUB_ENV
+          echo "$PUBSPEC_CONTENTS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Extract current date and time
         id: extract_date_time
@@ -78,7 +98,7 @@ jobs:
           echo "Last Commit: ${last_commit}" >> build-info.txt
           echo "Total Build Time: ${total_build_time} seconds" >> build-info.txt
           echo "Pubspec.yaml Information:" >> build-info.txt
-          echo "${pubspec_info}" | base64 --decode >> build-info.txt
+          echo "${PUBSPEC_CONTENTS}" | base64 --decode >> build-info.txt
           echo "Current Date: ${current_date}" >> build-info.txt
           echo "Current Time: ${current_time}" >> build-info.txt
 
