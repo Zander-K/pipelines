@@ -35,8 +35,6 @@ jobs:
             PLATFORM_TYPE="Android"
           else
             PLATFORM_TYPE="Unknown"
-          else
-            PLATFORM_TYPE="Other"
           fi
           echo "PLATFORM_TYPE=$PLATFORM_TYPE" >> $GITHUB_ENV
 
