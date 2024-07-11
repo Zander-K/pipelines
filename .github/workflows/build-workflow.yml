@@ -17,12 +17,35 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Extract current date and time
+        id: extract_date_time
+        run: |
+          current_date=$(date -u +"%Y-%m-%d")
+          current_time=$(date -u +"%H:%M:%S UTC")
+          echo "Current Date: ${current_date}"
+          echo "Current Time: ${current_time}"
+          echo "current_date=${current_date}" >> $GITHUB_ENV
+          echo "current_time=${current_time}" >> $GITHUB_ENV
+
+      - name: Determine platform type
+        run: |
+          if [[ $GITHUB_WORKFLOW == *ios* ]]; then
+            PLATFORM_TYPE="iOS"
+          elif [[ $GITHUB_WORKFLOW == *android* ]]; then
+            PLATFORM_TYPE="Android"
+          else
+            PLATFORM_TYPE="Unknown"
+          else
+            PLATFORM_TYPE="Other"
+          fi
+          echo "PLATFORM_TYPE=$PLATFORM_TYPE" >> $GITHUB_ENV
+
       - name: Extract label information
         if: contains(github.event.pull_request.labels.*.name, 'Grosvenor') || contains(github.event.pull_request.labels.*.name, 'grosvenor') 
         id: gc-extract_label_info
         run: |
-          label_name="${{ github.event.pull_request.labels.*.name }}"
-          label_type=$([[ "${label_name}" == "mecca" || "${label_name}" == "grosvenor" ]] && echo "${label_name}" || echo "unknown")
+          label_name="Grosvenor"
+          label_type=$([[ "${label_name}" == "Mecca" || "${label_name}" == "Grosvenor" ]] && echo "${label_name}" || echo "unknown")
           echo "Label: ${label_name}"
           echo "Type: ${label_type}"
           echo "label_name=${label_name}" >> $GITHUB_ENV
@@ -32,8 +55,8 @@ jobs:
         if: contains(github.event.pull_request.labels.*.name, 'Mecca') || contains(github.event.pull_request.labels.*.name, 'mecca')
         id: mb-extract_label_info
         run: |
-          label_name="${{ github.event.pull_request.labels.*.name }}"
-          label_type=$([[ "${label_name}" == "mecca" || "${label_name}" == "grosvenor" ]] && echo "${label_name}" || echo "unknown")
+          label_name="Mecca"
+          label_type=$([[ "${label_name}" == "Mecca" || "${label_name}" == "Grosvenor" ]] && echo "${label_name}" || echo "unknown")
           echo "Label: ${label_name}"
           echo "Type: ${label_type}"
           echo "label_name=${label_name}" >> $GITHUB_ENV
@@ -65,7 +88,7 @@ jobs:
       #   id: extract_pubspec_info
       #   run: |
       #     if [ -f "apps/multichoice/pubspec.yaml" ]; then
-      #       pubspec_info=$(cat apps/multichoice/pubspec.yaml | base64)
+      #       pubspec_info=$(cat apps/grosvenor_prod/pubspec.yaml | base64)
       #       echo "Pubspec.yaml Information (base64):"
       #       echo "${pubspec_info}" base64 --decode
       #       echo "pubspec_info=${pubspec_info}" >> $GITHUB_ENV
@@ -76,38 +99,33 @@ jobs:
       - name: Read pubspec.yaml contents
         id: read-pubspec
         run: |
-          PUBSPEC_CONTENTS=$(cat apps/grosvenor_prod/pubspec.yaml)
+          PUBSPEC_CONTENTS=$(cat apps/grosvenor_prod/pubspec.yaml) | base64
           echo "PUBSPEC_CONTENTS<<EOF" >> $GITHUB_ENV
-          echo "$PUBSPEC_CONTENTS" >> $GITHUB_ENV
+          echo -e "$PUBSPEC_CONTENTS\n" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Extract current date and time
-        id: extract_date_time
+      - name: Write to output.txt
         run: |
-          current_date=$(date -u +"%Y-%m-%d")
-          current_time=$(date -u +"%H:%M:%S UTC")
-          echo "Current Date: ${current_date}"
-          echo "Current Time: ${current_time}"
-          echo "current_date=${current_date}" >> $GITHUB_ENV
-          echo "current_time=${current_time}" >> $GITHUB_ENV
+          echo "Current Date: ${current_date}" >> output.txt
+          echo "Current Time: ${current_time}" >> output.txt
+          echo "Platform: $PLATFORM_TYPE" >> output.txt
+          echo "Label: ${label_name}" > output.txt
+          echo "Type: ${label_type}" >> output.txt
+          echo "Last Commit: ${last_commit}" >> output.txt
+          echo "Total Build Time: ${total_build_time} seconds" >> output.txt
+          echo "------------------------------" >> output.txt
+          echo "Pubspec.yaml Information:" >> output.txt
+          echo "${PUBSPEC_CONTENTS}" | base64 --decode >> output.txt
+          echo "------------------------------" >> output.txt
+          echo ""
 
-      - name: Write to build-info.txt
-        run: |
-          echo "Label: ${label_name}" > build-info.txt
-          echo "Type: ${label_type}" >> build-info.txt
-          echo "Last Commit: ${last_commit}" >> build-info.txt
-          echo "Total Build Time: ${total_build_time} seconds" >> build-info.txt
-          echo "Pubspec.yaml Information:" >> build-info.txt
-          echo "${PUBSPEC_CONTENTS}" | base64 --decode >> build-info.txt
-          echo "Current Date: ${current_date}" >> build-info.txt
-          echo "Current Time: ${current_time}" >> build-info.txt
 
-      - name: Upload build-info.txt
+      - name: Upload output.txt
         id: artifact-upload-step
         uses: actions/upload-artifact@v4
         with:
           name: build-info
-          path: build-info.txt
+          path: output.txt
 
       - name: Output artifact ID
         run: |
