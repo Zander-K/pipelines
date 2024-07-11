@@ -27,11 +27,17 @@ jobs:
           echo "current_date=${current_date}" >> $GITHUB_ENV
           echo "current_time=${current_time}" >> $GITHUB_ENV
 
+      - name: Determine workflow name
+        id: extract-workflow-name
+        run: |
+          WORKFLOW_NAME=$(basename $GITHUB_WORKFLOW | cut -d'/' -f2)
+          echo "WORKFLOW_NAME=$WORKFLOW_NAME" >> $GITHUB_ENV
+
       - name: Determine platform type
         run: |
-          if [[ $GITHUB_WORKFLOW == *ios* ]]; then
+          if [[ $WORKFLOW_NAME == *ios* ]]; then
             PLATFORM_TYPE="iOS"
-          elif [[ $GITHUB_WORKFLOW == *android* ]]; then
+          elif [[ $WORKFLOW_NAME == *android* ]]; then
             PLATFORM_TYPE="Android"
           else
             PLATFORM_TYPE="Unknown"
@@ -97,23 +103,23 @@ jobs:
       - name: Read pubspec.yaml contents
         id: read-pubspec
         run: |
-          PUBSPEC_CONTENTS=$(cat apps/grosvenor_prod/pubspec.yaml) | base64
+          PUBSPEC_CONTENTS=$(cat apps/grosvenor_prod/pubspec.yaml)
           echo "PUBSPEC_CONTENTS<<EOF" >> $GITHUB_ENV
           echo -e "$PUBSPEC_CONTENTS\n" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
       - name: Write to output.txt
         run: |
-          echo "Current Date: ${current_date}" >> output.txt
+          echo "Current Date: ${current_date}" > output.txt
           echo "Current Time: ${current_time}" >> output.txt
           echo "Platform: $PLATFORM_TYPE" >> output.txt
-          echo "Label: ${label_name}" > output.txt
+          echo "Label: ${label_name}" >> output.txt
           echo "Type: ${label_type}" >> output.txt
           echo "Last Commit: ${last_commit}" >> output.txt
           echo "Total Build Time: ${total_build_time} seconds" >> output.txt
           echo "------------------------------" >> output.txt
           echo "Pubspec.yaml Information:" >> output.txt
-          echo "${PUBSPEC_CONTENTS}" | base64 --decode >> output.txt
+          echo "${PUBSPEC_CONTENTS}" >> output.txt
           echo "------------------------------" >> output.txt
           echo ""
 
