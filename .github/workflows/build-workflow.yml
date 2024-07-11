@@ -21,7 +21,7 @@ jobs:
         id: extract_label_info
         run: |
           label_name="${{ github.event.label.name }}"
-          label_type=$([[ "${label_name}" == "typea" || "${label_name}" == "typeb" ]] && echo "${label_name}" || echo "unknown")
+          label_type=$([[ "${label_name}" == "mecca" || "${label_name}" == "grosvenor" ]] && echo "${label_name}" || echo "unknown")
           echo "Label: ${label_name}"
           echo "Type: ${label_type}"
           echo "label_name=${label_name}" >> $GITHUB_ENV
@@ -55,7 +55,7 @@ jobs:
           if [ -f "apps/multichoice/pubspec.yaml" ]; then
             pubspec_info=$(cat apps/multichoice/pubspec.yaml | base64)
             echo "Pubspec.yaml Information (base64):"
-            echo "${pubspec_info}"
+            echo "${pubspec_info}" base64 --decode
             echo "pubspec_info=${pubspec_info}" >> $GITHUB_ENV
           else
             echo "pubspec_info=" >> $GITHUB_ENV
@@ -78,12 +78,18 @@ jobs:
           echo "Last Commit: ${last_commit}" >> build-info.txt
           echo "Total Build Time: ${total_build_time} seconds" >> build-info.txt
           echo "Pubspec.yaml Information:" >> build-info.txt
-          echo "${pubspec_info}" >> build-info.txt
+          echo "${pubspec_info}" | base64 --decode >> build-info.txt
           echo "Current Date: ${current_date}" >> build-info.txt
           echo "Current Time: ${current_time}" >> build-info.txt
 
       - name: Upload build-info.txt
+        id: artifact-upload-step
         uses: actions/upload-artifact@v4
         with:
           name: build-info
           path: build-info.txt
+
+      - name: Output artifact ID
+        run: |
+          echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
+          echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
