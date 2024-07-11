@@ -1,5 +1,5 @@
 ---
-name: Build
+name: Build-ios
 on:
   push:
     branches:
@@ -31,6 +31,7 @@ jobs:
         id: extract-workflow-name
         run: |
           WORKFLOW_NAME=$(basename $GITHUB_WORKFLOW | cut -d'/' -f2)
+          echo "Workflow Name: ${WORKFLOW_NAME}"
           echo "WORKFLOW_NAME=$WORKFLOW_NAME" >> $GITHUB_ENV
 
       - name: Determine platform type
@@ -44,27 +45,23 @@ jobs:
           fi
           echo "PLATFORM_TYPE=$PLATFORM_TYPE" >> $GITHUB_ENV
 
-      - name: Extract label information
+      - name: Extract Grosvenor label information
         if: contains(github.event.pull_request.labels.*.name, 'Grosvenor') || contains(github.event.pull_request.labels.*.name, 'grosvenor') 
         id: gc-extract_label_info
         run: |
           label_name="Grosvenor"
           label_type=$([[ "${label_name}" == "Mecca" || "${label_name}" == "Grosvenor" ]] && echo "${label_name}" || echo "unknown")
           echo "Label: ${label_name}"
-          echo "Type: ${label_type}"
           echo "label_name=${label_name}" >> $GITHUB_ENV
-          echo "label_type=${label_type}" >> $GITHUB_ENV
 
-      - name: Extract label information
+      - name: Extract Mecca label information
         if: contains(github.event.pull_request.labels.*.name, 'Mecca') || contains(github.event.pull_request.labels.*.name, 'mecca')
         id: mb-extract_label_info
         run: |
           label_name="Mecca"
           label_type=$([[ "${label_name}" == "Mecca" || "${label_name}" == "Grosvenor" ]] && echo "${label_name}" || echo "unknown")
           echo "Label: ${label_name}"
-          echo "Type: ${label_type}"
           echo "label_name=${label_name}" >> $GITHUB_ENV
-          echo "label_type=${label_type}" >> $GITHUB_ENV
 
       - name: Extract last commit hash
         id: extract_commit_hash
@@ -88,18 +85,6 @@ jobs:
           echo "Total Build Time: ${total_build_time} seconds"
           echo "total_build_time=${total_build_time}" >> $GITHUB_ENV
 
-      # - name: Extract pubspec.yaml information
-      #   id: extract_pubspec_info
-      #   run: |
-      #     if [ -f "apps/multichoice/pubspec.yaml" ]; then
-      #       pubspec_info=$(cat apps/grosvenor_prod/pubspec.yaml | base64)
-      #       echo "Pubspec.yaml Information (base64):"
-      #       echo "${pubspec_info}" base64 --decode
-      #       echo "pubspec_info=${pubspec_info}" >> $GITHUB_ENV
-      #     else
-      #       echo "pubspec_info=" >> $GITHUB_ENV
-      #     fi
-
       - name: Read pubspec.yaml contents
         id: read-pubspec
         run: |
@@ -107,6 +92,38 @@ jobs:
           echo "PUBSPEC_CONTENTS<<EOF" >> $GITHUB_ENV
           echo -e "$PUBSPEC_CONTENTS\n" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
+
+      - name: Extract version and build numbers
+        id: extract-version-build
+        run: |
+          VERSION=$(grep 'version:' pubspec.yaml | awk '{print $2}')
+          BUILD=$(grep 'build:' pubspec.yaml | awk '{print $2}')
+          echo "Version: ${VERSION}"
+          echo "Build: ${BUILD}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "BUILD=$BUILD" >> $GITHUB_ENV
+
+      - name: Determine platform type and format output
+        run: |
+          if [[ $WORKFLOW_NAME == *ios* ]]; then
+            version_build_nr="Version Nr: $VERSION \n Build Nr: $BUILD \n"
+            echo -e "Version Nr: $VERSION \n Build Nr: $BUILD \n"
+            echo -e "version_build_nr=${version_build_nr}" >> $GITHUB_ENV
+
+          elif [[ $WORKFLOW_NAME == *android* ]]; then
+            version_build_nr="Build Nr: $BUILD \n"
+            echo -e "Build Nr: $BUILD \n"
+            echo -e "version_build_nr=${version_build_nr}" >> $GITHUB_ENV
+
+          else
+            echo "Platform not recognized."
+            version_build_nr="Version Nr: - \n Build Nr: - \n"
+            echo -e "Version Nr: - \n Build Nr: - \n"
+            echo "version_build_nr=${version_build_nr}" >> $GITHUB_ENV
+          fi
+        env:
+          VERSION: ${{ env.VERSION }}
+          BUILD: ${{ env.BUILD }}
 
       - name: Write to output.txt
         run: |
@@ -116,9 +133,11 @@ jobs:
           echo "Label: ${label_name}" >> output.txt
           echo "Type: ${label_type}" >> output.txt
           echo "Last Commit: ${last_commit}" >> output.txt
+          echo "${version_build_nr}" >> output.txt
           echo "Total Build Time: ${total_build_time} seconds" >> output.txt
           echo "------------------------------" >> output.txt
           echo "Pubspec.yaml Information:" >> output.txt
+          echo "------------------------------" >> output.txt
           echo "${PUBSPEC_CONTENTS}" >> output.txt
           echo "------------------------------" >> output.txt
           echo ""
