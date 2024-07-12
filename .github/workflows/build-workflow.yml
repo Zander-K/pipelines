@@ -23,22 +23,37 @@ jobs:
           echo -e "Active Packages:\n"
           dart pub global list
 
+      - name: Determine workflow name
+        id: extract-workflow-name
+        run: |
+          WORKFLOW_NAME=$(basename $GITHUB_WORKFLOW | cut -d'/' -f2)
+          echo "WORKFLOW_NAME=$WORKFLOW_NAME" >> $GITHUB_ENV
+
+      - name: Extract Label Information
+        id: extract_label_info
+        run: |
+          for label in "${{ github.event.pull_request.labels.*.name }}"; do
+            echo "Label: $label"
+            echo "LABEL_NAME=$label" >> $GITHUB_ENV
+            break  # Exit loop after first label (or modify as needed)
+          done
+
+      - name: Extract last commit hash
+        id: extract_commit_hash
+        run: |
+          last_commit="${{ github.sha }}"
+          echo "last_commit=${last_commit}" >> $GITHUB_ENV
 
       - name: Run custom CLI and capture output
         id: custom-cli
         run: |
-          output=$(pipe -g)
+          output=$(pipe -g ${WORKFLOW_NAME}, ${LABEL_NAME}, ${last_commit})
           echo "$output"
           echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
           echo "$output" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Determine workflow name
-        id: extract-workflow-name
-        run: |
-          WORKFLOW_NAME=$(basename $GITHUB_WORKFLOW | cut -d'/' -f2)
-          echo "Workflow Name: ${WORKFLOW_NAME}"
-          echo "WORKFLOW_NAME=$WORKFLOW_NAME" >> $GITHUB_ENV
+
 
       - name: Determine platform type
         run: |
@@ -73,7 +88,7 @@ jobs:
           echo "label_name=${label_name}" >> $GITHUB_ENV
 
       - name: Extract last commit hash
-        id: extract_commit_hash
+        id: extract_commit_hash-1
         run: |
           last_commit="${{ github.sha }}"
           echo "Last Commit: ${last_commit}"
