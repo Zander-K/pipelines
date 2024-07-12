@@ -67,10 +67,10 @@ jobs:
       - name: Run custom CLI and capture output
         id: custom-cli
         run: |
-          output=$(pipe -g ${WORKFLOW_NAME}, ${LABEL_NAME}, ${last_commit})
-          echo "$output"
+          CLI_OUTPUT=$(pipe -g ${WORKFLOW_NAME}, ${LABEL_NAME}, ${last_commit})
+          echo "$CLI_OUTPUT"
           echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
-          echo "$output" >> $GITHUB_ENV
+          echo -e "output:\n$CLI_OUTPUT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
 

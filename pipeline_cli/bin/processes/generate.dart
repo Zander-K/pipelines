@@ -55,29 +55,26 @@ void generate(List<String?> values) {
   print(pubspecContents);
   print('------------------------------\n');
 
-  if (Platform.environment['GITHUB_ACTIONS'] != 'true') {
-    if (outputFile.existsSync()) {
-      outputFile.deleteSync();
-    }
-
-    // outputFile.writeAsStringSync('Output:\n');
-    outputFile.writeAsStringSync('$currentDateAndTime\n',
-        mode: FileMode.append);
-    outputFile.writeAsStringSync('$workflowName\n', mode: FileMode.append);
-    outputFile.writeAsStringSync('$platformType\n', mode: FileMode.append);
-    outputFile.writeAsStringSync('$labelName\n', mode: FileMode.append);
-    outputFile.writeAsStringSync('$lastCommit\n', mode: FileMode.append);
-    outputFile.writeAsStringSync('$totalBuildTime\n', mode: FileMode.append);
-    outputFile.writeAsStringSync('$versionBuild\n', mode: FileMode.append);
-    outputFile.writeAsStringSync('$formattedOutput\n', mode: FileMode.append);
-    outputFile.writeAsStringSync('------------------------------\n',
-        mode: FileMode.append);
-    outputFile.writeAsStringSync('Pubspec.yaml Information:\n',
-        mode: FileMode.append);
-    outputFile.writeAsStringSync('------------------------------\n',
-        mode: FileMode.append);
-    outputFile.writeAsStringSync('$pubspecContents\n', mode: FileMode.append);
-    outputFile.writeAsStringSync('------------------------------\n',
-        mode: FileMode.append);
+  if (outputFile.existsSync()) {
+    outputFile.deleteSync();
   }
+
+  // outputFile.writeAsStringSync('Output:\n');
+  outputFile.writeAsStringSync('$currentDateAndTime\n', mode: FileMode.append);
+  outputFile.writeAsStringSync('$workflowName\n', mode: FileMode.append);
+  outputFile.writeAsStringSync('$platformType\n', mode: FileMode.append);
+  outputFile.writeAsStringSync('$labelName\n', mode: FileMode.append);
+  outputFile.writeAsStringSync('$lastCommit\n', mode: FileMode.append);
+  outputFile.writeAsStringSync('$totalBuildTime\n', mode: FileMode.append);
+  outputFile.writeAsStringSync('$versionBuild\n', mode: FileMode.append);
+  outputFile.writeAsStringSync('$formattedOutput\n', mode: FileMode.append);
+  outputFile.writeAsStringSync('------------------------------\n',
+      mode: FileMode.append);
+  outputFile.writeAsStringSync('Pubspec.yaml Information:\n',
+      mode: FileMode.append);
+  outputFile.writeAsStringSync('------------------------------\n',
+      mode: FileMode.append);
+  outputFile.writeAsStringSync('$pubspecContents\n', mode: FileMode.append);
+  outputFile.writeAsStringSync('------------------------------\n',
+      mode: FileMode.append);
 }
