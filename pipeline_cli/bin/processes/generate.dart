@@ -42,15 +42,15 @@ void generate(List<String?> values) {
       getPubspecPath(labelName) ?? 'apps/grosvenor_prod/pubspec.yaml';
 
   var versionBuild = extractVersionBuild(pubspecPath);
-  print('Version+Build Nr: ${versionBuild.$1}+${versionBuild.$2}');
+  // print('Version+Build Nr: ${versionBuild.$1}+${versionBuild.$2}');
 
   var formattedOutput =
       determinePlatformTypeAndFormatOutput(workflowName, versionBuild);
   print(formattedOutput);
 
   var pubspecContents = readPubspecContents(pubspecPath);
-  print('------------------------------\n');
-  print('Pubspec.yaml Information:\n');
+  print('------------------------------');
+  print('Pubspec.yaml Contents:');
   print('------------------------------\n');
   print(pubspecContents);
   print('------------------------------\n');
