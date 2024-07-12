@@ -1,6 +1,8 @@
-int getTotalBuildTime(String buildStartTime, String buildEndTime) {
+String getTotalBuildTime(String buildStartTime, String buildEndTime) {
+  int totalBuildTime;
+
   if (buildStartTime.isEmpty || buildEndTime.isEmpty) {
-    return 0; // Return 0 if start time or end time is empty
+    totalBuildTime = 0;
   }
 
   // Parse ISO 8601 date strings to DateTime objects
@@ -8,7 +10,7 @@ int getTotalBuildTime(String buildStartTime, String buildEndTime) {
   var endTime = DateTime.parse(buildEndTime);
 
   // Calculate the difference in seconds
-  var totalBuildTime = endTime.difference(startTime).inSeconds;
+  totalBuildTime = endTime.difference(startTime).inSeconds;
 
-  return totalBuildTime;
+  return 'Total Build Time: $totalBuildTime seconds';
 }

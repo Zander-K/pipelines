@@ -14,8 +14,6 @@ import 'dart:io';
     match = buildRegex.firstMatch(contents);
     var build = match != null ? match.group(1) : 'Unknown';
 
-    print('Version: $version');
-    print('Build: $build');
     return (version ?? '', build ?? '');
   } catch (e) {
     print('Error reading pubspec.yaml file: $e');

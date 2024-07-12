@@ -23,31 +23,30 @@ void generate() {
   print(currentDateAndTime);
 
   var workflowName = getWorkflowName(githubWorkflow);
-  print('Workflow: $workflowName');
+  print(workflowName);
 
   var platformType = getPlatformType(workflowName);
   print(platformType);
 
   var labelName = getLabel(labels);
-  print('Label: $labelName');
+  print(labelName);
 
   var lastCommit = getLastCommitHash(githubSha);
-  print('Last Commit: $lastCommit');
+  print(lastCommit);
 
   var totalBuildTime = getTotalBuildTime(buildStartTime, buildEndTime);
-  print('Total Build Time: $totalBuildTime seconds');
-
-  var pubspecContents = readPubspecContents(pubspecPath);
-  print('PUBSPEC_CONTENTS:');
-  print(pubspecContents);
+  print(totalBuildTime);
 
   var versionBuild = extractVersionBuild(pubspecPath);
-  print('Version: ${versionBuild.$1}');
-  print('Build: ${versionBuild.$2}');
+  print('Version+Build Nr: ${versionBuild.$1}+${versionBuild.$2}');
 
   var formattedOutput =
       determinePlatformTypeAndFormatOutput(workflowName, versionBuild);
   print(formattedOutput);
+
+  var pubspecContents = readPubspecContents(pubspecPath);
+  print('PUBSPEC_CONTENTS:');
+  print(pubspecContents);
 
   if (outputFile.existsSync()) {
     outputFile.deleteSync();
@@ -55,13 +54,13 @@ void generate() {
 
   outputFile.writeAsStringSync('Output:\n');
   outputFile.writeAsStringSync('$currentDateAndTime\n', mode: FileMode.append);
-  outputFile.writeAsStringSync('Platform: $platformType\n',
-      mode: FileMode.append);
+  outputFile.writeAsStringSync('$workflowName\n', mode: FileMode.append);
+  outputFile.writeAsStringSync('$platformType\n', mode: FileMode.append);
   outputFile.writeAsStringSync('$labelName\n', mode: FileMode.append);
   outputFile.writeAsStringSync('$lastCommit\n', mode: FileMode.append);
+  outputFile.writeAsStringSync('$totalBuildTime\n', mode: FileMode.append);
   outputFile.writeAsStringSync('$versionBuild\n', mode: FileMode.append);
-  outputFile.writeAsStringSync('Total Build Time: $totalBuildTime seconds\n',
-      mode: FileMode.append);
+  outputFile.writeAsStringSync('$formattedOutput\n', mode: FileMode.append);
   outputFile.writeAsStringSync('------------------------------\n',
       mode: FileMode.append);
   outputFile.writeAsStringSync('Pubspec.yaml Information:\n',
