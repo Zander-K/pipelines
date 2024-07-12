@@ -34,9 +34,10 @@ jobs:
         id: custom-cli
         run: |
           output=$(pipe -h)
-          echo "output<<EOF" >> $GITHUB_ENV
-          echo -e "Output:\n$output" 
-          echo "cli-output=$output" >> $GITHUB_ENV
+          echo "$output"
+          echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
+          echo "$output" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Extract current date and time
         id: extract_date_time
