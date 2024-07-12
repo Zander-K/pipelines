@@ -7,7 +7,7 @@ executables:
 
 environment:
   sdk: ">=3.2.2 <4.0.0"
-  flutter: 3.19.1
+  # flutter: 3.19.1
 
 dependencies:
   args: ^2.4.2
