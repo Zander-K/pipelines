@@ -67,8 +67,7 @@ jobs:
       - name: Run custom CLI and capture output
         id: custom-cli
         run: |
-          CLI_OUTPUT=$(pipe -g ${WORKFLOW_NAME}, ${LABEL_NAME}, ${last_commit})
-          echo -e "CLI_OUTPUT:\n$CLI_OUTPUT"
+          CLI_OUTPUT=$(pipe -g ${WORKFLOW_NAME} -g ${LABEL_NAME} -g ${last_commit})
           echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
           echo -e "output:\n$CLI_OUTPUT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -171,8 +170,9 @@ jobs:
 
       - name: Write to output.txt
         run: |
-          echo -e "${CLI_OUTPUT}\n\n" > output.txt
-          # echo "Current Date: ${current_date}" >> output.txt
+          
+          echo "Current Date: ${current_date}" > output.txt
+          echo -e "${CLI_OUTPUT}\n\n" >> output.txt
           # echo "Current Time: ${current_time}" >> output.txt
           # echo "Platform: $PLATFORM_TYPE" >> output.txt
           # echo "Label: ${label_name}" >> output.txt

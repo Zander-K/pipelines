@@ -59,7 +59,7 @@ void generate(List<String?> values) {
     outputFile.deleteSync();
   }
 
-  // outputFile.writeAsStringSync('Output:\n');
+  outputFile.writeAsStringSync('Generate Output:\n');
   outputFile.writeAsStringSync('$currentDateAndTime\n', mode: FileMode.append);
   outputFile.writeAsStringSync('$workflowName\n', mode: FileMode.append);
   outputFile.writeAsStringSync('$platformType\n', mode: FileMode.append);
