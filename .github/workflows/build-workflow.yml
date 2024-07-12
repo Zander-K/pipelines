@@ -29,14 +29,29 @@ jobs:
           WORKFLOW_NAME=$(basename $GITHUB_WORKFLOW | cut -d'/' -f2)
           echo "WORKFLOW_NAME=$WORKFLOW_NAME" >> $GITHUB_ENV
 
+      # - name: Extract Label Information
+      #   id: extract_label_info
+      #   run: |
+      #     for label in "${{ github.event.pull_request.labels }}"; do
+      #       echo "Label: $label"
+      #       echo "LABEL_NAME=$label" >> $GITHUB_ENV
+      #       break  # Exit loop after first label (or modify as needed)
+      #     done
+
       - name: Extract Label Information
+        if: contains(github.event.pull_request.labels.*.name, 'Grosvenor') || contains(github.event.pull_request.labels.*.name, 'Mecca') 
         id: extract_label_info
         run: |
-          for label in "${{ github.event.pull_request.labels.*.name }}"; do
-            echo "Label: $label"
-            echo "LABEL_NAME=$label" >> $GITHUB_ENV
-            break  # Exit loop after first label (or modify as needed)
-          done
+          if [[ "${{ github.event.pull_request.labels.*.name }}" =~ "Grosvenor" ]]; then
+            label="Grosvenor"
+          elif [[ "${{ github.event.pull_request.labels.*.name }}" =~ "Mecca" ]]; then
+            label="Mecca"
+          else 
+            label="Unknown"
+          fi
+          echo "LABEL_NAME=$label" >> $GITHUB_ENV
+
+      
 
       - name: Extract last commit hash
         id: extract_commit_hash
