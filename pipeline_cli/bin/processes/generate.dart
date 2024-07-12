@@ -11,7 +11,7 @@ import '../utils/get_version_build.dart';
 import '../utils/get_workflow_name.dart';
 
 void generate() {
-  var githubWorkflow = 'owner/repository-name/workflow-name';
+  var githubWorkflow = 'Build-android';
   var labels = ['Grosvenor', 'Label1', 'Label2'];
   var githubSha = 'abcdef1234567890';
   var buildStartTime = '2024-07-12T10:00:00Z';

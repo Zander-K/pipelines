@@ -5,14 +5,14 @@ import 'dart:io';
     var file = File(filePath);
     var contents = file.readAsStringSync();
 
-    // Extract version and build numbers
-    var versionRegex = RegExp(r'version:\s*(\S+)');
-    var match = versionRegex.firstMatch(contents);
-    var version = match != null ? match.group(1) : 'Unknown';
+    var versionRegex = RegExp(r'version:\s*([^\+]+)');
+    var versionMatch = versionRegex.firstMatch(contents);
+    var version =
+        versionMatch != null ? versionMatch.group(1)?.trim() : 'Unknown';
 
     var buildRegex = RegExp(r'\+\s*(\d+)');
-    match = buildRegex.firstMatch(contents);
-    var build = match != null ? match.group(1) : 'Unknown';
+    var buildMatch = buildRegex.firstMatch(contents);
+    var build = buildMatch != null ? buildMatch.group(1)?.trim() : 'Unknown';
 
     return (version ?? '', build ?? '');
   } catch (e) {
