@@ -42,13 +42,17 @@ jobs:
         if: contains(github.event.pull_request.labels.*.name, 'Grosvenor') || contains(github.event.pull_request.labels.*.name, 'Mecca') 
         id: extract_label_info
         run: |
-          if [[ "${{ github.event.pull_request.labels.*.name }}" =~ "Grosvenor" ]]; then
-            label="Grosvenor"
-          elif [[ "${{ github.event.pull_request.labels.*.name }}" =~ "Mecca" ]]; then
-            label="Mecca"
-          else 
-            label="Unknown"
-          fi
+          for label in "${{ github.event.pull_request.labels.*.name }}"; do
+            if [[ "$label" == "Grosvenor" ]]; then
+              label_type="Grosvenor"
+              break
+            elif [[ "$label" == "Mecca" ]]; then
+              label_type="Mecca"
+              break
+            else
+              label_type="Unknown"
+            fi
+          done
           echo "LABEL_NAME=$label" >> $GITHUB_ENV
 
       
