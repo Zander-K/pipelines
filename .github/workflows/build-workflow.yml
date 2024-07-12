@@ -26,6 +26,7 @@ jobs:
         shell: bash
         run: |
           dart pub global activate -s path ./pipeline_cli
+          echo -e "Active Packages:\n"
           dart pub global list
 
 
@@ -33,7 +34,7 @@ jobs:
         id: custom-cli
         run: |
           output=$(pipe -h)
-          echo "Output: ${output}"
+          echo "Output: $output"
           echo "cli-output=$output" >> $GITHUB_ENV
 
       - name: Extract current date and time
