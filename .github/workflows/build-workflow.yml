@@ -43,14 +43,11 @@ jobs:
         id: extract_label_info
         run: |
           label_type="Unknown"
-          labels_json="$(toJson(github.event.pull_request.labels.*.name))"
-          labels=$(echo "$labels_json" | jq -r '.[]')
-
-          for label in $labels; do
-            if [[ "$label" == "Grosvenor" ]]; then
+          for label in "${{ toJson(github.event.pull_request.labels.*.name) }}"; do
+            if [[ "$label" == *"Grosvenor"* ]]; then
               label_type="Grosvenor"
               break
-            elif [[ "$label" == "Mecca" ]]; then
+            elif [[ "$label" == *"Mecca"* ]]; then
               label_type="Mecca"
               break
             fi
@@ -58,7 +55,7 @@ jobs:
 
           echo "Label: $label_type"
           echo "LABEL_NAME=$label_type" >> $GITHUB_ENV
-          
+
           # for label in "${{ toJson(github.event.pull_request.labels.*.name)  }}"; do
           #   if [[ "$label" == "Grosvenor" ]]; then
           #     label_type="Grosvenor"
