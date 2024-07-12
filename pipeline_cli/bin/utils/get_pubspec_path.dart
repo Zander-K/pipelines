@@ -4,9 +4,9 @@ String? getPubspecPath(String label) {
   if (label.toLowerCase().contains('grosvenor')) {
     folderName = 'grosvenor_prod';
   } else if (label.toLowerCase().contains('mecca')) {
-    folderName = 'mecca_prod';
+    folderName = 'meccabingo_prod';
   } else {
-    folderName = 'blank';
+    folderName = 'grosvenor_prod';
   }
 
   return 'apps/$folderName/pubspec.yaml';
