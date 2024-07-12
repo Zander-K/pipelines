@@ -14,12 +14,6 @@ jobs:
     name: gather and build
     runs-on: ubuntu-latest
     steps:
-      # - name: Checkout repo
-      #   uses: actions/checkout@v4
-
-      # - name: Setup Flutter and Pipeline
-      #   uses: ./.github/actions/setup-flutter
-
       - uses: actions/checkout@v4
       - uses: dart-lang/setup-dart@v1
       - name: Activate Pipeline
@@ -38,16 +32,6 @@ jobs:
           echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
           echo "$output" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-
-      - name: Extract current date and time
-        id: extract_date_time
-        run: |
-          current_date=$(date -u +"%Y-%m-%d")
-          current_time=$(date -u +"%H:%M:%S UTC")
-          echo "Current Date: ${current_date}"
-          echo "Current Time: ${current_time}"
-          echo "current_date=${current_date}" >> $GITHUB_ENV
-          echo "current_time=${current_time}" >> $GITHUB_ENV
 
       - name: Determine workflow name
         id: extract-workflow-name
@@ -179,3 +163,5 @@ jobs:
         run: |
           echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
           echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
+
+      - run: cat output1.txt >> output2.txt
