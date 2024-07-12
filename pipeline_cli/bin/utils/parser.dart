@@ -3,13 +3,14 @@ import 'package:args/args.dart';
 import '../enums/export_enums.dart';
 
 ArgParser parser() {
-  return ArgParser()
-    ..addFlag(
-      Flags.generate.flag,
-      abbr: Flags.generate.abbr,
-      help: Flags.generate.info,
-      negatable: Flags.generate.neg,
-    )
+  final argParser = ArgParser();
+  argParser
+    // ..addFlag(
+    //   Flags.generate.flag,
+    //   abbr: Flags.generate.abbr,
+    //   help: Flags.generate.info,
+    //   negatable: Flags.generate.neg,
+    // )
     ..addFlag(
       Flags.help.flag,
       abbr: Flags.help.abbr,
@@ -34,4 +35,13 @@ ArgParser parser() {
       help: Flags.welcome.info,
       negatable: Flags.welcome.neg,
     );
+
+  argParser.addMultiOption(
+    Flags.generate.flag,
+    abbr: Flags.generate.abbr,
+    help: Flags.generate.info,
+    splitCommas: true,
+  );
+
+  return argParser;
 }

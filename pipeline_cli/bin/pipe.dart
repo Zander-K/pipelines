@@ -13,7 +13,8 @@ void main(List<String> arguments) {
     bool showVerbose = args.wasParsed(Flags.verbose.flag);
 
     if (args.wasParsed(Flags.generate.flag)) {
-      generate();
+      final List<String> results = args[Flags.generate.flag] ?? [];
+      generate(results);
     }
     if (args.wasParsed(Flags.help.flag)) {
       printUsage(argParser);

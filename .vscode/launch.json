@@ -1,0 +1,40 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Pipeline CLI",
+            "request": "launch",
+            "type": "dart",
+            "program": "pipeline_cli/bin/pipe.dart",
+            "args": [
+                "-g",
+                "android-workflow, value1",
+                "-h",
+                "value1",
+            ]
+        },
+        {
+            "name": "grosvenor_prod",
+            "cwd": "apps/grosvenor_prod",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "grosvenor_prod (profile mode)",
+            "cwd": "apps/grosvenor_prod",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "grosvenor_prod (release mode)",
+            "cwd": "apps/grosvenor_prod",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
