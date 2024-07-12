@@ -1,0 +1,19 @@
+name: "Setup Flutter"
+description: "Installs flutter, pipeline, and gets dependencies"
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+    - name: Install Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: "3.16.2"
+        channel: "stable"
+        architecture: x64
+        cache: true
+    - name: Install Pipeline
+      shell: bash
+      run: dart pub global activate -s path ./pipeline_cli
+    - name: Get dependencies
+      shell: bash
+      run: flutter pub get

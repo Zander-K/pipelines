@@ -17,6 +17,16 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Setup Flutter and Pipeline
+        uses: ./.github/actions/setup-flutter
+
+      - name: Run custom CLI and capture output
+        id: custom-cli
+        run: |
+          output=$(pipe -h)
+          echo "Output: ${output}"
+          echo "cli-output=$output" >> $GITHUB_ENV
+
       - name: Extract current date and time
         id: extract_date_time
         run: |
@@ -134,7 +144,6 @@ jobs:
           echo "Current Time: ${current_time}" >> output.txt
           echo "Platform: $PLATFORM_TYPE" >> output.txt
           echo "Label: ${label_name}" >> output.txt
-          echo "Type: ${label_type}" >> output.txt
           echo "Last Commit: ${last_commit}" >> output.txt
           echo "${version_build_nr}" >> output.txt
           echo "Total Build Time: ${total_build_time} seconds" >> output.txt
