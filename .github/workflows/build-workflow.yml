@@ -33,7 +33,7 @@ jobs:
       - name: Run custom CLI and capture output
         id: custom-cli
         run: |
-          output=$(pipe -h)
+          output=$(pipe -g)
           echo "$output"
           echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
           echo "$output" >> $GITHUB_ENV
@@ -152,7 +152,8 @@ jobs:
 
       - name: Write to output.txt
         run: |
-          echo "Current Date: ${current_date}" > output.txt
+          echo -e "Output:\n${CLI_OUTPUT}" > output.txt
+          echo "Current Date: ${current_date}" >> output.txt
           echo "Current Time: ${current_time}" >> output.txt
           echo "Platform: $PLATFORM_TYPE" >> output.txt
           echo "Label: ${label_name}" >> output.txt
