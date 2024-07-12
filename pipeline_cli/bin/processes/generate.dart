@@ -23,7 +23,7 @@ void generate() {
   print(currentDateAndTime);
 
   var workflowName = getWorkflowName(githubWorkflow);
-  print(workflowName);
+  print('Workflow Name: $workflowName');
 
   var platformType = getPlatformType(workflowName);
   print(platformType);

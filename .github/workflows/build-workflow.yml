@@ -136,7 +136,7 @@ jobs:
 
       - name: Write to output.txt
         run: |
-          echo -e "Output:\n${CLI_OUTPUT}" > output.txt
+          echo -e "Output:\n${CLI_OUTPUT}\n\n" > output.txt
           echo "Current Date: ${current_date}" >> output.txt
           echo "Current Time: ${current_time}" >> output.txt
           echo "Platform: $PLATFORM_TYPE" >> output.txt
@@ -164,16 +164,16 @@ jobs:
           echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
           echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
 
-      - run: cat output1.txt >> output2.txt
+      # - run: cat output1.txt >> output2.txt
 
-      - name: Upload output2.txt
-        id: artifact-upload-step-1
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-info
-          path: output2.txt
+      # - name: Upload output2.txt
+      #   id: artifact-upload-step-1
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: build-info
+      #     path: output2.txt
 
-      - name: Output artifact ID
-        run: |
-          echo 'Artifact ID is ${{ steps.artifact-upload-step-1.outputs.artifact-id }}'
-          echo 'Artifact URL is ${{ steps.artifact-upload-step-1.outputs.artifact-url }}'
+      # - name: Output artifact ID
+      #   run: |
+      #     echo 'Artifact ID is ${{ steps.artifact-upload-step-1.outputs.artifact-id }}'
+      #     echo 'Artifact URL is ${{ steps.artifact-upload-step-1.outputs.artifact-url }}'
