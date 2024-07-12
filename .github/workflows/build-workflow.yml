@@ -14,11 +14,20 @@ jobs:
     name: gather and build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      # - name: Checkout repo
+      #   uses: actions/checkout@v4
 
-      - name: Setup Flutter and Pipeline
-        uses: ./.github/actions/setup-flutter
+      # - name: Setup Flutter and Pipeline
+      #   uses: ./.github/actions/setup-flutter
+
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+      - name: Activate Pipeline
+        shell: bash
+        run: |
+          dart pub global activate -s path ./pipeline_cli
+          dart pub global list
+
 
       - name: Run custom CLI and capture output
         id: custom-cli
