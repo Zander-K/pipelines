@@ -209,5 +209,5 @@ jobs:
           ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "The workflow has finished. You can download the artifact [here]('${{ env.ARTIFACT_URL }}')"
+            "artifact_url": "The workflow has finished. You can download the artifact [here]('${{ env.ARTIFACT_URL }}')"
           }' $SLACK_WEBHOOK_URL
