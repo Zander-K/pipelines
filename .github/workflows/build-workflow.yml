@@ -200,15 +200,11 @@ jobs:
           echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
           echo "ARTIFACT_URL=${{ steps.artifact-upload-step.outputs.artifact-url }}" >> $GITHUB_ENV
 
-  notify:
-    needs: extract
-    runs-on: ubuntu-latest
-    steps:
       - name: Send notification to Slack
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{
-            "artifact_url": "The workflow has finished. You can download the artifact [here]('${ARTIFACT_URL}')"
+            "artifact_url": "The workflow has finished. You can download the artifact [here]('$ARTIFACT_URL')"
           }' $SLACK_WEBHOOK_URL
