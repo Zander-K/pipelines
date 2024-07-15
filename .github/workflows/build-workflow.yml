@@ -72,102 +72,6 @@ jobs:
           echo -e "$CLI_OUTPUT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-
-
-      # - name: Determine platform type
-      #   run: |
-      #     if [[ $WORKFLOW_NAME == *ios* ]]; then
-      #       PLATFORM_TYPE="iOS"
-      #       echo "Platform: ${PLATFORM_TYPE}"
-      #     elif [[ $WORKFLOW_NAME == *android* ]]; then
-      #       PLATFORM_TYPE="Android"
-      #       echo "Platform: ${PLATFORM_TYPE}"
-      #     else
-      #       PLATFORM_TYPE="Unknown"
-      #       echo "Platform: ${PLATFORM_TYPE}"
-      #     fi
-      #     echo "PLATFORM_TYPE=$PLATFORM_TYPE" >> $GITHUB_ENV
-
-      # - name: Extract Grosvenor label information
-      #   if: contains(github.event.pull_request.labels.*.name, 'Grosvenor') || contains(github.event.pull_request.labels.*.name, 'grosvenor') 
-      #   id: gc-extract_label_info
-      #   run: |
-      #     label_name="Grosvenor"
-      #     label_type=$([[ "${label_name}" == "Mecca" || "${label_name}" == "Grosvenor" ]] && echo "${label_name}" || echo "unknown")
-      #     echo "Label: ${label_name}"
-      #     echo "label_name=${label_name}" >> $GITHUB_ENV
-
-      # - name: Extract Mecca label information
-      #   if: contains(github.event.pull_request.labels.*.name, 'Mecca') || contains(github.event.pull_request.labels.*.name, 'mecca')
-      #   id: mb-extract_label_info
-      #   run: |
-      #     label_name="Mecca"
-      #     label_type=$([[ "${label_name}" == "Mecca" || "${label_name}" == "Grosvenor" ]] && echo "${label_name}" || echo "unknown")
-      #     echo "Label: ${label_name}"
-      #     echo "label_name=${label_name}" >> $GITHUB_ENV
-
-      # - name: Extract last commit hash
-      #   id: extract_commit_hash-1
-      #   run: |
-      #     last_commit="${{ github.sha }}"
-      #     echo "Last Commit: ${last_commit}"
-      #     echo "last_commit=${last_commit}" >> $GITHUB_ENV
-      
-      # - name: Extract total build time
-      #   id: extract_build_time
-      #   run: |
-      #     build_url="https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-      #     build_info=$(curl -s -H "Accept: application/vnd.github.v3+json" "${build_url}")
-      #     start_time=$(echo "${build_info}" | jq -r '.workflow_run.created_at')
-      #     end_time=$(echo "${build_info}" | jq -r '.workflow_run.updated_at')
-      #     if [ -z "$start_time" ] || [ -z "$end_time" ]; then
-      #       total_build_time=0
-      #     else
-      #       total_build_time=$(($(date -d "${end_time}" +%s) - $(date -d "${start_time}" +%s)))
-      #     fi
-      #     echo "Total Build Time: ${total_build_time} seconds"
-      #     echo "total_build_time=${total_build_time}" >> $GITHUB_ENV
-
-      # - name: Read pubspec.yaml contents
-      #   id: read-pubspec
-      #   run: |
-      #     PUBSPEC_CONTENTS=$(cat apps/grosvenor_prod/pubspec.yaml)
-      #     echo "PUBSPEC_CONTENTS<<EOF" >> $GITHUB_ENV
-      #     echo -e "$PUBSPEC_CONTENTS\n" >> $GITHUB_ENV
-      #     echo "EOF" >> $GITHUB_ENV
-
-      # - name: Extract version and build numbers
-      #   id: extract-version-build
-      #   run: |
-      #     VERSION=$(grep 'version:' apps/grosvenor_prod/pubspec.yaml | awk '{split($2, a, "+"); print a[1]}')
-      #     BUILD=$(grep 'version:' apps/grosvenor_prod/pubspec.yaml | awk '{split($2, a, "+"); print a[2]}')
-      #     echo "Version: ${VERSION}"
-      #     echo "Build: ${BUILD}"
-      #     echo "VERSION=$VERSION" >> $GITHUB_ENV
-      #     echo "BUILD=$BUILD" >> $GITHUB_ENV
-
-      # - name: Determine platform type and format output
-      #   run: |
-      #     if [[ $WORKFLOW_NAME == *ios* ]]; then
-      #       version_build_nr="Version Nr: $VERSION\n Build Nr: $BUILD\n"
-      #       echo -e "Version Nr: $VERSION\n Build Nr: $BUILD\n"
-      #       echo -e "version_build_nr=${version_build_nr}" >> $GITHUB_ENV
-
-      #     elif [[ $WORKFLOW_NAME == *android* ]]; then
-      #       version_build_nr="Build Nr: $BUILD\n"
-      #       echo -e "Build Nr: $BUILD\n"
-      #       echo -e "version_build_nr=${version_build_nr}" >> $GITHUB_ENV
-
-      #     else
-      #       echo "Platform not recognized."
-      #       version_build_nr="Version Nr: -\n Build Nr: -\n"
-      #       echo -e "Version Nr: -\n Build Nr: -\n"
-      #       echo "version_build_nr=${version_build_nr}" >> $GITHUB_ENV
-      #     fi
-      #   env:
-      #     VERSION: ${{ env.VERSION }}
-      #     BUILD: ${{ env.BUILD }}
-
       - name: Write to output.txt
         run: |
           
@@ -202,9 +106,9 @@ jobs:
 
       - name: Send notification to Slack
         env:
-          SLACK_PIPELINE_WEBHOOK_URL: ${{ secrets.SLACK_PIPELINE_WEBHOOK_URL }}
+          SLACK_PIPELINE_URL: ${{ secrets.SLACK_PIPELINE_URL }}
           ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{
             "artifact_url": "A new production build has finished. You can download a file with all the information $ARTIFACT_URL"
-          }' $SLACK_PIPELINE_WEBHOOK_URL
+          }' $SLACK_PIPELINE_URL
