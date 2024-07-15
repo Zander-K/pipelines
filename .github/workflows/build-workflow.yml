@@ -109,6 +109,8 @@ jobs:
           SLACK_PIPELINE_URL: ${{ secrets.SLACK_PIPELINE_URL }}
           ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{
-            "artifact_url": "A new production build has finished. You can download a file with all the information here:\n'${ARTIFACT_URL}'"
-          }' $SLACK_PIPELINE_URL
+          curl -X POST -H 'Content-type: application/json' --data
+          '{
+              "artifact_url": "A new production build has finished. You can download a file with all the information here:\n'${ARTIFACT_URL}'"
+              "artifact_contents": "'"${CLI_OUTPUT}"'",
+            }' $SLACK_PIPELINE_URL
