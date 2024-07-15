@@ -198,6 +198,7 @@ jobs:
         run: |
           echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
           echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
+          echo "ARTIFACT_URL=${{ steps.artifact-upload-step.outputs.artifact-url }}" >> $GITHUB_ENV
 
   notify:
     needs: extract
@@ -209,5 +210,5 @@ jobs:
           ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{
-            "artifact_url": "The workflow has finished. You can download the artifact [here]('${{ env.ARTIFACT_URL }}')"
+            "artifact_url": "The workflow has finished. You can download the artifact [here]('${ARTIFACT_URL}')"
           }' $SLACK_WEBHOOK_URL
