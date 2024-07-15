@@ -202,9 +202,9 @@ jobs:
 
       - name: Send notification to Slack
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_PIPELINE_WEBHOOK_URL: ${{ secrets.SLACK_PIPELINE_WEBHOOK_URL }}
           ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{
-            "artifact_url": "The workflow has finished. You can download the artifact [here]('$ARTIFACT_URL')"
+            "artifact_url": "A new production build has finished. You can download a file with all the information $ARTIFACT_URL"
           }' $SLACK_WEBHOOK_URL
