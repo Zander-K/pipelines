@@ -11,10 +11,14 @@ import '../utils/get_total_build_time.dart';
 import '../utils/get_version_build.dart';
 import '../utils/get_workflow_name.dart';
 
-void generate(List<String?> values) {
-  var githubWorkflow = values[0] ?? 'Build-android';
-  List<String> labels = [values[1] ?? 'Grosvenor', 'Label1', 'Label2'];
-  var githubSha = values[2] ?? 'abcdef1234567890';
+void generate(
+    {required String? workflow,
+    required String? labels,
+    required String? commit}) {
+  var githubWorkflow = workflow ?? 'Build-android';
+  List<String> prLabels = [labels ?? 'Grosvenor', 'Label1', 'Label2'];
+  var githubSha = commit ?? 'abcdef1234567890';
+
   var buildStartTime = '2024-07-12T10:00:00Z';
   var buildEndTime = '2024-07-12T10:30:00Z';
   // var pubspecPath = 'apps/grosvenor_prod/pubspec.yaml';
@@ -29,7 +33,7 @@ void generate(List<String?> values) {
   var platformType = getPlatformType(workflowName);
   print(platformType);
 
-  var labelName = getLabel(labels);
+  var labelName = getLabel(prLabels);
   print(labelName);
 
   var lastCommit = getLastCommitHash(githubSha);

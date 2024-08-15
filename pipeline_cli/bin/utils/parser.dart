@@ -34,7 +34,10 @@ ArgParser parser() {
       abbr: Flags.welcome.abbr,
       help: Flags.welcome.info,
       negatable: Flags.welcome.neg,
-    );
+    )
+    ..addOption('commit', abbr: 'c', help: 'The last commit SHA')
+    ..addOption('workflow', abbr: 'w', help: 'The name of the workflow')
+    ..addOption('labels', abbr: 'l', help: 'Comma-separated list of labels');
 
   argParser.addMultiOption(
     Flags.generate.flag,

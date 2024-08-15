@@ -13,8 +13,23 @@ void main(List<String> arguments) {
     bool showVerbose = args.wasParsed(Flags.verbose.flag);
 
     if (args.wasParsed(Flags.generate.flag)) {
-      final List<String> results = args[Flags.generate.flag] ?? [];
-      generate(results);
+      final String? workflowName = args['workflow'];
+      final String? labels = args['labels'];
+      final String? lastCommit = args['commit'];
+
+      if (workflowName == null || labels == null || lastCommit == null) {
+        print(
+            'Usage: pipe --workflow <commit> --labels <workflow> --commit <labels>');
+        printUsage(argParser);
+        return;
+      }
+
+      // final List<String> results = args[Flags.generate.flag] ?? [];
+      generate(
+        workflow: workflowName,
+        labels: labels,
+        commit: lastCommit,
+      );
     }
     if (args.wasParsed(Flags.help.flag)) {
       printUsage(argParser);
