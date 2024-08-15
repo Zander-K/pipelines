@@ -5,12 +5,12 @@ import '../enums/export_enums.dart';
 ArgParser parser() {
   final argParser = ArgParser();
   argParser
-    // ..addFlag(
-    //   Flags.generate.flag,
-    //   abbr: Flags.generate.abbr,
-    //   help: Flags.generate.info,
-    //   negatable: Flags.generate.neg,
-    // )
+    ..addFlag(
+      Flags.generate.flag,
+      abbr: Flags.generate.abbr,
+      help: Flags.generate.info,
+      negatable: Flags.generate.neg,
+    )
     ..addFlag(
       Flags.help.flag,
       abbr: Flags.help.abbr,
@@ -39,12 +39,12 @@ ArgParser parser() {
     ..addOption('workflow', abbr: 'w', help: 'The name of the workflow')
     ..addOption('labels', abbr: 'l', help: 'Comma-separated list of labels');
 
-  argParser.addMultiOption(
-    Flags.generate.flag,
-    abbr: Flags.generate.abbr,
-    help: Flags.generate.info,
-    splitCommas: true,
-  );
+  // argParser.addMultiOption(
+  //   Flags.generate.flag,
+  //   abbr: Flags.generate.abbr,
+  //   help: Flags.generate.info,
+  //   splitCommas: true,
+  // );
 
   return argParser;
 }

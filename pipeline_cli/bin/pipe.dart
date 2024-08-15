@@ -24,7 +24,6 @@ void main(List<String> arguments) {
         return;
       }
 
-      // final List<String> results = args[Flags.generate.flag] ?? [];
       generate(
         workflow: workflowName,
         labels: labels,

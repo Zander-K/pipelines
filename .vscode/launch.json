@@ -11,9 +11,12 @@
             "program": "pipeline_cli/bin/pipe.dart",
             "args": [
                 "-g",
-                "android-workflow, value1",
-                "-h",
+                "-c",
+                "name",
+                "-w",
                 "value1",
+                "-l",
+                "test",
             ]
         },
         {
