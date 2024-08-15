@@ -19,7 +19,7 @@ void main(List<String> arguments) {
 
       if (workflowName == null || labels == null || lastCommit == null) {
         print(
-            'Usage: pipe --workflow <commit> --labels <workflow> --commit <labels>');
+            'Usage: pipe -g --workflow <commit> --labels <workflow> --commit <labels>');
         printUsage(argParser);
         return;
       }

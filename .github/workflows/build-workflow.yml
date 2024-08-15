@@ -48,48 +48,17 @@ jobs:
           echo "Workflow Name: $WORKFLOW_NAME"
           echo "PR Labels: $PR_LABELS"
 
-          # echo "WORKFLOW_NAME=$WORKFLOW_NAME" >> $GITHUB_ENV
-          # echo "PR_LABELS=$PR_LABELS" >> $GITHUB_ENV
-          # echo "LAST_COMMIT=$LAST_COMMIT" >> $GITHUB_ENV
+          echo "WORKFLOW_NAME=$WORKFLOW_NAME" >> $GITHUB_ENV
+          echo "PR_LABELS=$PR_LABELS" >> $GITHUB_ENV
+          echo "LAST_COMMIT=$LAST_COMMIT" >> $GITHUB_ENV
 
           # CLI_OUTPUT=$(pipe -g ${WORKFLOW_NAME} -g ${PR_LABELS} -g ${LAST_COMMIT})
-          CLI_OUTPUT=$(pipe --commit $LAST_COMMIT --workflow $WORKFLOW_NAME --labels "$PR_LABELS")
+          CLI_OUTPUT=$(pipe -g --commit $LAST_COMMIT --workflow $WORKFLOW_NAME --labels "$PR_LABELS")
 
           
           echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
           echo -e "$CLI_OUTPUT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-
-
-      # - name: Extract workflow name
-      #   id: extract-workflow-name
-      #   run: |
-      #     WORKFLOW_NAME=$(basename $GITHUB_WORKFLOW | cut -d'/' -f2)
-      #     echo "WORKFLOW_NAME=$WORKFLOW_NAME" >> $GITHUB_ENV
-
-      # - name: Extract Label Information
-      #   if: contains(github.event.pull_request.labels.*.name, 'Grosvenor') || contains(github.event.pull_request.labels.*.name, 'Mecca') 
-      #   id: extract_label_info
-      #   run: |
-      #     label_type="Unknown"
-      #     for label in "${{ toJson(github.event.pull_request.labels.*.name) }}"; do
-      #       if [[ "$label" == *"Grosvenor"* ]]; then
-      #         label_type="Grosvenor"
-      #         break
-      #       elif [[ "$label" == *"Mecca"* ]]; then
-      #         label_type="Mecca"
-      #         break
-      #       fi
-      #     done
-
-      #     echo "Label: $label_type"
-      #     echo "LABEL_NAME=$label_type" >> $GITHUB_ENV
-
-      # - name: Extract last commit hash
-      #   id: extract_commit_hash
-      #   run: |
-      #     last_commit="${{ github.sha }}"
-      #     echo "last_commit=${last_commit}" >> $GITHUB_ENV
 
       # - name: Run custom CLI and capture output
       #   id: custom-cli
@@ -101,8 +70,7 @@ jobs:
 
       - name: Write to output.txt
         run: |
-          # echo "Current Date: ${current_date}" > output.txt
-          echo -e "${CLI_OUTPUT}\n\n" > output.txt
+          echo -e "${CLI_OUTPUT}\n\n" >> output.txt
 
 
       - name: Upload output.txt
