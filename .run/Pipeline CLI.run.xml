@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Pipeline CLI" type="FlutterRunConfigurationType" factoryName="Flutter">
+    <option name="filePath" value="$PROJECT_DIR$/pipeline_cli/bin/pipe.dart" />
+    <method v="2" />
+  </configuration>
+</component>

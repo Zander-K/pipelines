@@ -23,20 +23,25 @@ jobs:
           echo -e "Active Packages:\n"
           dart pub global list
 
+      - name: Install GitHub CLI
+        run: sudo apt-get install -y gh
+
+      - name: Extract PR details
+        run: |
+          PR_NUMBER=$(gh pr view --json number --jq '.number')
+          LAST_COMMIT=$(gh api repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/commits --jq '.[-1].sha')
+          WORKFLOW_NAME=$GITHUB_WORKFLOW
+          PR_LABELS=$(gh pr view $PR_NUMBER --json labels --jq '.labels[].name' | tr '\n' ',' | sed 's/,$//')
+
+          echo "Last Commit: $LAST_COMMIT"
+          echo "Workflow Name: $WORKFLOW_NAME"
+          echo "PR Labels: $PR_LABELS"
+
       - name: Extract workflow name
         id: extract-workflow-name
         run: |
           WORKFLOW_NAME=$(basename $GITHUB_WORKFLOW | cut -d'/' -f2)
           echo "WORKFLOW_NAME=$WORKFLOW_NAME" >> $GITHUB_ENV
-
-      # - name: Extract Label Information
-      #   id: extract_label_info
-      #   run: |
-      #     for label in "${{ github.event.pull_request.labels }}"; do
-      #       echo "Label: $label"
-      #       echo "LABEL_NAME=$label" >> $GITHUB_ENV
-      #       break  # Exit loop after first label (or modify as needed)
-      #     done
 
       - name: Extract Label Information
         if: contains(github.event.pull_request.labels.*.name, 'Grosvenor') || contains(github.event.pull_request.labels.*.name, 'Mecca') 
@@ -55,8 +60,6 @@ jobs:
 
           echo "Label: $label_type"
           echo "LABEL_NAME=$label_type" >> $GITHUB_ENV
-
-      
 
       - name: Extract last commit hash
         id: extract_commit_hash
