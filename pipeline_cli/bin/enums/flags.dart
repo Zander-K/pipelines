@@ -3,7 +3,7 @@ enum Flags {
   help('help', 'h', 'Show help', false),
   verbose('verbose', 'v', 'Show verbose', false),
   version('version', 'V', 'Show version', false),
-  welcome('welcome', 'w', 'Welcome Page', false),
+  welcome('welcome', 'W', 'Welcome Page', false),
   unknown('', '', '', false);
 
   const Flags(
