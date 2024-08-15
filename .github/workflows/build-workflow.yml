@@ -125,6 +125,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_PIPELINE_URL }}  # Your Slack webhook URL
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           SLACK_CHANNEL: '#your-channel-name'                # Replace with your Slack channel
           SLACK_USERNAME: 'GitHub Actions'                  # Optional: Username for Slack message
           SLACK_COLOR: '#00FF00'                            # Optional: Set a color for the message
