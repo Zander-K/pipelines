@@ -134,7 +134,4 @@ jobs:
             A new production build has finished.
             Download the artifact using the link below:
             ${{ steps.artifact-upload-step.outputs.artifact-url }}
-        with:
-          status: custom
-          filename: output.txt                              # Name of the artifact file to upload
-          file: output.txt                                  # Path to the file to upload
+          SLACK_FILE_UPLOAD: output.txt 
