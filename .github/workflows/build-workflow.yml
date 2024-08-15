@@ -94,21 +94,8 @@ jobs:
 
       - name: Write to output.txt
         run: |
-          
           echo "Current Date: ${current_date}" > output.txt
           echo -e "${CLI_OUTPUT}\n\n" >> output.txt
-          # echo "Current Time: ${current_time}" >> output.txt
-          # echo "Platform: $PLATFORM_TYPE" >> output.txt
-          # echo "Label: ${label_name}" >> output.txt
-          # echo "Last Commit: ${last_commit}" >> output.txt
-          # echo "${version_build_nr}" >> output.txt
-          # echo "Total Build Time: ${total_build_time} seconds" >> output.txt
-          # echo "------------------------------" >> output.txt
-          # echo "Pubspec.yaml Information:" >> output.txt
-          # echo "------------------------------" >> output.txt
-          # echo "${PUBSPEC_CONTENTS}" >> output.txt
-          # echo "------------------------------" >> output.txt
-          # echo ""
 
 
       - name: Upload output.txt
@@ -133,3 +120,21 @@ jobs:
               "artifact_url": "A new production build has finished. You can download a file with all the information here:\n'${ARTIFACT_URL}'",
               "artifact_contents": "" 
               }' $SLACK_PIPELINE_URL
+
+      - name: Send notification to Slack with Artifact Upload
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_PIPELINE_URL }}  # Your Slack webhook URL
+          SLACK_CHANNEL: '#your-channel-name'                # Replace with your Slack channel
+          SLACK_USERNAME: 'GitHub Actions'                  # Optional: Username for Slack message
+          SLACK_COLOR: '#00FF00'                            # Optional: Set a color for the message
+          SLACK_ICON_EMOJI: ':rocket:'                      # Optional: Set an emoji icon
+          SLACK_TITLE: 'Build Notification'
+          SLACK_MESSAGE: |
+            A new production build has finished.
+            Download the artifact using the link below:
+            ${{ steps.artifact-upload-step.outputs.artifact-url }}
+        with:
+          status: custom
+          filename: output.txt                              # Name of the artifact file to upload
+          file: output.txt                                  # Path to the file to upload
