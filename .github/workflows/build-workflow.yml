@@ -26,7 +26,14 @@ jobs:
       - name: Install GitHub CLI
         run: sudo apt-get install -y gh
 
+      - name: Set up environment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "GitHub token set"
+
       - name: Extract PR details
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PR_NUMBER=$(gh pr view --json number --jq '.number')
           LAST_COMMIT=$(gh api repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/commits --jq '.[-1].sha')
