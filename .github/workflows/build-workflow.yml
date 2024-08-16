@@ -90,6 +90,10 @@ jobs:
           echo "The full path to output.txt is: $(pwd)/output.txt"
 
 
+      - name: Save output.txt path to environment variable
+        run: echo "OUTPUT_FILE_PATH=$(pwd)/output.txt" >> $GITHUB_ENV
+
+
       - name: Output artifact ID
         run: |
           echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
@@ -120,4 +124,4 @@ jobs:
             A new production build has finished.
             Download the artifact using the link below:
             ${{ steps.artifact-upload-step.outputs.artifact-url }}
-          SLACK_FILE_UPLOAD: $(pwd)/output.txt
+          SLACK_FILE_UPLOAD: ${{ env.OUTPUT_FILE_PATH }}
