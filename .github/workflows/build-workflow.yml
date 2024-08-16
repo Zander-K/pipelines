@@ -125,6 +125,7 @@ jobs:
             Download the artifact using the link below:
             ${{ steps.artifact-upload-step.outputs.artifact-url }}
           SLACK_FILE_UPLOAD: ${{ env.OUTPUT_FILE_PATH }}
+          SLACK_CUSTOM_PAYLOAD: '{"current_date":"2024-08-16","current_time":"10:36:09 UTC","workflow_name":"Build-android","platform":"Android","label":"Mecca","commit_hash":"07d12dc78f0797270a499dc5365883d05c092d18","total_build_time_seconds":1800,"build_number":21,"pubspec_yaml_contents":{"name":"meccabingo_prod","version":"1.0.0+21","publish_to":"none","description":"Mecca Bingo app","environment":{"sdk":">=3.1.0 <4.0.0"},"dependency_overrides":{"intl":"0.18.1"},"dependencies":{"appsflyer_sdk":"^6.12.2","auto_animated":"^3.2.0","auto_route":"7.8.4","bloc":"^8.1.2","cached_network_image":"^3.3.0","carousel_slider":"^4.2.1","webview_flutter":"^4.5.0"},"dev_dependencies":{"auto_route_generator":"^7.1.1","build_runner":"^2.4.4","flutter_flavorizr":"^2.2.1","flutter_gen_runner":"^5.4.0","flutter_lints":"^2.0.0"}}}'
 
       - name: Upload to slack step
         uses: adrey/slack-file-upload-action@master
