@@ -127,7 +127,7 @@ jobs:
           SLACK_FILE_UPLOAD: ${{ env.OUTPUT_FILE_PATH }}
 
       - name: Upload to slack step
-        uses: adrey/slack-file-upload-action
+        uses: adrey/slack-file-upload-action@master
         with:
           token: ${{ secrets.SLACK_TOKEN }}
           path: ${{ env.OUTPUT_FILE_PATH }}
