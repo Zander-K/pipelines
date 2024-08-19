@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:async';
 
-Future<String> _runCommand(List<String> command) async {
-  var result = await Process.run(command[0], command.sublist(1));
+String _runCommand(List<String> command) {
+  var result = Process.runSync(command[0], command.sublist(1));
   if (result.exitCode != 0) {
     throw Exception(
         'Error running command: ${command.join(' ')}\n${result.stderr}');
@@ -10,9 +10,9 @@ Future<String> _runCommand(List<String> command) async {
   return result.stdout.trim();
 }
 
-Future<String?> getFlutterVersion() async {
+String? getFlutterVersion() {
   try {
-    var flutterVersionOutput = await _runCommand(['flutter', '--version']);
+    var flutterVersionOutput = _runCommand(['flutter', '--version']);
     var flutterVersion = RegExp(r'Flutter\s+([\d\.]+)')
         .firstMatch(flutterVersionOutput)
         ?.group(1);
@@ -23,9 +23,9 @@ Future<String?> getFlutterVersion() async {
   }
 }
 
-Future<String?> getDartVersion() async {
+String? getDartVersion() {
   try {
-    var dartVersionOutput = await _runCommand(['dart', '--version']);
+    var dartVersionOutput = _runCommand(['dart', '--version']);
     var dartVersion = RegExp(r'Dart\s+SDK\s+version:\s+([\d\.]+)')
         .firstMatch(dartVersionOutput)
         ?.group(1);
@@ -36,9 +36,9 @@ Future<String?> getDartVersion() async {
   }
 }
 
-void main() async {
-  var flutterVersion = await getFlutterVersion();
-  var dartVersion = await getDartVersion();
+void main() {
+  var flutterVersion = getFlutterVersion();
+  var dartVersion = getDartVersion();
 
   print('Flutter Version: $flutterVersion');
   print('Dart Version: $dartVersion');

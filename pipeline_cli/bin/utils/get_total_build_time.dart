@@ -1,8 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
-Future<int?> getBuildTimeInSeconds(String workflowName) async {
+int? getBuildTimeInSeconds(String workflowName) {
   try {
-    var latestRunIdResult = await Process.run('gh', [
+    var latestRunIdResult = Process.runSync('gh', [
       'run',
       'list',
       '--workflow',
@@ -18,12 +19,10 @@ Future<int?> getBuildTimeInSeconds(String workflowName) async {
       return null;
     }
 
-    var latestRunId = latestRunIdResult.stdout
-        .split('"databaseId": ')[1]
-        .split(',')[0]
-        .trim();
+    var latestRunData = jsonDecode(latestRunIdResult.stdout);
+    var latestRunId = latestRunData[0]['databaseId'].toString();
 
-    var durationResult = await Process.run(
+    var durationResult = Process.runSync(
         'gh', ['run', 'view', latestRunId, '--json', 'createdAt,updatedAt']);
 
     if (durationResult.exitCode != 0) {
@@ -31,10 +30,9 @@ Future<int?> getBuildTimeInSeconds(String workflowName) async {
       return null;
     }
 
-    var startTime =
-        durationResult.stdout.split('"createdAt": "')[1].split('"')[0].trim();
-    var endTime =
-        durationResult.stdout.split('"updatedAt": "')[1].split('"')[0].trim();
+    var durationData = jsonDecode(durationResult.stdout);
+    var startTime = durationData['createdAt'];
+    var endTime = durationData['updatedAt'];
 
     var startTimeSec =
         DateTime.parse(startTime).toUtc().millisecondsSinceEpoch ~/ 1000;
@@ -45,5 +43,15 @@ Future<int?> getBuildTimeInSeconds(String workflowName) async {
   } catch (e) {
     print('Error: $e');
     return null;
+  }
+}
+
+void main() async {
+  var appName = getBuildTimeInSeconds('Build-android');
+
+  if (appName != null) {
+    print('App Name: $appName');
+  } else {
+    print('Failed to retrieve the app name.');
   }
 }

@@ -8,6 +8,11 @@ on:
     branches: 
       - main
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to checkout'
+        required: true
+        default: 'main'
 
 permissions:
   pull-requests: write
@@ -22,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref || github.ref }}
+          ref: ${{ github.event.inputs.branch || github.event.pull_request.head.ref || github.ref }}
 
       - name: Install GitHub CLI
         run: sudo apt-get install -y gh
@@ -55,7 +60,7 @@ jobs:
 
           # CLI_OUTPUT=$(pipe -g ${WORKFLOW_NAME} -g ${PR_LABELS} -g ${LAST_COMMIT})
           # CLI_OUTPUT=$(pipe -g --commit $LAST_COMMIT --workflow $WORKFLOW_NAME --labels "$PR_LABELS")
-          CLI_OUTPUT=$(pipe -g)
+          CLI_OUTPUT=$(pipe -g -l ${{ github.event.inputs.branch }})
 
 
           

@@ -14,15 +14,15 @@ String getLabel(List<String> labels) {
   return 'Label: $label';
 }
 
-Future<String?> getAppName(String filePath) async {
+String? getAppName(String filePath) {
   try {
     final file = File(filePath);
-    if (!await file.exists()) {
+    if (!file.existsSync()) {
       print('pubspec.yaml file not found');
       return null;
     }
 
-    final content = await file.readAsString();
+    final content = file.readAsStringSync();
 
     final regex = RegExp(r'^name:\s*(\S+)', multiLine: true);
     final match = regex.firstMatch(content);
@@ -40,7 +40,7 @@ Future<String?> getAppName(String filePath) async {
 }
 
 void main() async {
-  var appName = await getAppName('apps/grosvenor_prod/pubspec.yaml');
+  var appName = getAppName('apps/grosvenor_prod/pubspec.yaml');
 
   if (appName != null) {
     print('App Name: $appName');
@@ -48,3 +48,5 @@ void main() async {
     print('Failed to retrieve the app name.');
   }
 }
+
+// /Users/zanderk/Workspace/Personal/pipelines/apps/grosvenor_prod/pubspec.yaml

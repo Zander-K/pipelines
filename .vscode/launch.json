@@ -26,6 +26,8 @@
             "program": "pipeline_cli/bin/pipe.dart",
             "args": [
                 "-g",
+                "-l",
+                "test-pr",
             ]
         },
         {

@@ -1,9 +1,9 @@
 import 'dart:io';
 
-Future<(String, String)> getVersionBuild(String filePath) async {
+(String, String) getVersionBuild(String filePath) {
   try {
     var file = File(filePath);
-    if (!await file.exists()) {
+    if (!file.existsSync()) {
       print('pubspec.yaml file not found');
       return ('', '');
     }

@@ -22,18 +22,18 @@ Future<void> generate({
   var outputFile = File('output1.txt');
 
   var workflowName = getWorkflowName() ?? '';
-  var lastCommit = await getLastCommitHash();
+  var lastCommit = getLastCommitHash(labels ?? '');
   var currentDateAndTime = getDateTime();
   var platformType = getPlatformType(workflowName);
   var pubspecPath = getPubspecPath(workflowName);
 
-  var totalBuildTimeInSeconds = await getBuildTimeInSeconds(workflowName) ?? 0;
+  var totalBuildTimeInSeconds = getBuildTimeInSeconds(workflowName) ?? 0;
   var totalBuildTime = Duration(seconds: totalBuildTimeInSeconds);
   var totalBuildTimeFormatted =
       "${totalBuildTime.inMinutes} minutes and ${totalBuildTime.inSeconds % 60} seconds";
 
-  var versionBuild = await getVersionBuild(pubspecPath);
-  var appName = await getAppName(pubspecPath);
+  var versionBuild = getVersionBuild(pubspecPath);
+  var appName = getAppName(pubspecPath);
   var flutterVersion = getFlutterVersion();
   var dartVersion = getDartVersion();
   var pubspecContents = getPubspecContents(pubspecPath);
@@ -44,25 +44,26 @@ Future<void> generate({
   var outputBuffer = StringBuffer();
 
   outputBuffer.writeln('-----------------------------------------------------');
-  outputBuffer.writeln('** 📅\tCurrent Date: ** ${currentDateAndTime.$1} **');
+  outputBuffer.writeln('** 📅\tCurrent Date: \t** ${currentDateAndTime.$1} **');
   outputBuffer
-      .writeln('** ⏱️\tCurrent Time: ** ${currentDateAndTime.$2} UTC **');
+      .writeln('** ⏱️\tCurrent Time: \t** ${currentDateAndTime.$2} UTC **');
   outputBuffer.writeln('-----------------------------------------------------');
-  outputBuffer.writeln('** 🛠️\tWorkflow Name: ** $workflowName **');
-  outputBuffer.writeln('** 📱\tPlatform: ** $platformType **');
-  outputBuffer.writeln('** 🏷️\tApp Name: ** $appName **');
-  outputBuffer.writeln('** 🔖\tCommit Hash: ** $lastCommit **');
+  outputBuffer.writeln('** 🛠️\tWorkflow Name: \t** $workflowName **');
+  outputBuffer.writeln('** 📱\tPlatform: \t** $platformType **');
+  outputBuffer.writeln('** 🏷️\tApp Name: \t** $appName **');
+  outputBuffer.writeln('** 🔖\tCommit Hash: \t** $lastCommit **');
   outputBuffer
-      .writeln('** ⏱️\tTotal Build Time: ** $totalBuildTimeFormatted **');
-  outputBuffer.writeln('** 🔢\tBuild Number: ** ${versionBuild.$2} **');
-  outputBuffer.writeln('** \tFlutter Version: ** $flutterVersion **');
-  outputBuffer.writeln('** \tDart Version: ** $dartVersion **');
+      .writeln('** ⏱️\tTotal Build Time: \t** $totalBuildTimeFormatted **');
+  outputBuffer.writeln('** 🔢\tBuild Number: \t\t** ${versionBuild.$2} **');
+  outputBuffer.writeln('** 🦋\tFlutter Version: \t** $flutterVersion **');
+  outputBuffer.writeln('** 🎯\tDart Version: \t\t** $dartVersion **\n');
+  outputBuffer.writeln('-----------------------------------------------------');
+
+  outputBuffer.writeln('** PUBSPEC.YAML CONTENTS: **');
   outputBuffer
       .writeln('-----------------------------------------------------\n');
-
-  outputBuffer.writeln('### **Pubspec.yaml Contents:**');
   outputBuffer.write(pubspecContents);
-  outputBuffer.writeln('---\n');
+  outputBuffer.writeln('-----------------------------------------------------');
 
   if (outputFile.existsSync()) {
     outputFile.deleteSync();
