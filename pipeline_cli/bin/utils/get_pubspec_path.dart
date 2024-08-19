@@ -1,9 +1,7 @@
-String? getPubspecPath(String label) {
+String getPubspecPath(String workflowName) {
   final String folderName;
 
-  if (label.toLowerCase().contains('grosvenor')) {
-    folderName = 'grosvenor_prod';
-  } else if (label.toLowerCase().contains('mecca')) {
+  if (workflowName.toLowerCase().contains('mb')) {
     folderName = 'meccabingo_prod';
   } else {
     folderName = 'grosvenor_prod';

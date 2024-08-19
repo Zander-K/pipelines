@@ -1,8 +1,12 @@
 import 'dart:io';
 
-(String, String) extractVersionBuild(String filePath) {
+Future<(String, String)> getVersionBuild(String filePath) async {
   try {
     var file = File(filePath);
+    if (!await file.exists()) {
+      print('pubspec.yaml file not found');
+      return ('', '');
+    }
     var contents = file.readAsStringSync();
 
     var versionRegex = RegExp(r'version:\s*([^\+]+)');

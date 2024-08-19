@@ -17,12 +17,12 @@ void main(List<String> arguments) {
       final String? labels = args['labels'];
       final String? lastCommit = args['commit'];
 
-      if (workflowName == null || labels == null || lastCommit == null) {
-        print(
-            'Usage: pipe -g --workflow <commit> --labels <workflow> --commit <labels>');
-        printUsage(argParser);
-        return;
-      }
+      // if (workflowName == null || labels == null || lastCommit == null) {
+      //   print(
+      //       'Usage: pipe -g --workflow <commit> --labels <workflow> --commit <labels>');
+      //   printUsage(argParser);
+      //   return;
+      // }
 
       generate(
         workflow: workflowName,

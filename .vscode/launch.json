@@ -20,6 +20,15 @@
             ]
         },
         {
+            "name": "Pipeline CLI 2",
+            "request": "launch",
+            "type": "dart",
+            "program": "pipeline_cli/bin/pipe.dart",
+            "args": [
+                "-g",
+            ]
+        },
+        {
             "name": "grosvenor_prod",
             "cwd": "apps/grosvenor_prod",
             "request": "launch",

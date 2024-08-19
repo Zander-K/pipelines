@@ -53,7 +53,9 @@ jobs:
           echo "LAST_COMMIT=$LAST_COMMIT" >> $GITHUB_ENV
 
           # CLI_OUTPUT=$(pipe -g ${WORKFLOW_NAME} -g ${PR_LABELS} -g ${LAST_COMMIT})
-          CLI_OUTPUT=$(pipe -g --commit $LAST_COMMIT --workflow $WORKFLOW_NAME --labels "$PR_LABELS")
+          # CLI_OUTPUT=$(pipe -g --commit $LAST_COMMIT --workflow $WORKFLOW_NAME --labels "$PR_LABELS")
+          CLI_OUTPUT=$(pipe -g)
+
 
           
           echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
@@ -125,10 +127,3 @@ jobs:
             Download the artifact using the link below:
             ${{ steps.artifact-upload-step.outputs.artifact-url }}
           SLACK_FILE_UPLOAD: ${{ env.OUTPUT_FILE_PATH }}
-
-      - name: Upload to slack step
-        uses: adrey/slack-file-upload-action@master
-        with:
-          token: ${{ secrets.SLACK_TOKEN }}
-          path: ${{ env.OUTPUT_FILE_PATH }}
-          channel: riga-pipeline

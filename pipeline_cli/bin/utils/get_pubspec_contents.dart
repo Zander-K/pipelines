@@ -1,6 +1,6 @@
 import 'dart:io';
 
-String readPubspecContents(String filePath) {
+String getPubspecContents(String filePath) {
   try {
     var file = File(filePath);
     var contents = file.readAsStringSync();

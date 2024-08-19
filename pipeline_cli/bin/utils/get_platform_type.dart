@@ -9,5 +9,5 @@ String getPlatformType(String workflowName) {
     platform = 'Unknown';
   }
 
-  return 'Platform: $platform';
+  return platform;
 }
