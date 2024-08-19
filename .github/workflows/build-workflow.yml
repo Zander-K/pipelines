@@ -60,7 +60,7 @@ jobs:
 
           # CLI_OUTPUT=$(pipe -g ${WORKFLOW_NAME} -g ${PR_LABELS} -g ${LAST_COMMIT})
           # CLI_OUTPUT=$(pipe -g --commit $LAST_COMMIT --workflow $WORKFLOW_NAME --labels "$PR_LABELS")
-          CLI_OUTPUT=$(pipe -g -l ${{ github.event.inputs.branch }})
+          CLI_OUTPUT=$(pipe -g --labels ${{ github.event.inputs.branch }})
 
 
           
