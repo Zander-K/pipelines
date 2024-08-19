@@ -21,7 +21,7 @@ Future<void> generate({
   // var labelName = getLabel(prLabels);
   var outputFile = File('output1.txt');
 
-  var workflowName = await getWorkflowName() ?? '';
+  var workflowName = getWorkflowName() ?? '';
   var lastCommit = await getLastCommitHash();
   var currentDateAndTime = getDateTime();
   var platformType = getPlatformType(workflowName);

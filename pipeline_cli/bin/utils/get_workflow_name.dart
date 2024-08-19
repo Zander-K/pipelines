@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-Future<String?> getWorkflowName() async {
+String? getWorkflowName() {
   try {
-    var workflowResult = await Process.run(
+    var workflowResult = Process.runSync(
         'gh', ['run', 'list', '--json', 'name', '--limit', '1']);
 
     if (workflowResult.exitCode != 0) {
@@ -26,7 +26,7 @@ Future<String?> getWorkflowName() async {
 }
 
 void main() async {
-  var workflowName = await getWorkflowName();
+  var workflowName = getWorkflowName();
 
   if (workflowName != null) {
     print('Workflow Name: $workflowName');

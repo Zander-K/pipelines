@@ -17,13 +17,13 @@ Future<String> getLastCommitHash() async {
 
 Future<String?> _getLastBranchCommitSha(String owner, String repo) async {
   try {
-    var branchName = await _getBranchNameFromEnv();
+    var branchName = _getBranchNameFromEnv();
     if (branchName == null) {
       print('This workflow was not triggered by a branch.');
       return '';
     }
 
-    var commitResult = await Process.run('gh', [
+    var commitResult = Process.runSync('gh', [
       'api',
       'repos/$owner/$repo/commits',
       '--jq',
@@ -46,7 +46,7 @@ Future<String?> _getLastBranchCommitSha(String owner, String repo) async {
   }
 }
 
-Future<String?> _getBranchNameFromEnv() async {
+String? _getBranchNameFromEnv() {
   var githubRef = Platform.environment['GITHUB_REF'];
   if (githubRef != null && githubRef.contains('refs/heads/')) {
     return githubRef.split('refs/heads/').last.trim();
