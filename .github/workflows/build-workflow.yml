@@ -1,5 +1,5 @@
 ---
-name: Build-android
+name: Build-ios
 on:
   push:
     branches:
