@@ -61,46 +61,29 @@ jobs:
           # CLI_OUTPUT=$(pipe -g ${WORKFLOW_NAME} -g ${PR_LABELS} -g ${LAST_COMMIT})
           # CLI_OUTPUT=$(pipe -g --commit $LAST_COMMIT --workflow $WORKFLOW_NAME --labels "$PR_LABELS")
           CLI_OUTPUT=$(pipe -g --labels ${{ github.event.inputs.branch || github.event.pull_request.head.ref || github.ref }})
-
-
           
           echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
           echo -e "$CLI_OUTPUT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      # - name: Run custom CLI and capture output
-      #   id: custom-cli
-      #   run: |
-      #     CLI_OUTPUT=$(pipe -g ${WORKFLOW_NAME} -g ${LABEL_NAME} -g ${last_commit})
-      #     echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
-      #     echo -e "$CLI_OUTPUT" >> $GITHUB_ENV
-      #     echo "EOF" >> $GITHUB_ENV
-
-      - name: Write to output.txt
+      - name: Write to file.txt
         run: |
-          echo -e "${CLI_OUTPUT}\n\n" >> output.txt
+          echo -e "${CLI_OUTPUT}\n\n" >> file.txt
 
-
-      - name: Upload output.txt
+      - name: Upload file.txt
         id: artifact-upload-step
         uses: actions/upload-artifact@v4
         with:
           name: build-info
-          path: output.txt
+          path: file.txt
 
-      - name: Print the full path of output.txt
+      - name: Print the full path of file.txt
         run: |
-          echo "The full path to output.txt is: $(realpath output.txt)"
+          echo "The full path to file.txt is: $(pwd)/file.txt"
 
 
-      - name: Print the full path of output.txt
-        run: |
-          echo "The full path to output.txt is: $(pwd)/output.txt"
-
-
-      - name: Save output.txt path to environment variable
-        run: echo "OUTPUT_FILE_PATH=$(pwd)/output.txt" >> $GITHUB_ENV
-
+      - name: Save file.txt path to environment variable
+        run: echo "OUTPUT_FILE_PATH=$(pwd)/file.txt" >> $GITHUB_ENV
 
       - name: Output artifact ID
         run: |
@@ -133,3 +116,6 @@ jobs:
             Download the artifact using the link below:
             ${{ steps.artifact-upload-step.outputs.artifact-url }}
           SLACK_FILE_UPLOAD: ${{ env.OUTPUT_FILE_PATH }}
+          SLACK_MESSAGE_ON_SUCCESS: |
+            the_message=$(cat file.txt)
+            echo "${the_message//$'\n'/\\n}"

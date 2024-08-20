@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:async';
 
 String _runCommand(List<String> command) {
   var result = Process.runSync(command[0], command.sublist(1));
