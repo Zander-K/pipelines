@@ -37,24 +37,3 @@ String? _getLastCommitSha(
     return null;
   }
 }
-
-void main() async {
-  var owner = 'Zander-K'; // Replace with your GitHub username
-  var repo = 'pipelines'; // Replace with your repository name
-
-  var branchName = 'test-pr';
-
-  // var branchName = _getBranchNameFromEnv();
-  // if (branchName == null) {
-  //   print('Failed to retrieve the branch name.');
-  //   return;
-  // }
-
-  var lastCommitSha = _getLastCommitSha(owner, repo, branchName);
-
-  if (lastCommitSha != null) {
-    print('Last Commit SHA on branch $branchName: $lastCommitSha');
-  } else {
-    print('Failed to retrieve the last commit SHA.');
-  }
-}

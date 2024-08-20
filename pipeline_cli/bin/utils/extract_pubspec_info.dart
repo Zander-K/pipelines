@@ -1,6 +1,24 @@
 import 'dart:io';
 
-(String, String) getVersionBuild(String filePath) {
+(String, String) getVersionAndBuildDetails(
+  String workflowName,
+  String filePath,
+) {
+  final versionBuild = _getVersionAndBuild(filePath);
+
+  final version = versionBuild.$1;
+  final build = versionBuild.$2;
+
+  if (workflowName.toLowerCase().contains('ios')) {
+    return ('Version+Build Nr', '$version+$build');
+  } else if (workflowName.toLowerCase().contains('android')) {
+    return ('Build Nr', build);
+  } else {
+    return ('Version+Build Nr', 'Undetermined');
+  }
+}
+
+(String, String) _getVersionAndBuild(String filePath) {
   try {
     var file = File(filePath);
     if (!file.existsSync()) {

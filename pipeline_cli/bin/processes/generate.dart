@@ -12,13 +12,9 @@ import '../utils/get_pubspec_contents.dart';
 import '../utils/get_pubspec_path.dart';
 
 Future<void> generate({
-  required String? workflow,
   required String? labels,
-  required String? commit,
 }) async {
   //
-  // List<String> prLabels = [labels ?? 'Grosvenor', 'Label1', 'Label2'];
-  // var labelName = getLabel(prLabels);
   var outputFile = File('output1.txt');
 
   var workflowName = getWorkflowName() ?? '';
@@ -32,14 +28,14 @@ Future<void> generate({
   var totalBuildTimeFormatted =
       "${totalBuildTime.inMinutes} minutes and ${totalBuildTime.inSeconds % 60} seconds";
 
-  var versionBuild = getVersionBuild(pubspecPath);
+  var versionBuildDetails = getVersionAndBuildDetails(
+    workflowName,
+    pubspecPath,
+  );
   var appName = getAppName(pubspecPath);
   var flutterVersion = getFlutterVersion();
   var dartVersion = getDartVersion();
   var pubspecContents = getPubspecContents(pubspecPath);
-
-  // Map<String, String> dependencies = extractDependencies(pubspecContents);
-  // Map<String, String> devDependencies = extractDevDependencies(pubspecContents);
 
   var outputBuffer = StringBuffer();
 
@@ -54,7 +50,8 @@ Future<void> generate({
   outputBuffer.writeln('** 🔖\tCommit Hash: \t** $lastCommit **');
   outputBuffer
       .writeln('** ⏱️\tTotal Build Time: \t** $totalBuildTimeFormatted **');
-  outputBuffer.writeln('** 🔢\tBuild Number: \t\t** ${versionBuild.$2} **');
+  outputBuffer.writeln(
+      '** 🔢\t${versionBuildDetails.$1}: \t\t** ${versionBuildDetails.$2} **');
   outputBuffer.writeln('** 🦋\tFlutter Version: \t** $flutterVersion **');
   outputBuffer.writeln('** 🎯\tDart Version: \t\t** $dartVersion **\n');
   outputBuffer.writeln('-----------------------------------------------------');
@@ -72,63 +69,4 @@ Future<void> generate({
   outputFile.writeAsStringSync(outputBuffer.toString());
 
   print(outputBuffer.toString());
-}
-
-Map<String, String> extractDependencies(String pubspecContents) {
-  var dependencies = <String, String>{};
-  var inDependenciesSection = false;
-
-  pubspecContents.split('\n').forEach((line) {
-    line = line.trim();
-    if (line.startsWith('dependencies:')) {
-      inDependenciesSection = true;
-    } else if (inDependenciesSection &&
-        line.isNotEmpty &&
-        !line.startsWith('dev_dependencies:')) {
-      var parts = line.split(':');
-      if (parts.length == 2) {
-        dependencies[parts[0].trim()] = parts[1].trim();
-      }
-    } else if (line.startsWith('dev_dependencies:')) {
-      inDependenciesSection = false;
-    }
-  });
-
-  return dependencies;
-}
-
-Map<String, String> extractDevDependencies(String pubspecContents) {
-  var devDependencies = <String, String>{};
-  var inDevDependenciesSection = false;
-
-  pubspecContents.split('\n').forEach((line) {
-    line = line.trim();
-    if (line.startsWith('dev_dependencies:')) {
-      inDevDependenciesSection = true;
-    } else if (inDevDependenciesSection && line.isNotEmpty) {
-      var parts = line.split(':');
-      if (parts.length == 2) {
-        devDependencies[parts[0].trim()] = parts[1].trim();
-      }
-    }
-  });
-
-  return devDependencies;
-}
-
-String determinePlatformTypeAndFormatOutput(
-    String workflowName, (String, String) versionBuild) {
-  String version = versionBuild.$1;
-  String buildNumber = versionBuild.$2;
-
-  String platformType;
-  if (workflowName.contains('android')) {
-    platformType = 'Android';
-  } else if (workflowName.contains('ios')) {
-    platformType = 'iOS';
-  } else {
-    platformType = 'Unknown Platform';
-  }
-
-  return 'Platform: $platformType\nVersion: $version\nBuild Number: $buildNumber';
 }

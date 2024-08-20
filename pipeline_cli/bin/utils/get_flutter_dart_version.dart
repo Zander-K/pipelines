@@ -34,11 +34,3 @@ String? getDartVersion() {
     return null;
   }
 }
-
-void main() {
-  var flutterVersion = getFlutterVersion();
-  var dartVersion = getDartVersion();
-
-  print('Flutter Version: $flutterVersion');
-  print('Dart Version: $dartVersion');
-}

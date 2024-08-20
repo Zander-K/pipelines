@@ -1,6 +1,5 @@
 enum Options {
-  commit('commit', 'c', 'he last commit SHA'),
-  workflow('workflow', 'w', 'The name of the workflow'),
+  // commit('commit', 'c', 'he last commit SHA'),
   labels('labels', 'l', 'Comma-separated list of labels'),
   unknown('', '', '');
 

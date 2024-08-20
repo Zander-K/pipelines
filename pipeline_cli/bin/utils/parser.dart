@@ -35,28 +35,16 @@ ArgParser parser() {
       help: Flags.welcome.info,
       negatable: Flags.welcome.neg,
     )
-    ..addOption(
-      Options.commit.flag,
-      abbr: Options.commit.abbr,
-      help: Options.commit.help,
-    )
-    ..addOption(
-      Options.workflow.flag,
-      abbr: Options.workflow.abbr,
-      help: Options.workflow.help,
-    )
+    // ..addOption(
+    //   Options.commit.flag,
+    //   abbr: Options.commit.abbr,
+    //   help: Options.commit.help,
+    // )
     ..addOption(
       Options.labels.flag,
       abbr: Options.labels.abbr,
       help: Options.labels.help,
     );
-
-  // argParser.addMultiOption(
-  //   Flags.generate.flag,
-  //   abbr: Flags.generate.abbr,
-  //   help: Flags.generate.info,
-  //   splitCommas: true,
-  // );
 
   return argParser;
 }
