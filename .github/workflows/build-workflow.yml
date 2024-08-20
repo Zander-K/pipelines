@@ -121,5 +121,4 @@ jobs:
 
           SLACK_FILE_UPLOAD: ${{ env.OUTPUT_FILE_PATH }}
           SLACK_MESSAGE_ON_SUCCESS: |
-            the_message=$(cat file.txt)
-            echo "${the_message//$'\n'/\\n}"
+            ${{ env.CLI_OUTPUT }}
