@@ -108,13 +108,17 @@ jobs:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           SLACK_CHANNEL: '#your-channel-name'      
           SLACK_USERNAME: 'GitHub Actions'             
-          SLACK_COLOR: '#00FF00'                  
+          SLACK_COLOR: ${{ job.status }}                 
           SLACK_ICON_EMOJI: ':rocket:'                     
-          SLACK_TITLE: 'Build Notification'
+          SLACK_TITLE: 'Production Build Notification'
           SLACK_MESSAGE: |
             A new production build has finished.
             Download the artifact using the link below:
             ${{ steps.artifact-upload-step.outputs.artifact-url }}
+
+            Contents of file.txt:
+            ${{ env.CLI_OUTPUT }}
+
           SLACK_FILE_UPLOAD: ${{ env.OUTPUT_FILE_PATH }}
           SLACK_MESSAGE_ON_SUCCESS: |
             the_message=$(cat file.txt)
