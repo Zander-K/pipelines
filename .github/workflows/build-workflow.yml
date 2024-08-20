@@ -58,7 +58,6 @@ jobs:
           echo "PR_LABELS=$PR_LABELS" >> $GITHUB_ENV
           echo "LAST_COMMIT=$LAST_COMMIT" >> $GITHUB_ENV
 
-          # CLI_OUTPUT=$(pipe -g ${WORKFLOW_NAME} -g ${PR_LABELS} -g ${LAST_COMMIT})
           # CLI_OUTPUT=$(pipe -g --commit $LAST_COMMIT --workflow $WORKFLOW_NAME --labels "$PR_LABELS")
           CLI_OUTPUT=$(pipe -g --labels ${{ github.event.inputs.branch || github.event.pull_request.head.ref || github.ref }})
           
@@ -69,6 +68,9 @@ jobs:
       - name: Write to file.txt
         run: |
           echo -e "${CLI_OUTPUT}\n\n" >> file.txt
+      
+      - name: Save file.txt path to environment variable
+        run: echo "OUTPUT_FILE_PATH=$(pwd)/file.txt" >> $GITHUB_ENV
 
       - name: Upload file.txt
         id: artifact-upload-step
@@ -76,14 +78,6 @@ jobs:
         with:
           name: build-info
           path: file.txt
-
-      - name: Print the full path of file.txt
-        run: |
-          echo "The full path to file.txt is: $(pwd)/file.txt"
-
-
-      - name: Save file.txt path to environment variable
-        run: echo "OUTPUT_FILE_PATH=$(pwd)/file.txt" >> $GITHUB_ENV
 
       - name: Output artifact ID
         run: |
@@ -106,7 +100,7 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_PIPELINE_URL }} 
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-          SLACK_CHANNEL: '#your-channel-name'      
+          SLACK_CHANNEL: 'riga-pipeline'      
           SLACK_USERNAME: 'GitHub Actions'             
           SLACK_COLOR: ${{ job.status }}                 
           SLACK_ICON_EMOJI: ':rocket:'                     
@@ -118,7 +112,13 @@ jobs:
 
             Contents of file.txt:
             ${{ env.CLI_OUTPUT }}
-
-          SLACK_FILE_UPLOAD: ${{ env.OUTPUT_FILE_PATH }}
           SLACK_MESSAGE_ON_SUCCESS: |
+            A new production build has finished.
+            Download the artifact using the link below:
+            ${{ steps.artifact-upload-step.outputs.artifact-url }}
+
             ${{ env.CLI_OUTPUT }}
+          SLACK_MESSAGE_ON_FAILURE: |
+            An error occurred while running this workflow. 
+          SLACK_FOOTER: |
+            Created by RIGA for RIGA 
