@@ -11,12 +11,8 @@
             "program": "pipeline_cli/bin/pipe.dart",
             "args": [
                 "-g",
-                "-c",
-                "name",
-                "-w",
-                "value1",
-                "-l",
-                "test",
+                "-b",
+                "test-pr",
             ]
         },
         {
