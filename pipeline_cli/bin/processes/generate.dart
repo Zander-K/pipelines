@@ -1,41 +1,41 @@
-import 'dart:io';
-
-import '../utils/get_commit_hash.dart';
-import '../utils/get_date_time.dart';
-import '../utils/get_flutter_dart_version.dart';
-import '../utils/get_label.dart';
-import '../utils/get_platform_type.dart';
-import '../utils/get_total_build_time.dart';
-import '../utils/extract_pubspec_info.dart';
-import '../utils/get_workflow_name.dart';
-import '../utils/get_pubspec_contents.dart';
-import '../utils/get_pubspec_path.dart';
+import '../export.dart';
 
 Future<void> generate({
-  required String? labels,
+  required String? branch,
 }) async {
-  //
-  var outputFile = File('output1.txt');
+  if (branch == null && branch!.isEmpty) {
+    branch = 'develop';
+  }
+  var isValidBranch = checksBranch(branch);
+
+  if (!isValidBranch) {
+    return;
+  }
 
   var workflowName = getWorkflowName() ?? '';
-  var lastCommit = getLastCommitHash(labels ?? '');
+  var lastCommit = getLastCommitHash(branch);
   var currentDateAndTime = getDateTime();
   var platformType = getPlatformType(workflowName);
   var pubspecPath = getPubspecPath(workflowName);
 
-  var totalBuildTimeInSeconds = getBuildTimeInSeconds(workflowName) ?? 0;
-  var totalBuildTime = Duration(seconds: totalBuildTimeInSeconds);
-  var totalBuildTimeFormatted =
-      "${totalBuildTime.inMinutes} minutes and ${totalBuildTime.inSeconds % 60} seconds";
+  var totalBuildTimeFormatted = 'No build time';
+  if (!workflowName.contains('Unknown')) {
+    var totalBuildTimeInSeconds = getBuildTimeInSeconds(workflowName) ?? 0;
+    var totalBuildTime = Duration(seconds: totalBuildTimeInSeconds);
+
+    totalBuildTimeFormatted =
+        "${totalBuildTime.inMinutes} minutes and ${totalBuildTime.inSeconds % 60} seconds";
+  }
 
   var versionBuildDetails = getVersionAndBuildDetails(
     workflowName,
     pubspecPath,
   );
   var appName = getAppName(pubspecPath);
-  var flutterVersion = getFlutterVersion();
-  var dartVersion = getDartVersion();
-  var pubspecContents = getPubspecContents(pubspecPath);
+  var pubspecContents = getPubspecInstalledPackages(pubspecPath);
+
+  var flutterVersion = pubspecContents?.flutter;
+  var dartVersion = pubspecContents?.dart;
 
   var outputBuffer = StringBuffer();
 
@@ -48,25 +48,20 @@ Future<void> generate({
   outputBuffer.writeln('** 📱\tPlatform: \t** $platformType **');
   outputBuffer.writeln('** 🏷️\tApp Name: \t** $appName **');
   outputBuffer.writeln('** 🔖\tCommit Hash: \t** $lastCommit **');
+  outputBuffer.writeln('** 🔖\tBranch Name: \t** $branch **');
   outputBuffer
       .writeln('** ⏱️\tTotal Build Time: \t** $totalBuildTimeFormatted **');
   outputBuffer.writeln(
-      '** 🔢\t${versionBuildDetails.$1}: \t\t** ${versionBuildDetails.$2} **');
+      '** 🔢\t${versionBuildDetails.$1}: \t** ${versionBuildDetails.$2} **');
   outputBuffer.writeln('** 🦋\tFlutter Version: \t** $flutterVersion **');
   outputBuffer.writeln('** 🎯\tDart Version: \t\t** $dartVersion **\n');
   outputBuffer.writeln('-----------------------------------------------------');
 
-  outputBuffer.writeln('** PUBSPEC.YAML CONTENTS: **');
+  outputBuffer.writeln('** PUBSPEC.LOCK CONTENTS: Installed Packages **');
   outputBuffer
       .writeln('-----------------------------------------------------\n');
-  outputBuffer.write(pubspecContents);
+  outputBuffer.write(pubspecContents?.contents);
   outputBuffer.writeln('-----------------------------------------------------');
-
-  if (outputFile.existsSync()) {
-    outputFile.deleteSync();
-  }
-
-  outputFile.writeAsStringSync(outputBuffer.toString());
 
   print(outputBuffer.toString());
 }

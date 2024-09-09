@@ -7,5 +7,5 @@ String getPubspecPath(String workflowName) {
     folderName = 'grosvenor_prod';
   }
 
-  return 'apps/$folderName/pubspec.yaml';
+  return 'apps/$folderName';
 }

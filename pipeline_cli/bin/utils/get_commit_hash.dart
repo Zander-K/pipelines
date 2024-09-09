@@ -1,15 +1,16 @@
 import 'dart:io';
 
-String getLastCommitHash(String branchName) {
-  var owner = 'Zander-K';
-  var repo = 'pipelines';
+String? getLastCommitHash(String branchName) {
+  var owner = 'rankengineering';
+  var repo = 'rank_mobile_core';
 
   var lastCommitSha = _getLastCommitSha(owner, repo, branchName);
 
   if (lastCommitSha != null) {
     return lastCommitSha;
   } else {
-    return 'Failed to retrieve the last commit SHA.';
+    print('Failed to retrieve the last commit SHA.');
+    return null;
   }
 }
 
@@ -33,7 +34,7 @@ String? _getLastCommitSha(
 
     return result.stdout.trim();
   } catch (e) {
-    print('Error: $e');
+    print('Error in get_commit_hash: $e');
     return null;
   }
 }

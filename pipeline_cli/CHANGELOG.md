@@ -1,5 +1,3 @@
-## 0.0.1
+# 0.0.1
 
-* TODO: Describe initial release.
-
-- Some change
+- Initial release of CLI

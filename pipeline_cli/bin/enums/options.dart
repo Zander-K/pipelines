@@ -1,6 +1,5 @@
 enum Options {
-  // commit('commit', 'c', 'he last commit SHA'),
-  labels('labels', 'l', 'Comma-separated list of labels'),
+  branch('branch', 'b', 'Branch name of workflow (Used with -g)'),
   unknown('', '', '');
 
   const Options(

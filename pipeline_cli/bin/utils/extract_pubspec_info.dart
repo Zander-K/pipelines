@@ -9,7 +9,8 @@ import 'dart:io';
   final version = versionBuild.$1;
   final build = versionBuild.$2;
 
-  if (workflowName.toLowerCase().contains('ios')) {
+  if (workflowName.toLowerCase().contains('ios') ||
+      workflowName.toLowerCase().contains('distribution')) {
     return ('Version+Build Nr', '$version+$build');
   } else if (workflowName.toLowerCase().contains('android')) {
     return ('Build Nr', build);
@@ -20,7 +21,7 @@ import 'dart:io';
 
 (String, String) _getVersionAndBuild(String filePath) {
   try {
-    var file = File(filePath);
+    var file = File('$filePath/pubspec.yaml');
     if (!file.existsSync()) {
       print('pubspec.yaml file not found');
       return ('', '');
@@ -38,7 +39,7 @@ import 'dart:io';
 
     return (version ?? '', build ?? '');
   } catch (e) {
-    print('Error reading pubspec.yaml file: $e');
+    print('Error in extract_pubspec_info and reading pubspec.yaml file: $e');
     return ('', '');
   }
 }

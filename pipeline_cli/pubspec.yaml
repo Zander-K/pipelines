@@ -1,4 +1,4 @@
-name: pipeline_cli
+name: pipeline
 description: A cli to be used alongside production pipelines
 version: 0.0.1
 
@@ -7,13 +7,10 @@ executables:
 
 environment:
   sdk: ">=3.2.2 <4.0.0"
-  # flutter: 3.19.1
 
 dependencies:
   args: ^2.4.2
   intl: ^0.19.0
-  # flutter:
-  #   sdk: flutter
 
 dev_dependencies:
   lints: ^3.0.0
