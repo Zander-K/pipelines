@@ -1,0 +1,31 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Build App
+      run: |
+        echo "Running the build process..."
+
+    - name: Install GitHub CLI
+      run: sudo apt-get install gh
+
+    - name: Create Release in Another Repo
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} 
+      run: |
+        gh release create v1.0.0 path/to/your/build.apk \
+          --repo username/other-repo \
+          --title "My App Release" \
+          --notes "This is a release of the app build."
+
