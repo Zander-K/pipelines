@@ -1,10 +1,10 @@
 import 'dart:io';
 
-String? getLastCommitHash(String branchName) {
-  var owner = 'rankengineering';
-  var repo = 'rank_mobile_core';
+import '../const/export_const.dart';
 
-  var lastCommitSha = _getLastCommitSha(owner, repo, branchName);
+String? getLastCommitHash(String branchName) {
+  var lastCommitSha =
+      _getLastCommitSha(Globals.owner, Globals.repo, branchName);
 
   if (lastCommitSha != null) {
     return lastCommitSha;
