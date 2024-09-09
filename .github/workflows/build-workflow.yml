@@ -1,5 +1,5 @@
 ---
-name: Build
+name: Build-ios
 on:
   push:
     branches:
@@ -8,74 +8,117 @@ on:
     branches: 
       - main
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to checkout'
+        required: true
+        default: 'main'
+
+permissions:
+  pull-requests: write
+  actions: read
+  contents: read
 
 jobs: 
   extract:
     name: gather and build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.branch || github.event.pull_request.head.ref || github.ref }}
 
-      - name: Extract label information
-        id: extract_label_info
+      - name: Install GitHub CLI
+        run: sudo apt-get install -y gh
+          
+      - uses: dart-lang/setup-dart@v1
+      - name: Activate Pipeline
+        shell: bash
         run: |
-          label_name="${{ github.event.label.name }}"
-          label_type=$([[ "${label_name}" == "mecca" || "${label_name}" == "grosvenor" ]] && echo "${label_name}" || echo "unknown")
-          echo "Label: ${label_name}"
-          echo "Type: ${label_type}"
-          echo "label_name=${label_name}" >> $GITHUB_ENV
-          echo "label_type=${label_type}" >> $GITHUB_ENV
+          dart pub global activate -s path ./pipeline_cli
+          echo -e "Active Packages:\n"
+          dart pub global list
 
-      - name: Extract last commit hash
-        id: extract_commit_hash
+      - name: Extract PR details
+        id: extract-pr-details
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          last_commit="${{ github.sha }}"
-          echo "Last Commit: ${last_commit}"
-          echo "last_commit=${last_commit}" >> $GITHUB_ENV
+          PR_NUMBER=$(gh pr view --json number --jq '.number')
+          LAST_COMMIT=$(gh api repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/commits --jq '.[-1].sha')
+          WORKFLOW_NAME=$GITHUB_WORKFLOW
+          PR_LABELS=$(gh pr view $PR_NUMBER --json labels --jq '.labels[].name' | tr '\n' ',' | sed 's/,$//')
+
+          echo "Last Commit: $LAST_COMMIT"
+          echo "Workflow Name: $WORKFLOW_NAME"
+          echo "PR Labels: $PR_LABELS"
+
+          echo "WORKFLOW_NAME=$WORKFLOW_NAME" >> $GITHUB_ENV
+          echo "PR_LABELS=$PR_LABELS" >> $GITHUB_ENV
+          echo "LAST_COMMIT=$LAST_COMMIT" >> $GITHUB_ENV
+
+          # CLI_OUTPUT=$(pipe -g --commit $LAST_COMMIT --workflow $WORKFLOW_NAME --labels "$PR_LABELS")
+          CLI_OUTPUT=$(pipe -g --labels ${{ github.event.inputs.branch || github.event.pull_request.head.ref || github.ref }})
+          
+          echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
+          echo -e "$CLI_OUTPUT" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Write to file.txt
+        run: |
+          echo -e "${CLI_OUTPUT}\n\n" >> file.txt
       
-      - name: Extract total build time
-        id: extract_build_time
-        run: |
-          build_url="https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          build_info=$(curl -s -H "Accept: application/vnd.github.v3+json" "${build_url}")
-          start_time=$(echo "${build_info}" | jq -r '.workflow_run.created_at')
-          end_time=$(echo "${build_info}" | jq -r '.workflow_run.updated_at')
-          total_build_time=$(($(date -d "${end_time}" +%s) - $(date -d "${start_time}" +%s)))
-          echo "Total Build Time: ${total_build_time} seconds"
-          echo "total_build_time=${total_build_time}" >> $GITHUB_ENV
+      - name: Save file.txt path to environment variable
+        run: echo "OUTPUT_FILE_PATH=$(pwd)/file.txt" >> $GITHUB_ENV
 
-      - name: Extract pubspec.yaml information
-        id: extract_pubspec_info
-        run: |
-          pubspec_info=$(cat apps/grosvenor_prod/pubspec.yaml)
-          echo "Pubspec.yaml Information:"
-          echo "${pubspec_info}"
-          echo "pubspec_info=${pubspec_info}" >> $GITHUB_ENV
-
-      - name: Extract current date and time
-        id: extract_date_time
-        run: |
-          current_date=$(date +"%Y-%m-%d")
-          current_time=$(date +"%H:%M:%S")
-          echo "Current Date: ${current_date}"
-          echo "Current Time: ${current_time}"
-          echo "current_date=${current_date}" >> $GITHUB_ENV
-          echo "current_time=${current_time}" >> $GITHUB_ENV
-
-      - name: Write to build-info.txt
-        run: |
-          echo "Label: ${label_name}" > build-info.txt
-          echo "Type: ${label_type}" >> build-info.txt
-          echo "Last Commit: ${last_commit}" >> build-info.txt
-          echo "Total Build Time: ${total_build_time} seconds" >> build-info.txt
-          echo "Pubspec.yaml Information:" >> build-info.txt
-          echo "${pubspec_info}" >> build-info.txt
-          echo "Current Date: ${current_date}" >> build-info.txt
-          echo "Current Time: ${current_time}" >> build-info.txt
-
-      - name: Upload build-info.txt
+      - name: Upload file.txt
+        id: artifact-upload-step
         uses: actions/upload-artifact@v4
         with:
           name: build-info
-          path: build-info.txt
+          path: file.txt
+
+      - name: Output artifact ID
+        run: |
+          echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
+          echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
+          echo "ARTIFACT_URL=${{ steps.artifact-upload-step.outputs.artifact-url }}" >> $GITHUB_ENV
+
+      - name: Send notification to Slack
+        env:
+          SLACK_PIPELINE_URL: ${{ secrets.SLACK_PIPELINE_URL }}
+          ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{
+              "artifact_url": "A new production build has finished. You can download a file with all the information here:\n'${ARTIFACT_URL}'",
+              "artifact_contents": "" 
+              }' $SLACK_PIPELINE_URL
+
+      - name: Send notification to Slack with Artifact Upload
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_PIPELINE_URL }} 
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+          SLACK_CHANNEL: 'riga-pipeline'      
+          SLACK_USERNAME: 'GitHub Actions'             
+          SLACK_COLOR: ${{ job.status }}                 
+          SLACK_ICON_EMOJI: ':rocket:'                     
+          SLACK_TITLE: 'Production Build Notification'
+          SLACK_MESSAGE: |
+            A new production build has finished.
+            Download the artifact using the link below:
+            ${{ steps.artifact-upload-step.outputs.artifact-url }}
+
+            Contents of file.txt:
+            ${{ env.CLI_OUTPUT }}
+          SLACK_MESSAGE_ON_SUCCESS: |
+            A new production build has finished.
+            Download the artifact using the link below:
+            ${{ steps.artifact-upload-step.outputs.artifact-url }}
+
+            ${{ env.CLI_OUTPUT }}
+          SLACK_MESSAGE_ON_FAILURE: |
+            An error occurred while running this workflow. 
+          SLACK_FOOTER: |
+            Created by RIGA for RIGA 

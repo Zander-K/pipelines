@@ -1,7 +1,7 @@
-name: grosvenor_prod
-version: 1.1.0+785
+name: meccabingo_prod
+version: 1.0.0+21
 publish_to: none
-description: Grosvenor Casino app
+description: Mecca Bingo app
 
 environment:
   sdk: ">=3.1.0 <4.0.0"
@@ -10,14 +10,17 @@ dependency_overrides:
   intl: "0.18.1"
 
 dependencies:
-  app_tracking_transparency: ^2.0.5
   appsflyer_sdk: ^6.12.2
   auto_animated: ^3.2.0
   auto_route: 7.8.4
   bloc: ^8.1.2
   cached_network_image: ^3.3.0
+  carousel_slider: ^4.2.1
+  webview_flutter: ^4.5.0
 
 dev_dependencies:
   auto_route_generator: ^7.1.1
   build_runner: ^2.4.4
   flutter_flavorizr: ^2.2.1
+  flutter_gen_runner: ^5.4.0
+  flutter_lints: ^2.0.0
