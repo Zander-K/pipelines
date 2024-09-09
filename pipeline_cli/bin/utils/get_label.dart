@@ -16,7 +16,7 @@ String getLabel(List<String> labels) {
 
 String? getAppName(String filePath) {
   try {
-    final file = File(filePath);
+    final file = File('$filePath/pubspec.yaml');
     if (!file.existsSync()) {
       print('pubspec.yaml file not found');
       return null;
@@ -34,19 +34,7 @@ String? getAppName(String filePath) {
       return null;
     }
   } catch (e) {
-    print('Error reading pubspec.yaml: $e');
+    print('Error in get_label and reading pubspec.yaml: $e');
     return null;
   }
 }
-
-void main() async {
-  var appName = getAppName('apps/grosvenor_prod/pubspec.yaml');
-
-  if (appName != null) {
-    print('App Name: $appName');
-  } else {
-    print('Failed to retrieve the app name.');
-  }
-}
-
-// /Users/zanderk/Workspace/Personal/pipelines/apps/grosvenor_prod/pubspec.yaml

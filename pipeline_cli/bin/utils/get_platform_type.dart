@@ -6,7 +6,11 @@ String getPlatformType(String workflowName) {
   } else if (workflowName.toLowerCase().contains('android')) {
     platform = 'Android';
   } else {
-    platform = 'Unknown';
+    if (workflowName.toLowerCase().contains('distribution')) {
+      platform = 'Android / iOS';
+    } else {
+      platform = 'Unknown';
+    }
   }
 
   return platform;

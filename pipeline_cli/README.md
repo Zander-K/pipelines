@@ -1,10 +1,12 @@
 # Pipeline CLI
 
-TODO: Put a short description of the package here that helps potential users know whether this package might be useful for them.
+This CLI can be used to gather and create a file with all the  information from the latest production build.
+
+---
 
 ## Installing
 
-In ``rank_mobile_core/``:
+In ``rank_mobile_core/`` use the following to install the CLI:
 
 ```bash
 dart pub global activate -s path ./pipeline_cli
@@ -16,11 +18,13 @@ or
 dart pub global run ./pipeline_cli
 ```
 
-Confirm install:
+Use the following to confirm install:
 
 ```bash
-dart pub global list  # <-- pipeline 0.0.2 at path "/Users/...
+dart pub global list  
 ```
+
+with output looking something like `pipeline 0.0.2 at path "/Users/...`
 
 Unistall to update then reinstall install:
 
@@ -29,32 +33,58 @@ dart pub global deactivate pipeline
 dart pub global activate -s path ./pipeline_cli
 ```
 
-### Usage
+**Alternatively:**
+Use `make cli` to reinstall all CLI's.
 
-```bash
-riga --welcome
-```
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+---
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```bash
+pipe --welcome
 ```
+
+OR
+
+```bash
+pipe -w
+```
+
+### Generate file
+
+To generate a file, use the `-g` flag and pass in the branch name requested interactively where the workflow is running from. Alternatively, use `-b <branch_name>` with `-g`:
+
+```sh
+pipe -g
+```
+
+OR
+
+```sh
+pipe -g -b <branch-name>
+```
+
+---
+
+## Features
+
+`-g or --generate`: Used along side `-b` to generate the build info
+
+`-h or --help`: Used to display all features and usage
+
+`-v or --verbose`: Used as verbose
+
+`-V or --version`: Used to check CLI version
+
+`-w or --welcome`: Used to display a welcome message
+
+`-b or --branch`: Used with flag `-g` to generate output
+
+---
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+_Documentation_ can be found here: [Pipeline CLI and Slack Bot](https://daubltd.atlassian.net/wiki/x/OACMMzI)
+
+Author: Zander Kotze
+Date: 20 Aug 2024

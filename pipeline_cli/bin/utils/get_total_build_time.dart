@@ -41,17 +41,7 @@ int? getBuildTimeInSeconds(String workflowName) {
 
     return endTimeSec - startTimeSec;
   } catch (e) {
-    print('Error: $e');
+    print('Error in get_total_build_time: $e');
     return null;
-  }
-}
-
-void main() async {
-  var appName = getBuildTimeInSeconds('Build-android');
-
-  if (appName != null) {
-    print('App Name: $appName');
-  } else {
-    print('Failed to retrieve the app name.');
   }
 }

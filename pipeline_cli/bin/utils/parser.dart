@@ -35,15 +35,10 @@ ArgParser parser() {
       help: Flags.welcome.info,
       negatable: Flags.welcome.neg,
     )
-    // ..addOption(
-    //   Options.commit.flag,
-    //   abbr: Options.commit.abbr,
-    //   help: Options.commit.help,
-    // )
     ..addOption(
-      Options.labels.flag,
-      abbr: Options.labels.abbr,
-      help: Options.labels.help,
+      Options.branch.flag,
+      abbr: Options.branch.abbr,
+      help: Options.branch.help,
     );
 
   return argParser;

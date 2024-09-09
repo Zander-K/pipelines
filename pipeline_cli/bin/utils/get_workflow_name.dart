@@ -14,23 +14,21 @@ String? getWorkflowName() {
     var workflowList = jsonDecode(workflowResult.stdout);
 
     if (workflowList.isNotEmpty) {
-      return workflowList[0]['name'];
+      final String workflowName = workflowList[0]['name'];
+
+      if (workflowName.toLowerCase().contains('production') ||
+          workflowName.toLowerCase().contains('distribution')) {
+        return workflowName;
+      }
+
+      print('No distribution or production workflow run.');
+      return 'Unknown';
     } else {
       print('No workflow runs found.');
       return null;
     }
   } catch (e) {
-    print('Error: $e');
+    print('Error in get_workflow_name: $e');
     return null;
-  }
-}
-
-void main() async {
-  var workflowName = getWorkflowName();
-
-  if (workflowName != null) {
-    print('Workflow Name: $workflowName');
-  } else {
-    print('Failed to retrieve the workflow name.');
   }
 }
