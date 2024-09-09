@@ -1,17 +1,19 @@
 import 'dart:io';
 
+import '../const/export_const.dart';
+
 bool checksBranch(String branch) {
   try {
-    String repository = 'rankengineering/rank_mobile_core';
-
     ProcessResult result = Process.runSync(
       'gh',
-      ['api', 'repos/$repository/branches/$branch'],
+      ['api', 'repos/${Globals.repository}/branches/$branch'],
     );
 
     if (result.exitCode == 0) {
+      print('Branch found');
       return true;
     } else {
+      print('Branch not found');
       return false;
     }
   } catch (e) {
