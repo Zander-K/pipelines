@@ -45,21 +45,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_NUMBER=$(gh pr view --json number --jq '.number')
-          LAST_COMMIT=$(gh api repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/commits --jq '.[-1].sha')
-          WORKFLOW_NAME=$GITHUB_WORKFLOW
-          PR_LABELS=$(gh pr view $PR_NUMBER --json labels --jq '.labels[].name' | tr '\n' ',' | sed 's/,$//')
-
-          echo "Last Commit: $LAST_COMMIT"
-          echo "Workflow Name: $WORKFLOW_NAME"
-          echo "PR Labels: $PR_LABELS"
-
-          echo "WORKFLOW_NAME=$WORKFLOW_NAME" >> $GITHUB_ENV
-          echo "PR_LABELS=$PR_LABELS" >> $GITHUB_ENV
-          echo "LAST_COMMIT=$LAST_COMMIT" >> $GITHUB_ENV
-
-          # CLI_OUTPUT=$(pipe -g --commit $LAST_COMMIT --workflow $WORKFLOW_NAME --labels "$PR_LABELS")
-          CLI_OUTPUT=$(pipe -g --labels ${{ github.event.inputs.branch || github.event.pull_request.head.ref || github.ref }})
+          BRANCH_NAME="${{ github.event.pull_request.head.ref || github.ref_name }}"
+          
+          CLI_OUTPUT=$(pipe -g --branch "$BRANCH_NAME")
           
           echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
           echo -e "$CLI_OUTPUT" >> $GITHUB_ENV
