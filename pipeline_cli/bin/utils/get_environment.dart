@@ -2,13 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../extensions/string.dart';
+import 'get_config_file.dart';
 
 String? getEnvFromConfig(String filePath) {
   try {
-    final file = File(filePath);
+    final configFilePath = searchConfigFile(filePath) ?? '';
+
+    final file = File(configFilePath);
     if (!file.existsSync()) {
-      print('Config file not found.');
-      return null;
+      print('Config file not found. Defaulting to Staging');
+      return 'Staging';
     }
 
     final jsonString = file.readAsStringSync();

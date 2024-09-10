@@ -84,6 +84,11 @@ ArgParser parser() {
       abbr: Options.assets.abbr,
       help: Options.assets.help,
       splitCommas: true,
+    )
+    ..addOption(
+      Options.environment.flag,
+      abbr: Options.environment.abbr,
+      help: Options.environment.help,
     );
 
   return argParser;

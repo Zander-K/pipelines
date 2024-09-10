@@ -1,10 +1,11 @@
 import '../export.dart';
 
-String? createSDETTag({String? type, String? env}) {
+String createSDETTag({String? type, String? env}) {
   final releaseType = type ?? 'RC';
 
   var workflowName = getWorkflowName() ?? '';
   var pubspecPath = getPubspecPath(workflowName);
+
   final environment = env ?? getEnvFromConfig(pubspecPath);
 
   var versionBuildDetails = getVersionAndBuildDetails(
@@ -14,8 +15,8 @@ String? createSDETTag({String? type, String? env}) {
   );
 
   if (versionBuildDetails?.build == null) {
-    print('Error! No build number.');
-    return null;
+    print('Error. No build number.');
+    return '';
   }
 
   var appVersion = versionBuildDetails?.version;

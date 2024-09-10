@@ -13,6 +13,7 @@ void release({
   required String? token,
   required List<String>? assets,
   bool? isInteractive,
+  required String? env,
 }) {
   try {
     var inputs = {};
@@ -32,25 +33,35 @@ void release({
       return;
     }
 
-    final generatedTag = createSDETTag();
+    final generatedTag = createSDETTag(env: env);
+    if (generatedTag.isEmpty) {
+      print('Error. Tag is empty.');
+      return;
+    }
 
-    final releaseTag = inputs['tag'] ?? generatedTag;
-    final releaseTitle = inputs['title'] ?? releaseTag;
-    final releaseNotes = inputs['notes'] ?? Defaults.notes;
-    final releaseTargetRepo = inputs['repo'] ?? Defaults.repo;
-    final releaseSourceToken = inputs['token'] ?? Defaults.token;
-    List<String>? paths = inputs['paths'];
+    final String? inputTag = inputs['tag'];
+    final String? inputTitle = inputs['title'];
+    final String? inputNotes = inputs['notes'];
+    final String? inputTargetRepo = inputs['repo'];
+    final String? inputSourceToken = inputs['token'];
+    List<String>? paths = inputs['paths'] ?? [];
 
     final releasePaths = <String>[];
     if (paths != null && paths.isNotEmpty) {
       print('Zipping files...');
       for (var path in paths) {
-        final zipPath = generateAssetFile(path) ?? '';
+        final newPath = generateAssetFile(path) ?? '';
 
-        releasePaths.add(zipPath);
+        releasePaths.add(newPath);
       }
       print('Zipping complete.');
     }
+
+    final String releaseTag = inputTag ?? generatedTag;
+    final String releaseTitle = inputTitle ?? releaseTag;
+    final String releaseNotes = inputNotes ?? Defaults.notes;
+    final String releaseTargetRepo = inputTargetRepo ?? Defaults.repo;
+    final String releaseSourceToken = inputSourceToken ?? Defaults.token;
 
     print('Creating GitHub release...');
     List<String> releaseCommand = [
@@ -67,7 +78,7 @@ void release({
     ];
 
     Map<String, String>? envVars = {
-      'GH_TOKEN': releaseSourceToken ?? Defaults.token,
+      'GH_TOKEN': releaseSourceToken,
     };
 
     var releaseResult = Process.runSync(

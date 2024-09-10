@@ -50,10 +50,9 @@ import 'dart:io';
 
 (String, String)? _getVersionAndBuild(String filePath) {
   try {
-    var file = File('../$filePath/pubspec.yaml');
+    var file = File('./$filePath/pubspec.yaml');
     if (!file.existsSync()) {
-      print('pubspec.yaml file not found');
-      return null;
+      throw Exception('pubspec.yaml file not found');
     }
     var contents = file.readAsStringSync();
 
@@ -67,6 +66,9 @@ import 'dart:io';
     var build = buildMatch != null ? buildMatch.group(1)?.trim() : 'Unknown';
 
     return (version ?? '', build ?? '');
+  } on Exception catch (e, s) {
+    print('$e, $s');
+    return ('', '');
   } catch (e) {
     print('Error in extract_pubspec_info and reading pubspec.yaml file: $e');
     return ('', '');

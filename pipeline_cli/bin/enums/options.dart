@@ -7,6 +7,8 @@ enum Options {
   token('source-token', null,
       'Token from Source Repo to be used for release; Used alongside -r'),
   assets('assets', null, 'Release assets'),
+  environment('environment', 'e',
+      'Specifies the environment to use for release (dev, stg, or prod - defaults to stg)'),
   unknown('', '', '');
 
   const Options(

@@ -25,6 +25,7 @@ void main(List<String> arguments) {
       String? token = args[Options.token.flag];
       List<String>? assets = args[Options.assets.flag];
       bool? isInteractive = args[Flags.interactive.flag];
+      String? env = args[Options.environment.flag];
 
       release(
         title: title,
@@ -34,6 +35,7 @@ void main(List<String> arguments) {
         token: token,
         assets: assets,
         isInteractive: isInteractive,
+        env: env,
       );
     }
 
