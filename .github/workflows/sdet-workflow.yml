@@ -109,7 +109,7 @@ jobs:
       run: |
           CLI_OUTPUT=$(pipe -r \
             --source-token ${{ secrets.RELEASE_REPO_SECRET }} \
-            --no-interactive
+            --no-interactive \
             --notes 'This is the notes' \
             --target-repo 'Zander-K/json_editor' \
             --assets ./build/web/simple-file.txt)
