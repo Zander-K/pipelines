@@ -67,12 +67,12 @@ jobs:
 
     - name: Install GitHub CLI
       run: sudo apt-get install gh make -y
+    - uses: dart-lang/setup-dart@v1
       
     - name: Use Make
       run: |
         make cli
 
-    - uses: dart-lang/setup-dart@v1
     - name: Activate Pipeline
       shell: bash
       run: |
