@@ -109,12 +109,15 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref || github.ref_name }}"
+
           CLI_OUTPUT=$(pipe -r \
             --source-token ${{ secrets.RELEASE_REPO_SECRET }} \
             --no-interactive \
             --notes 'This is the notes' \
             --target-repo 'Zander-K/json_editor' \
-            --assets ./build/web/simple-file.txt)
+            --assets ./build/web/simple-file.txt \
+            --branch "$BRANCH_NAME" )
           
           echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
           echo -e "$CLI_OUTPUT" >> $GITHUB_ENV
