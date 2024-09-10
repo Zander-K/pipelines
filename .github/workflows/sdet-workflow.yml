@@ -116,6 +116,10 @@ jobs:
           echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
           echo -e "$CLI_OUTPUT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
+      
+    - name: Results
+      run: |
+        echo "release cli output=${{ env.CLI_OUTPUT }}"
 
 
 # name: Build and Release
