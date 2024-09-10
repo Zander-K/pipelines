@@ -16,11 +16,13 @@ String? getWorkflowName() {
     if (workflowList.isNotEmpty) {
       final String workflowName = workflowList[0]['name'];
 
-      if (workflowName.toLowerCase().contains('production') ||
-          workflowName.toLowerCase().contains('distribution')) {
-        return workflowName;
-      }
+      // if (workflowName.toLowerCase().contains('production') ||
+      //     workflowName.toLowerCase().contains('distribution')) {
+      //   return workflowName;
+      // }
+      return workflowName;
 
+      // ignore: dead_code
       print('No distribution or production workflow run.');
       return 'Unknown';
     } else {

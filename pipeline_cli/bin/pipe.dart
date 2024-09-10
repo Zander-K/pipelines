@@ -10,24 +10,30 @@ void main(List<String> arguments) {
     bool showVerbose = args.wasParsed(Flags.verbose.flag);
 
     if (args.wasParsed(Flags.generate.flag)) {
-      String? branch = args['branch'];
-
-      if (branch == null) {
-        stdout.write(
-            "No branch specified. Press Enter to use 'develop' or type a branch name: ");
-        String? input = stdin.readLineSync()?.trim();
-
-        if (input == null || input.isEmpty) {
-          branch = 'develop';
-          print("Using 'develop' branch.\n");
-        } else {
-          branch = input;
-          print("Using branch: $branch \n");
-        }
-      }
+      String? branch = args[Options.branch.flag];
 
       generate(
         branch: branch,
+      );
+    }
+
+    if (args.wasParsed(Flags.release.flag)) {
+      String? title = args[Options.title.flag];
+      String? notes = args[Options.notes.flag];
+      String? tag = args[Options.tag.flag];
+      String? repo = args[Options.repo.flag];
+      String? token = args[Options.token.flag];
+      List<String>? assets = args[Options.assets.flag];
+      bool? isInteractive = args[Flags.interactive.flag];
+
+      release(
+        title: title,
+        notes: notes,
+        tag: tag,
+        repo: repo,
+        token: token,
+        assets: assets,
+        isInteractive: isInteractive,
       );
     }
 
@@ -41,6 +47,10 @@ void main(List<String> arguments) {
       printWelcome();
     }
   } on FormatException catch (e) {
+    print(e.message);
+    print('');
+    printUsage(argParser);
+  } on ArgumentError catch (e) {
     print(e.message);
     print('');
     printUsage(argParser);

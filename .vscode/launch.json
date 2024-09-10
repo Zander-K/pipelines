@@ -21,9 +21,16 @@
             "type": "dart",
             "program": "pipeline_cli/bin/pipe.dart",
             "args": [
-                "-g",
-                "-l",
-                "test-pr",
+                "-r",
+                "--source-token",
+                "token",
+                // "--tag",
+                // "v3",
+                // "--title",
+                // "title",
+                "--no-interactive",
+                // "--assets",
+                // "/Users/zanderk/Workspace/Personal/pipelines/pipeline_cli/bin/processes/export_processes.dart,/Users/zanderk/Downloads/app-staging-release.apk"
             ]
         },
         {

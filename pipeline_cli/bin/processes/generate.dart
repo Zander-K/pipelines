@@ -1,11 +1,24 @@
+import 'dart:io';
+
 import '../export.dart';
 
 Future<void> generate({
   required String? branch,
 }) async {
-  if (branch == null && branch!.isEmpty) {
-    branch = 'develop';
+  if (branch == null) {
+    stdout.write(
+        "No branch specified. Press Enter to use 'develop' or type a branch name: ");
+    String? input = stdin.readLineSync()?.trim();
+
+    if (input == null || input.isEmpty) {
+      branch = 'develop';
+      print("Using 'develop' branch.\n");
+    } else {
+      branch = input;
+      print("Using branch: $branch \n");
+    }
   }
+
   var isValidBranch = checksBranch(branch);
 
   if (!isValidBranch) {
@@ -52,7 +65,7 @@ Future<void> generate({
   outputBuffer
       .writeln('** ⏱️\tTotal Build Time: \t** $totalBuildTimeFormatted **');
   outputBuffer.writeln(
-      '** 🔢\t${versionBuildDetails.$1}: \t** ${versionBuildDetails.$2} **');
+      '** 🔢\t${versionBuildDetails?.desc}: \t** ${versionBuildDetails?.version} **');
   outputBuffer.writeln('** 🦋\tFlutter Version: \t** $flutterVersion **');
   outputBuffer.writeln('** 🎯\tDart Version: \t\t** $dartVersion **\n');
   outputBuffer.writeln('-----------------------------------------------------');

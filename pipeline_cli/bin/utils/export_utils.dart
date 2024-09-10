@@ -1,7 +1,9 @@
 export 'checks_branch.dart';
+export 'create_sdet_tag.dart';
 export 'extract_pubspec_info.dart';
 export 'get_commit_hash.dart';
 export 'get_date_time.dart';
+export 'get_environment.dart';
 export 'get_flutter_dart_version.dart';
 export 'get_label.dart';
 export 'get_platform_type.dart';

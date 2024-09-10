@@ -35,10 +35,55 @@ ArgParser parser() {
       help: Flags.welcome.info,
       negatable: Flags.welcome.neg,
     )
+    ..addFlag(
+      Flags.release.flag,
+      abbr: Flags.release.abbr,
+      help: Flags.release.info,
+      negatable: Flags.release.neg,
+    )
+    ..addFlag(
+      Flags.interactive.flag,
+      abbr: Flags.interactive.abbr,
+      help: Flags.interactive.info,
+      negatable: Flags.interactive.neg,
+      defaultsTo: true,
+    )
     ..addOption(
       Options.branch.flag,
       abbr: Options.branch.abbr,
       help: Options.branch.help,
+    )
+    ..addOption(
+      Options.title.flag,
+      abbr: Options.title.abbr,
+      help: Options.title.help,
+    )
+    ..addOption(
+      Options.notes.flag,
+      abbr: Options.notes.abbr,
+      help: Options.notes.help,
+    )
+    ..addOption(
+      Options.tag.flag,
+      abbr: Options.tag.abbr,
+      help: Options.tag.help,
+    )
+    ..addOption(
+      Options.repo.flag,
+      abbr: Options.repo.abbr,
+      help: Options.repo.help,
+    )
+    ..addOption(
+      Options.token.flag,
+      abbr: Options.token.abbr,
+      help: Options.token.help,
+      mandatory: true,
+    )
+    ..addMultiOption(
+      Options.assets.flag,
+      abbr: Options.assets.abbr,
+      help: Options.assets.help,
+      splitCommas: true,
     );
 
   return argParser;

@@ -1,30 +1,59 @@
 import 'dart:io';
 
-(String, String) getVersionAndBuildDetails(
+({String desc, String version, String? build})? getVersionAndBuildDetails(
   String workflowName,
-  String filePath,
-) {
+  String filePath, {
+  bool? returnSeparately = false,
+}) {
   final versionBuild = _getVersionAndBuild(filePath);
+
+  if (versionBuild == null) {
+    return (
+      desc: 'Version+Build Nr',
+      version: 'Undetermined',
+      build: null,
+    );
+  }
 
   final version = versionBuild.$1;
   final build = versionBuild.$2;
 
+  if (returnSeparately ?? false) {
+    return (
+      desc: '',
+      version: version,
+      build: build,
+    );
+  }
+
   if (workflowName.toLowerCase().contains('ios') ||
       workflowName.toLowerCase().contains('distribution')) {
-    return ('Version+Build Nr', '$version+$build');
+    return (
+      desc: 'Version+Build Nr',
+      version: '$version+$build',
+      build: null,
+    );
   } else if (workflowName.toLowerCase().contains('android')) {
-    return ('Build Nr', build);
+    return (
+      desc: 'Build Nr',
+      version: build,
+      build: null,
+    );
   } else {
-    return ('Version+Build Nr', 'Undetermined');
+    return (
+      desc: 'Version+Build Nr',
+      version: 'Undetermined',
+      build: null,
+    );
   }
 }
 
-(String, String) _getVersionAndBuild(String filePath) {
+(String, String)? _getVersionAndBuild(String filePath) {
   try {
-    var file = File('$filePath/pubspec.yaml');
+    var file = File('../$filePath/pubspec.yaml');
     if (!file.existsSync()) {
       print('pubspec.yaml file not found');
-      return ('', '');
+      return null;
     }
     var contents = file.readAsStringSync();
 

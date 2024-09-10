@@ -9,6 +9,9 @@ enum Flags {
   verbose('verbose', 'v', 'Show verbose details', false),
   version('version', 'V', 'Show versioning', false),
   welcome('welcome', 'w', 'Welcome Info', false),
+  release('release', 'r',
+      'Generates release for SDET, used with --source-token', false),
+  interactive('interactive', 'i', 'Enable or disable interactive CLI', true),
   unknown('', '', '', false);
 
   const Flags(

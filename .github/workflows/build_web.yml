@@ -1,0 +1,26 @@
+name: Build Web
+
+on:
+#   push:
+#     branches:
+#       - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+
+      - name: Create a simple file
+        run: echo "This is a simple file created by GitHub Actions." > simple-file.txt
+
+      - name: Upload the file as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: simple-file
+          path: simple-file.txt
