@@ -1,4 +1,4 @@
-name: Build and Release
+name: SDET Workflow
 
 on:
   # push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build-and-upload:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -18,31 +18,40 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v4
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-            flutter-version: "3.19.x"
-            channel: "stable"
-            cache: true
+      - name: Create a simple file
+        run: echo "This is a simple file created by GitHub Actions." > simple-file.txt
 
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Generate code
-        run: dart run build_runner build --delete-conflicting-outputs 
-
-      - name: Build web
-        run: flutter build web --release --base-href="/json_editor/"
-
-      - name: Upload Web Build Artifact
+      - name: Upload the file as an artifact
         uses: actions/upload-artifact@v4
         with:
-          name: web-build-sdet
-          path: build/web
+          name: simple-file
+          path: simple-file.txt
+
+      # - name: Set up Flutter
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #       flutter-version: "3.19.x"
+      #       channel: "stable"
+      #       cache: true
+
+      # - name: Install dependencies
+      #   run: flutter pub get
+
+      # - name: Generate code
+      #   run: dart run build_runner build --delete-conflicting-outputs 
+
+      # - name: Build web
+      #   run: flutter build web --release --base-href="/json_editor/"
+
+      # - name: Upload Web Build Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: web-build-sdet
+      #     path: build/web
 
   build-and-release:
     runs-on: ubuntu-latest
-    needs: build-and-deploy
+    needs: build-and-upload
     permissions: write-all
       # contents: write
 
@@ -53,7 +62,8 @@ jobs:
     - name: Download Web Build Artifact
       uses: actions/download-artifact@v4
       with:
-        name: web-build-sdet
+        name: simple-file
+        path: ./build/web
 
     - name: Install GitHub CLI
       run: sudo apt-get install gh
@@ -88,7 +98,8 @@ jobs:
           CLI_OUTPUT=$(pipe -r \
             --source-token ${{ secrets.RELEASE_REPO_SECRET }} \
             --notes 'This is the notes' \
-            --target-repo 'Zander-K/json_editor')
+            --target-repo 'Zander-K/json_editor' \
+            --assets ./build/web/simple-file.txt)
           
           echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
           echo -e "$CLI_OUTPUT" >> $GITHUB_ENV
@@ -106,7 +117,7 @@ jobs:
 #       - main
 
 # jobs:
-#   build-and-deploy:
+#   build-and-upload:
 #     runs-on: ubuntu-latest
 #     permissions:
 #       contents: write
@@ -148,7 +159,7 @@ jobs:
 
 #   build-and-release:
 #     runs-on: ubuntu-latest
-#     needs: build-and-deploy
+#     needs: build-and-upload
 #     permissions: write-all
 #       # contents: write
 
