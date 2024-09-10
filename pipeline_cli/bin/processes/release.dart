@@ -14,6 +14,7 @@ void release({
   required List<String>? assets,
   bool? isInteractive,
   required String? env,
+  required String? branch,
 }) {
   try {
     var inputs = {};
@@ -33,7 +34,14 @@ void release({
       return;
     }
 
-    final generatedTag = createSDETTag(env: env);
+    var type = '';
+    if (branch?.toLowerCase().contains('rc') ?? false) {
+      type = 'RC';
+    } else {
+      type = 'QA';
+    }
+
+    final generatedTag = createSDETTag(env: env, type: type);
     if (generatedTag.isEmpty) {
       print('Error. Tag is empty.');
       return;
@@ -46,16 +54,7 @@ void release({
     final String? inputSourceToken = inputs['token'];
     List<String>? paths = inputs['paths'] ?? [];
 
-    final releasePaths = <String>[];
-    if (paths != null && paths.isNotEmpty) {
-      print('Zipping files...');
-      for (var path in paths) {
-        final newPath = generateAssetFile(path) ?? '';
-
-        releasePaths.add(newPath);
-      }
-      print('Zipping complete.');
-    }
+    final releasePaths = getReleasePaths(paths);
 
     final String releaseTag = inputTag ?? generatedTag;
     final String releaseTitle = inputTitle ?? releaseTag;
@@ -257,4 +256,20 @@ String? generateAssetFile(String filePath) {
 
 String _getDirectoryPath(String filePath) {
   return path.dirname(filePath);
+}
+
+List<String> getReleasePaths(List<String>? paths) {
+  final releasePaths = <String>[];
+
+  if (paths != null && paths.isNotEmpty) {
+    print('Zipping files...');
+    for (var path in paths) {
+      final newPath = generateAssetFile(path) ?? '';
+
+      releasePaths.add(newPath);
+    }
+    print('Zipping complete.');
+  }
+
+  return releasePaths;
 }

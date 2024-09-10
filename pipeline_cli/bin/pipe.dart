@@ -26,6 +26,7 @@ void main(List<String> arguments) {
       List<String>? assets = args[Options.assets.flag];
       bool? isInteractive = args[Flags.interactive.flag];
       String? env = args[Options.environment.flag];
+      String? branch = args[Options.branch.flag];
 
       release(
         title: title,
@@ -36,6 +37,7 @@ void main(List<String> arguments) {
         assets: assets,
         isInteractive: isInteractive,
         env: env,
+        branch: branch,
       );
     }
 

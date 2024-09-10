@@ -22,12 +22,12 @@ String createSDETTag({String? type, String? env}) {
   var appVersion = versionBuildDetails?.version;
   var buildNumber = versionBuildDetails?.build;
 
-  var buildTag = '';
-  if (releaseType == 'RC') {
-    buildTag = '${appVersion}_$buildNumber.$releaseType.$environment';
-  } else {
-    buildTag = '${appVersion}_$buildNumber.$releaseType.$environment';
-  }
+  var buildTag = '${appVersion}_$buildNumber.$releaseType.$environment';
+  // if (releaseType == 'RC') {
+  //   buildTag = '${appVersion}_$buildNumber.$releaseType.$environment';
+  // } else {
+  //   buildTag = '${appVersion}_$buildNumber.$releaseType.$environment';
+  // }
 
   return buildTag;
 }
