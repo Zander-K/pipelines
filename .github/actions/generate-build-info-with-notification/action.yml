@@ -49,39 +49,48 @@ runs:
       id: pipeline_cli_config
       shell: bash
       run: |
+        keys=("SLACK_TOKEN" "SLACK_PIPELINE_URL" "RELEASE_REPO_SECRET" "SLACK_QA_GC" "SLACK_BETA_GC" "SLACK_PROD_GC" "SLACK_QA_MB" "SLACK_BETA_MB" "SLACK_PROD_MB")
 
-        token=$(jq -r '.SLACK_TOKEN' pipeline_cli_config.json)
-        url=$(jq -r '.SLACK_PIPELINE_URL' pipeline_cli_config.json)
-        release=$(jq -r '.RELEASE_REPO_SECRET' pipeline_cli_config.json)
+        # Loop through the keys and extract each value, then mask it
+        for key in "${keys[@]}"; do
+          value=$(jq -r ".$key" pipeline_cli_config.json)
+          echo "::add-mask::$value"
+          
+          echo "$key=$value" >> $GITHUB_OUTPUT
+        done
 
-        qa_gc=$(jq -r '.SLACK_QA_GC' pipeline_cli_config.json)
-        beta_gc=$(jq -r '.SLACK_BETA_GC' pipeline_cli_config.json)
-        prod_gc=$(jq -r '.SLACK_PROD_GC' pipeline_cli_config.json)
-        qa_mb=$(jq -r '.SLACK_QA_MB' pipeline_cli_config.json)
-        beta_mb=$(jq -r '.SLACK_BETA_MB' pipeline_cli_config.json)
-        prod_mb=$(jq -r '.SLACK_PROD_MB' pipeline_cli_config.json)
+        # token=$(jq -r '.SLACK_TOKEN' pipeline_cli_config.json)
+        # url=$(jq -r '.SLACK_PIPELINE_URL' pipeline_cli_config.json)
+        # release=$(jq -r '.RELEASE_REPO_SECRET' pipeline_cli_config.json)
 
-        echo "::add-mask::$token"
-        echo "::add-mask::$url"
-        echo "::add-mask::$release"
+        # qa_gc=$(jq -r '.SLACK_QA_GC' pipeline_cli_config.json)
+        # beta_gc=$(jq -r '.SLACK_BETA_GC' pipeline_cli_config.json)
+        # prod_gc=$(jq -r '.SLACK_PROD_GC' pipeline_cli_config.json)
+        # qa_mb=$(jq -r '.SLACK_QA_MB' pipeline_cli_config.json)
+        # beta_mb=$(jq -r '.SLACK_BETA_MB' pipeline_cli_config.json)
+        # prod_mb=$(jq -r '.SLACK_PROD_MB' pipeline_cli_config.json)
 
-        echo "::add-mask::$qa_gc"
-        echo "::add-mask::$beta_gc"
-        echo "::add-mask::$prod_gc"
-        echo "::add-mask::$qa_mb"
-        echo "::add-mask::$beta_mb"
-        echo "::add-mask::$prod_mb"
+        # echo "::add-mask::$token"
+        # echo "::add-mask::$url"
+        # echo "::add-mask::$release"
 
-        echo "SLACK_TOKEN=$token" >> $GITHUB_OUTPUT
-        echo "SLACK_WEBHOOK=$url" >> $GITHUB_OUTPUT
-        echo "RELEASE_REPO_SECRET=$release" >> $GITHUB_OUTPUT
+        # echo "::add-mask::$qa_gc"
+        # echo "::add-mask::$beta_gc"
+        # echo "::add-mask::$prod_gc"
+        # echo "::add-mask::$qa_mb"
+        # echo "::add-mask::$beta_mb"
+        # echo "::add-mask::$prod_mb"
 
-        echo "SLACK_QA_GC=$qa_gc" >> $GITHUB_OUTPUT
-        echo "SLACK_BETA_GC=$beta_gc" >> $GITHUB_OUTPUT
-        echo "SLACK_PROD_GC=$prod_gc" >> $GITHUB_OUTPUT
-        echo "SLACK_QA_MB=$qa_mb" >> $GITHUB_OUTPUT
-        echo "SLACK_BETA_MB=$beta_mb" >> $GITHUB_OUTPUT
-        echo "SLACK_PROD_MB=$prod_mb" >> $GITHUB_OUTPUT
+        # echo "SLACK_TOKEN=$token" >> $GITHUB_OUTPUT
+        # echo "SLACK_WEBHOOK=$url" >> $GITHUB_OUTPUT
+        # echo "RELEASE_REPO_SECRET=$release" >> $GITHUB_OUTPUT
+
+        # echo "SLACK_QA_GC=$qa_gc" >> $GITHUB_OUTPUT
+        # echo "SLACK_BETA_GC=$beta_gc" >> $GITHUB_OUTPUT
+        # echo "SLACK_PROD_GC=$prod_gc" >> $GITHUB_OUTPUT
+        # echo "SLACK_QA_MB=$qa_mb" >> $GITHUB_OUTPUT
+        # echo "SLACK_BETA_MB=$beta_mb" >> $GITHUB_OUTPUT
+        # echo "SLACK_PROD_MB=$prod_mb" >> $GITHUB_OUTPUT
 
     #################################
     # Determine WEBHOOK and CHANNEL

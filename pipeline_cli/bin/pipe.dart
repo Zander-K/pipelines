@@ -10,7 +10,7 @@ void main(List<String> arguments) {
     bool showVerbose = args.wasParsed(Flags.verbose.flag);
 
     if (args.wasParsed(Flags.generate.flag)) {
-      String? branch = args['branch'];
+      String? branch = args[Options.branch.flag];
 
       generate(
         branch: branch,
