@@ -94,14 +94,14 @@ Last Commit\n
     outputBuffer.writeln('$title\n');
     outputBuffer.writeln(body);
     outputBuffer
-        .writeln('-----------------------------------------------------');
+        .writeln('*-----------------------------------------------------*');
     outputBuffer.writeln('** 📅\tCurrent Date: \t\t** ${dateAndTime.date} **');
     outputBuffer
         .writeln('** ⏱️\tCurrent Time: \t\t** ${dateAndTime.time} UTC+2 **');
     outputBuffer
-        .writeln('-----------------------------------------------------');
+        .writeln('\\-----------------------------------------------------\\');
     outputBuffer.writeln('** 🛠️\tWorkflow Name: \t\t** $workflowName **');
-    outputBuffer.writeln('** 📱\tPlatform: \t\t** $platformType **');
+    outputBuffer.writeln('** 📱\tPlatform: \t\t\t** $platformType **');
     outputBuffer.writeln('** 🏷️\tApp Name: \t\t** $appName **');
     outputBuffer.writeln('** 🔖\tCommit Hash: \t\t** $lastCommit **');
     outputBuffer.writeln('** 🪵\tBranch Name: \t\t** $branch **');
@@ -109,12 +109,12 @@ Last Commit\n
         .writeln('** ⏱️\tTotal Build Time: \t** $totalBuildTimeFormatted **');
     outputBuffer.writeln(
         '** 🔢\t${versionBuildDetails.label}: \t** ${versionBuildDetails.versionOrBuild} **');
-    outputBuffer.writeln('** 🦋\tFlutter Version: \t** $flutterVersion **');
-    outputBuffer.writeln('** 🎯\tDart Version: \t\t** $dartVersion **\n');
+    outputBuffer.writeln('** 🦋\tFlutter Version: \t\t** $flutterVersion **');
+    outputBuffer.writeln('** 🎯\tDart Version: \t\t\t** $dartVersion **\n');
     outputBuffer
         .writeln('-----------------------------------------------------');
 
-    outputBuffer.writeln('** PUBSPEC.LOCK CONTENTS: Installed Packages **');
+    outputBuffer.writeln('*PUBSPEC.LOCK CONTENTS: Installed Packages*');
     outputBuffer
         .writeln('-----------------------------------------------------\n');
     outputBuffer.write(pubspecContents);
