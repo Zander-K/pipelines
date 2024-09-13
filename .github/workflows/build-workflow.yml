@@ -89,7 +89,7 @@ jobs:
           # SLACK_WEBHOOK: ${{ secrets.SLACK_PIPELINE_URL }}
           SLACK_WEBBOOK: ${{ secrets.SLACK_WORKFLOW_WEBHOOK }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-          SLACK_CHANNEL: 'riga-pipeline'      
+          SLACK_CHANNEL: 'riga-distribution-qa-gc'      
           SLACK_USERNAME: 'GitHub Actions'             
           SLACK_COLOR: ${{ job.status }}                 
           SLACK_ICON_EMOJI: ':rocket:'                     
@@ -104,19 +104,19 @@ jobs:
             ${{ env.CLI_OUTPUT }}", 
             "artifact_url": "${{ steps.artifact-upload-step.outputs.artifact-url }}"
             }'
-          SLACK_MESSAGE: |
-            A new production build has finished.
-            Download the artifact using the link below:
-            ${{ steps.artifact-upload-step.outputs.artifact-url }}
+          # SLACK_MESSAGE: |
+          #   A new production build has finished.
+          #   Download the artifact using the link below:
+          #   ${{ steps.artifact-upload-step.outputs.artifact-url }}
 
-            Contents of file.txt:
-            ${{ env.CLI_OUTPUT }}
-          SLACK_MESSAGE_ON_SUCCESS: |
-            A new production build has finished.
-            Download the artifact using the link below:
-            ${{ steps.artifact-upload-step.outputs.artifact-url }}
+          #   Contents of file.txt:
+          #   ${{ env.CLI_OUTPUT }}
+          # SLACK_MESSAGE_ON_SUCCESS: |
+          #   A new production build has finished.
+          #   Download the artifact using the link below:
+          #   ${{ steps.artifact-upload-step.outputs.artifact-url }}
 
-            ${{ env.CLI_OUTPUT }}
+          #   ${{ env.CLI_OUTPUT }}
           SLACK_MESSAGE_ON_FAILURE: |
             An error occurred while running this workflow. 
           SLACK_FOOTER: |
