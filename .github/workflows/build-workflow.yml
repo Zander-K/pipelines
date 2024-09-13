@@ -21,96 +21,6 @@ permissions:
 
 jobs: 
   extract:
-    name: gather and build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.inputs.branch || github.event.pull_request.head.ref || github.ref }}
-
-      - name: Install GitHub CLI
-        run: sudo apt-get install -y gh
-          
-      - uses: dart-lang/setup-dart@v1
-      - name: Activate Pipeline
-        shell: bash
-        run: |
-          dart pub global activate -s path ./pipeline_cli
-          echo -e "Active Packages:\n"
-          dart pub global list
-
-      - name: Extract PR details
-        id: extract-pr-details
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          BRANCH_NAME="${{ github.event.pull_request.head.ref || github.ref_name }}"
-          
-          CLI_OUTPUT=$(pipe -g --branch "$BRANCH_NAME")
-          
-          echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
-          echo -e "$CLI_OUTPUT" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
-      - name: Write to file.txt
-        run: |
-          echo -e "${CLI_OUTPUT}\n\n" >> file.txt
-      
-      - name: Save file.txt path to environment variable
-        run: echo "OUTPUT_FILE_PATH=$(pwd)/file.txt" >> $GITHUB_ENV
-
-      - name: Upload file.txt
-        id: artifact-upload-step
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-info
-          path: file.txt
-
-      - name: Output artifact ID
-        run: |
-          echo 'Artifact ID is ${{ steps.artifact-upload-step.outputs.artifact-id }}'
-          echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
-          echo "ARTIFACT_URL=${{ steps.artifact-upload-step.outputs.artifact-url }}" >> $GITHUB_ENV
-
-      - name: Send notification to Slack with Artifact Upload
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WORKFLOW_WEBHOOK }}
-          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-          SLACK_CHANNEL: 'riga-distribution-qa-gc'      
-          SLACK_USERNAME: 'GitHub Actions'             
-          SLACK_COLOR: ${{ job.status }}                 
-          SLACK_ICON_EMOJI: ':rocket:'                     
-          SLACK_TITLE: 'Production Build Notification'
-          SLACK_CUSTOM_PAYLOAD: '{
-            "contents": "
-            A new production build has finished.\n\n
-
-            Download the artifact using the link below:
-            ${{ steps.artifact-upload-step.outputs.artifact-url }}
-            \n\n
-            ${{ env.CLI_OUTPUT }}", 
-            "artifact_url": "${{ steps.artifact-upload-step.outputs.artifact-url }}"
-            }'
-          # SLACK_MESSAGE: |
-          #   A new production build has finished.
-          #   Download the artifact using the link below:
-          #   ${{ steps.artifact-upload-step.outputs.artifact-url }}
-
-          #   Contents of file.txt:
-          #   ${{ env.CLI_OUTPUT }}
-          # SLACK_MESSAGE_ON_SUCCESS: |
-          #   A new production build has finished.
-          #   Download the artifact using the link below:
-          #   ${{ steps.artifact-upload-step.outputs.artifact-url }}
-
-          #   ${{ env.CLI_OUTPUT }}
-          SLACK_MESSAGE_ON_FAILURE: |
-            An error occurred while running this workflow. 
-          SLACK_FOOTER: |
-            Created by RIGA for RIGA 
-  extract_action_test:
     name: Gather Info and Send Notification
     runs-on: ubuntu-latest
     # needs: build-apps
@@ -129,4 +39,12 @@ jobs:
         with:
           PIPELINE_CLI_CONFIG: ${{ secrets.PIPELINE_CLI_CONFIG }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WORKFLOW: QA_GC
+          WORKFLOW: BETA_GC
+
+## TESTS
+# QA_GC
+# BETA_GC
+# PROD_GC
+# QA_MB
+# BETA_MB
+# PROD_MB
