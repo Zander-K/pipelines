@@ -9,8 +9,8 @@ runs:
     #################################
     # Setup FLUTTER
     #################################
-    # - name: Setup Flutter
-    #   uses: ./.github/actions/setup-flutter
+    - name: Setup Flutter
+      uses: ./.github/actions/setup-flutter
 
     #################################
     # Setup DART
