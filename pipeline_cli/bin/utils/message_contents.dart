@@ -69,7 +69,7 @@ class MessageContents {
     );
   }
 
-  factory MessageContents.qaDistribution({
+  factory MessageContents.defaultDistribution({
     required String branch,
     required String workflowName,
   }) {
@@ -78,12 +78,127 @@ class MessageContents {
     return MessageContents._(
       branch: branch,
       workflowName: workflowName,
-      title: 'A new QA build was distributed.',
+      title: 'A new build was distributed.',
+      body: '''
+[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
+Last Commit\n
+[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
+Download the artifact using the link below.\n
+''',
+    );
+  }
+
+  factory MessageContents.qaGrosDistribution({
+    required String branch,
+    required String workflowName,
+  }) {
+    final lastCommit = getLastCommitHash(branch);
+
+    return MessageContents._(
+      branch: branch,
+      workflowName: workflowName,
+      title: 'A new QA build was distributed for Grosvenor.',
+      body: '''
+[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
+Last Commit\n
+[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
+Download the artifact using the link below.\n
+''',
+    );
+  }
+
+  factory MessageContents.qaMeccaDistribution({
+    required String branch,
+    required String workflowName,
+  }) {
+    final lastCommit = getLastCommitHash(branch);
+
+    return MessageContents._(
+      branch: branch,
+      workflowName: workflowName,
+      title: 'A new QA build was distributed for Mecca Bingo',
+      body: '''
+[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
+Last Commit\n
+[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
+Download the artifact using the link below.\n
+''',
+    );
+  }
+
+  factory MessageContents.betaGrosDistribution({
+    required String branch,
+    required String workflowName,
+  }) {
+    final lastCommit = getLastCommitHash(branch);
+
+    return MessageContents._(
+      branch: branch,
+      workflowName: workflowName,
+      title: 'A new BETA build was distributed for Grosvenor',
+      body: '''
+[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
+Last Commit\n
+[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
+Download the artifact using the link below.\n
+''',
+    );
+  }
+
+  factory MessageContents.betaMeccaDistribution({
+    required String branch,
+    required String workflowName,
+  }) {
+    final lastCommit = getLastCommitHash(branch);
+
+    return MessageContents._(
+      branch: branch,
+      workflowName: workflowName,
+      title: 'A new BETA build was distributed for Mecca Bingo',
       body: '''
 Download the artifact using the button below.\n
 [$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
 Last Commit\n
-[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)
+[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
+Download the artifact using the link below.\n
+''',
+    );
+  }
+
+  factory MessageContents.prodGrosDistribution({
+    required String branch,
+    required String workflowName,
+  }) {
+    final lastCommit = getLastCommitHash(branch);
+
+    return MessageContents._(
+      branch: branch,
+      workflowName: workflowName,
+      title: 'A new *production* build has been published for Grosvenor',
+      body: '''
+[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
+Last Commit\n
+[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
+Download the artifact using the link below.\n
+''',
+    );
+  }
+
+  factory MessageContents.prodMeccaDistribution({
+    required String branch,
+    required String workflowName,
+  }) {
+    final lastCommit = getLastCommitHash(branch);
+
+    return MessageContents._(
+      branch: branch,
+      workflowName: workflowName,
+      title: 'A new *production* build has been published for Mecca Bingo',
+      body: '''
+[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
+Last Commit\n
+[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
+Download the artifact using the link below.\n
 ''',
     );
   }

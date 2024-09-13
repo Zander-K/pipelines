@@ -1,13 +1,15 @@
 name: ios-production-pipeline 
 
 on:
- workflow_dispatch:
-   inputs:
-     branch:
-       description: 'Branch to checkout'
-       required: true
-       default: 'main'
-
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to checkout'
+        required: true
+        default: 'main'
+  pull_request: 
+    branches: 
+      - main
 jobs:
   deploy:
     name: Deploy to Testflight
@@ -27,9 +29,9 @@ jobs:
       #################################
       # Rename App
       #################################
-      - name: Rename
-        run: flutter pub run rename_app:main ios="Grosvenor Casino Online Games"
-        working-directory: ./apps/grosvenor_prod 
+      # - name: Rename
+      #   run: flutter pub run rename_app:main ios="Grosvenor Casino Online Games"
+      #   working-directory: ./apps/grosvenor_prod 
       #################################
       # Set pubspec.yaml version
       #################################  

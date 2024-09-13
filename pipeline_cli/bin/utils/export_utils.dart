@@ -9,6 +9,7 @@ export 'get_pubspec_contents.dart';
 export 'get_pubspec.dart';
 export 'get_total_build_time.dart';
 export 'get_workflow_name.dart';
+export 'get_workflow_type.dart';
 
 export 'parser.dart';
 export 'prompts.dart';

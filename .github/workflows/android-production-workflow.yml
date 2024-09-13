@@ -80,9 +80,9 @@ jobs:
       #################################
       # Rename App
       #################################
-      - name: Rename
-        run: flutter pub run rename_app:main android="Grosvenor Casino Online Games"
-        working-directory: ./apps/grosvenor_prod 
+      # - name: Rename
+      #   run: flutter pub run rename_app:main android="Grosvenor Casino Online Games"
+      #   working-directory: ./apps/grosvenor_prod 
       #################################
       # Set pubspec.yaml version
       #################################  

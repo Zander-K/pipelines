@@ -9,11 +9,13 @@ on:
   #   branches: ["rc-phase1.1", "develop", "rc-gc", "rc-mb"]
   #   types:
   #     - closed
-  pull_request:
-    types: [opened, synchronize, reopened]
+  # pull_request:
+  #   types: [opened, synchronize, reopened]
+  #   branches: 
+  #     - '**'
+  pull_request: 
     branches: 
-      - '**'
-
+      - main
 jobs:
   build-apps:
     # if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'Grosvenor')
@@ -33,8 +35,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
-          OWNER="rankengineering"
-          REPO="rank_mobile_core"
+          OWNER="Zander-K"
+          REPO="pipelines"
+          
           # Fetch latest release information
           latest_release=$(curl -sSL \
             -H "Accept: application/vnd.github+json" \

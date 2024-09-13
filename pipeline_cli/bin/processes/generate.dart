@@ -20,12 +20,51 @@ void generate({
       throw WorkflowNameException();
     }
 
-    // Insert get_workflow_type here
-
-    final message = MessageContents.qaDistribution(
-      branch: branch,
-      workflowName: workflowName,
-    );
+    final workflowType = getWorkflowType(workflowName);
+    MessageContents? message;
+    switch (workflowType) {
+      case WorkflowType.qaGC:
+        message = MessageContents.qaGrosDistribution(
+          branch: branch,
+          workflowName: workflowName,
+        );
+        break;
+      case WorkflowType.qaMB:
+        message = MessageContents.qaMeccaDistribution(
+          branch: branch,
+          workflowName: workflowName,
+        );
+        break;
+      case WorkflowType.betaGC:
+        message = MessageContents.betaGrosDistribution(
+          branch: branch,
+          workflowName: workflowName,
+        );
+        break;
+      case WorkflowType.betaMB:
+        message = MessageContents.betaMeccaDistribution(
+          branch: branch,
+          workflowName: workflowName,
+        );
+        break;
+      case WorkflowType.prodGC:
+        message = MessageContents.prodGrosDistribution(
+          branch: branch,
+          workflowName: workflowName,
+        );
+        break;
+      case WorkflowType.prodMB:
+        message = MessageContents.prodMeccaDistribution(
+          branch: branch,
+          workflowName: workflowName,
+        );
+        break;
+      default:
+        message = MessageContents.defaultDistribution(
+          branch: branch,
+          workflowName: workflowName,
+        );
+    }
 
     print(message.getContents());
   } on BranchNameException catch (e, s) {
