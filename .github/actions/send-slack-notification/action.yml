@@ -20,7 +20,7 @@ runs:
         SLACK_ICON_EMOJI: ${{ inputs.SLACK_ICON_EMOJI }}
         SLACK_TITLE: ${{ inputs.SLACK_TITLE }}
         SLACKIFY_MARKDOWN: true
-        # SLACK_MESSAGE: |
+        SLACK_MESSAGE: ${{ inputs.SLACK_MESSAGE }}
         #   A new build has finished.
         #   Download the artifact using the link below:
         #   ${{ inputs.ARTIFACT_URL }}
@@ -68,6 +68,9 @@ inputs:
     required: false
     default: |
       An error occurred while running this workflow.
+  SLACK_MESSAGE:
+    description: "Message when the build passes"
+    required: false
   SLACK_FOOTER:
     description: "Slack footer"
     required: false

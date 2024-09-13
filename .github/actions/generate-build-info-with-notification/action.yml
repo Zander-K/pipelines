@@ -172,8 +172,12 @@ runs:
         SLACK_COLOR: ${{ job.status }}
         SLACK_ICON_EMOJI: ":rocket:"
         SLACK_TITLE: "Pipeline Build Notification"
+        SLACK_MESSAGE: '{
+          "contents": "${{ env.CLI_OUTPUT }}",
+          "artifact_url": "${{ steps.artifact-upload-step.outputs.artifact-url }}",
+          "mrkdwn": true
+          }'
         SLACK_CUSTOM_PAYLOAD: '{
-          "text": "${{ env.CLI_OUTPUT }}",
           "contents": "${{ env.CLI_OUTPUT }}",
           "artifact_url": "${{ steps.artifact-upload-step.outputs.artifact-url }}",
           "mrkdwn": true
