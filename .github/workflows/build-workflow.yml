@@ -86,7 +86,6 @@ jobs:
       - name: Send notification to Slack with Artifact Upload
         uses: rtCamp/action-slack-notify@v2
         env:
-          # SLACK_WEBHOOK: ${{ secrets.SLACK_PIPELINE_URL }}
           SLACK_WEBBOOK: ${{ secrets.SLACK_WORKFLOW_WEBHOOK }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           SLACK_CHANNEL: 'riga-distribution-qa-gc'      
