@@ -39,12 +39,12 @@ jobs:
         with:
           PIPELINE_CLI_CONFIG: ${{ secrets.PIPELINE_CLI_CONFIG }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WORKFLOW: BETA_MB
+          WORKFLOW: PROD_MB
 
 ## TESTS
 # QA_GC     works
 # BETA_GC   works
 # PROD_GC   works
 # QA_MB     works
-# BETA_MB   
-# PROD_MB
+# BETA_MB   works
+# PROD_MB   
