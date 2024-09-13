@@ -9,3 +9,9 @@ extension GetString on String? {
     }
   }
 }
+
+extension NullableStringExtension on String? {
+  bool get isNullOrEmpty => this?.isEmpty ?? true;
+
+  bool get isNotNullAndNotEmpty => this?.isNotEmpty ?? false;
+}

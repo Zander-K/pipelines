@@ -1,33 +1,45 @@
 import 'dart:convert';
 import 'dart:io';
 
+import '../exceptions/workflow_name_exception.dart';
+
 /// Returns a [String] of the workflow name
-String? getWorkflowName() {
+String? getWorkflowName(String branch) {
   try {
-    var workflowResult = Process.runSync(
-        'gh', ['run', 'list', '--json', 'name', '--limit', '1']);
+    final workflowResult = Process.runSync('gh', [
+      'run',
+      'list',
+      '--json',
+      'name',
+      '--branch',
+      branch,
+      '--limit',
+      '1',
+    ]);
 
     if (workflowResult.exitCode != 0) {
-      print('Error fetching the workflow name: ${workflowResult.stderr}');
-      return null;
+      throw WorkflowNameException(workflowResult.stderr);
     }
 
-    var workflowList = jsonDecode(workflowResult.stdout);
+    final workflowList = jsonDecode(workflowResult.stdout);
 
-    if (workflowList.isNotEmpty) {
-      final String workflowName = workflowList[0]['name'];
-
-      if (workflowName.toLowerCase().contains('production') ||
-          workflowName.toLowerCase().contains('distribution')) {
-        return workflowName;
-      }
-
-      print('No distribution or production workflow run.');
-      return 'Unknown';
-    } else {
-      print('No workflow runs found.');
-      return null;
+    if (workflowList.isEmpty) {
+      throw WorkflowNameException('No workflow runs found.');
     }
+
+    final String workflowName = workflowList[0]['name'];
+
+    // if (workflowName.toLowerCase().contains('production') ||
+    //     workflowName.toLowerCase().contains('distribution')) {
+    //   return workflowName;
+    // }
+
+    return workflowName;
+  } on WorkflowNameException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
+    return null;
   } catch (e, s) {
     print('Unexpected error: ');
     print('Error: $e');

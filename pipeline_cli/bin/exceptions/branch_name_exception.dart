@@ -1,7 +1,7 @@
-class BranchNotFoundException implements Exception {
+class BranchNameException implements Exception {
   final String message;
 
-  BranchNotFoundException(
+  BranchNameException(
       [this.message = 'Branch is either not found or not valid']);
 
   @override

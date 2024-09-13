@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import '../const/export_const.dart';
-import '../exceptions/branch.dart';
 
 /// Return a [bool] on whether a given branch is found in a repo
-void checksBranch(String branch) {
+bool checksBranch(String branch) {
   try {
     ProcessResult result = Process.runSync(
       'gh',
@@ -12,17 +11,14 @@ void checksBranch(String branch) {
     );
 
     if (result.exitCode == 0) {
-      return;
+      return true;
     } else {
-      throw BranchNotFoundException();
+      return false;
     }
-  } on BranchNotFoundException catch (e, s) {
-    print('Unexpected error: ');
-    print('Error: $e');
-    print('Stack Trace: $s');
   } catch (e, s) {
-    print('Unexpected error: ');
-    print('Error: $e');
-    print('Stack Trace: $s');
+    print('Unexpected error: $e');
+    print('Stack Trace:');
+    print('$s');
+    return false;
   }
 }

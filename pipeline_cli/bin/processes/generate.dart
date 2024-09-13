@@ -1,5 +1,6 @@
 import '../export.dart';
 import '../extensions/string.dart';
+import '../utils/message_contents.dart';
 
 void generate({
   required String? branch,
@@ -9,68 +10,35 @@ void generate({
       branch = Prompts.branch();
     }
 
-    checksBranch(branch!);
-
-    var workflowName = getWorkflowName() ?? '';
-    var lastCommit = getLastCommitHash(branch);
-    var currentDateAndTime = getDateTime();
-    var platformType = getPlatformType(workflowName);
-    var pubspecPath = getPubspecPath(workflowName);
-
-    var totalBuildTimeFormatted = 'No build time';
-    if (!workflowName.contains('Unknown')) {
-      var totalBuildTimeInSeconds = getBuildTimeInSeconds(workflowName) ?? 0;
-      var totalBuildTime = Duration(seconds: totalBuildTimeInSeconds);
-
-      totalBuildTimeFormatted =
-          "${totalBuildTime.inMinutes} minutes and ${totalBuildTime.inSeconds % 60} seconds";
+    final isBranchFound = checksBranch(branch!);
+    if (!isBranchFound) {
+      throw BranchNameException();
     }
 
-    var versionBuildDetails = getVersionAndBuildDetails(
-      workflowName,
-      pubspecPath,
+    final workflowName = getWorkflowName(branch) ?? '';
+    if (workflowName.isNullOrEmpty) {
+      throw WorkflowNameException();
+    }
+
+    // Insert get_workflow_type here
+
+    final message = MessageContents.qaDistribution(
+      branch: branch,
+      workflowName: workflowName,
     );
-    var appName = getAppName(pubspecPath);
-    var pubspecContents = getPubspecInstalledPackages(pubspecPath);
 
-    var flutterVersion = pubspecContents?.flutter;
-    var dartVersion = pubspecContents?.dart;
-
-    var outputBuffer = StringBuffer();
-
-    outputBuffer
-        .writeln('-----------------------------------------------------');
-    outputBuffer
-        .writeln('** 📅\tCurrent Date: \t** ${currentDateAndTime.date} **');
-    outputBuffer
-        .writeln('** ⏱️\tCurrent Time: \t** ${currentDateAndTime.time} UTC **');
-    outputBuffer
-        .writeln('-----------------------------------------------------');
-    outputBuffer.writeln('** 🛠️\tWorkflow Name: \t** $workflowName **');
-    outputBuffer.writeln('** 📱\tPlatform: \t** $platformType **');
-    outputBuffer.writeln('** 🏷️\tApp Name: \t** $appName **');
-    outputBuffer.writeln('** 🔖\tCommit Hash: \t** $lastCommit **');
-    outputBuffer.writeln('** 🪵\tBranch Name: \t** $branch **');
-    outputBuffer
-        .writeln('** ⏱️\tTotal Build Time: \t** $totalBuildTimeFormatted **');
-    outputBuffer.writeln(
-        '** 🔢\t${versionBuildDetails.label}: \t** ${versionBuildDetails.versionOrBuild} **');
-    outputBuffer.writeln('** 🦋\tFlutter Version: \t** $flutterVersion **');
-    outputBuffer.writeln('** 🎯\tDart Version: \t\t** $dartVersion **\n');
-    outputBuffer
-        .writeln('-----------------------------------------------------');
-
-    outputBuffer.writeln('** PUBSPEC.LOCK CONTENTS: Installed Packages **');
-    outputBuffer
-        .writeln('-----------------------------------------------------\n');
-    outputBuffer.write(pubspecContents?.contents);
-    outputBuffer
-        .writeln('-----------------------------------------------------');
-
-    print(outputBuffer.toString());
+    print(message.getContents());
+  } on BranchNameException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
+  } on WorkflowNameException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
   } catch (e, s) {
-    print('Unexpected error: ');
-    print('Error: $e');
-    print('Stack Trace: $s');
+    print('Unexpected error: $e');
+    print('Stack Trace:');
+    print('$s');
   }
 }

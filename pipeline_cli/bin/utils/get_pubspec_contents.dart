@@ -1,29 +1,36 @@
 import 'dart:io';
 
+import '../export.dart';
+
 /// Returns a [Record] with the Flutter version, Dart version, and contents
 /// of installed packages given a directory path
 ({String flutter, String dart, String contents})? getPubspecInstalledPackages(
-    String filePath) {
+    String dirPath) {
   try {
+    final path = getPubspecPath(
+      dirPath: dirPath,
+      onlyDirectory: true,
+    );
+
     var result = Process.runSync(
       'dart',
       ['pub', 'deps', '--style=list'],
-      workingDirectory: './$filePath',
+      workingDirectory: path,
     );
 
     if (result.exitCode != 0) {
-      print('Error running flutter pub deps: ${result.stderr}');
-      return null;
+      throw PubspecException(
+          'Error running flutter pub deps: ${result.stderr}');
     }
 
-    var output = result.stdout as String;
-    var lines = output.split('\n');
+    final output = result.stdout as String;
+    final lines = output.split('\n');
 
     String? flutterVersion;
     String? dartVersion;
-    var dependencies = <String>[];
-    var devDependencies = <String>[];
-    var dependencyOverrides = <String>[];
+    final dependencies = <String>[];
+    final devDependencies = <String>[];
+    final dependencyOverrides = <String>[];
     String? currentSection;
 
     for (var line in lines) {
@@ -57,7 +64,7 @@ import 'dart:io';
           currentSection == 'devDependencies' ||
           currentSection == 'dependencyOverrides') {
         if (line.startsWith('- ')) {
-          var packageLine = line.substring(2).trim();
+          final packageLine = line.substring(2).trim();
 
           if (currentSection == 'dependencies') {
             dependencies.add(packageLine);
@@ -86,6 +93,11 @@ import 'dart:io';
       dart: dartVersion,
       contents: dependenciesOutput,
     );
+  } on PubspecException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
+    return null;
   } catch (e, s) {
     print('Unexpected error: ');
     print('Error: $e');
@@ -103,7 +115,7 @@ String _getDependenciesOutput(
 
   if (dependencies.isNotEmpty) {
     outputBuffer.writeln('Dependencies:');
-    for (var dep in dependencies) {
+    for (final dep in dependencies) {
       outputBuffer.writeln('- $dep');
     }
     outputBuffer.writeln();
@@ -111,7 +123,7 @@ String _getDependenciesOutput(
 
   if (devDependencies.isNotEmpty) {
     outputBuffer.writeln('Dev Dependencies:');
-    for (var devDep in devDependencies) {
+    for (final devDep in devDependencies) {
       outputBuffer.writeln('- $devDep');
     }
     outputBuffer.writeln();
@@ -119,7 +131,7 @@ String _getDependenciesOutput(
 
   if (dependencyOverrides.isNotEmpty) {
     outputBuffer.writeln('Dependency Overrides:');
-    for (var dep in dependencyOverrides) {
+    for (final dep in dependencyOverrides) {
       outputBuffer.writeln('- $dep');
     }
     outputBuffer.writeln();
