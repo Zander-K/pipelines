@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import '../const/export_const.dart';
+import '../export.dart';
 
+/// Returns a [String]? with the last commit hash of a given branch
 String? getLastCommitHash(String branchName) {
   var lastCommitSha =
       _getLastCommitSha(Globals.owner, Globals.repo, branchName);
@@ -33,8 +34,10 @@ String? _getLastCommitSha(
     }
 
     return result.stdout.trim();
-  } catch (e) {
-    print('Error in get_commit_hash: $e');
+  } catch (e, s) {
+    print('Unexpected error: ');
+    print('Error: $e');
+    print('Stack Trace: $s');
     return null;
   }
 }

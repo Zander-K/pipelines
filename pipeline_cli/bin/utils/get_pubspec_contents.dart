@@ -1,21 +1,7 @@
 import 'dart:io';
 
-String? getPubspecContents(String filePath) {
-  try {
-    var file = File('$filePath/pubspec.yaml');
-    if (!file.existsSync()) {
-      print('pubspec.yaml file not found');
-      return null;
-    }
-
-    var contents = file.readAsStringSync();
-    return contents;
-  } catch (e) {
-    print('Error reading pubspec.yaml file: $e');
-    return '';
-  }
-}
-
+/// Returns a [Record] with the Flutter version, Dart version, and contents
+/// of installed packages given a directory path
 ({String flutter, String dart, String contents})? getPubspecInstalledPackages(
     String filePath) {
   try {
@@ -100,8 +86,10 @@ String? getPubspecContents(String filePath) {
       dart: dartVersion,
       contents: dependenciesOutput,
     );
-  } catch (e) {
-    print('Error in get_pubspec_contents: $e');
+  } catch (e, s) {
+    print('Unexpected error: ');
+    print('Error: $e');
+    print('Stack Trace: $s');
     return null;
   }
 }

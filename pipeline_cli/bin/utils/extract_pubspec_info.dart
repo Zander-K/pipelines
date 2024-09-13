@@ -1,27 +1,34 @@
 import 'dart:io';
 
-(String, String) getVersionAndBuildDetails(
+/// Returns a [Record] with the label and version and/or build number given a
+/// workflow name and directory path
+///
+/// An iOS workflow returns `Version+Build Nr` and `1.0.0+876`
+/// An Android workflow returns `Build Nr` and `876`
+///
+/// Otherwise, `Version+Build Nr` and `Undetermined`
+({String label, String versionOrBuild}) getVersionAndBuildDetails(
   String workflowName,
-  String filePath,
+  String dirPath,
 ) {
-  final versionBuild = _getVersionAndBuild(filePath);
+  final versionBuild = _getVersionAndBuild(dirPath);
 
   final version = versionBuild.$1;
   final build = versionBuild.$2;
 
   if (workflowName.toLowerCase().contains('ios') ||
       workflowName.toLowerCase().contains('distribution')) {
-    return ('Version+Build Nr', '$version+$build');
+    return (label: 'Version+Build Nr', versionOrBuild: '$version+$build');
   } else if (workflowName.toLowerCase().contains('android')) {
-    return ('Build Nr', build);
+    return (label: 'Build Nr', versionOrBuild: build);
   } else {
-    return ('Version+Build Nr', 'Undetermined');
+    return (label: 'Version+Build Nr', versionOrBuild: 'Undetermined');
   }
 }
 
-(String, String) _getVersionAndBuild(String filePath) {
+(String, String) _getVersionAndBuild(String dirPath) {
   try {
-    var file = File('$filePath/pubspec.yaml');
+    var file = File('$dirPath/pubspec.yaml');
     if (!file.existsSync()) {
       print('pubspec.yaml file not found');
       return ('', '');
@@ -38,8 +45,10 @@ import 'dart:io';
     var build = buildMatch != null ? buildMatch.group(1)?.trim() : 'Unknown';
 
     return (version ?? '', build ?? '');
-  } catch (e) {
-    print('Error in extract_pubspec_info and reading pubspec.yaml file: $e');
+  } catch (e, s) {
+    print('Unexpected error: ');
+    print('Error: $e');
+    print('Stack Trace: $s');
     return ('', '');
   }
 }

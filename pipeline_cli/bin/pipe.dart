@@ -12,20 +12,6 @@ void main(List<String> arguments) {
     if (args.wasParsed(Flags.generate.flag)) {
       String? branch = args['branch'];
 
-      if (branch == null) {
-        stdout.write(
-            "No branch specified. Press Enter to use 'develop' or type a branch name: ");
-        String? input = stdin.readLineSync()?.trim();
-
-        if (input == null || input.isEmpty) {
-          branch = 'develop';
-          print("Using 'develop' branch.\n");
-        } else {
-          branch = input;
-          print("Using branch: $branch \n");
-        }
-      }
-
       generate(
         branch: branch,
       );

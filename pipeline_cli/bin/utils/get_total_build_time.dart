@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+/// Returns an [int]? of the total build time given workflow name
 int? getBuildTimeInSeconds(String workflowName) {
   try {
     var latestRunIdResult = Process.runSync('gh', [
@@ -40,8 +41,10 @@ int? getBuildTimeInSeconds(String workflowName) {
         DateTime.parse(endTime).toUtc().millisecondsSinceEpoch ~/ 1000;
 
     return endTimeSec - startTimeSec;
-  } catch (e) {
-    print('Error in get_total_build_time: $e');
+  } catch (e, s) {
+    print('Unexpected error: ');
+    print('Error: $e');
+    print('Stack Trace: $s');
     return null;
   }
 }

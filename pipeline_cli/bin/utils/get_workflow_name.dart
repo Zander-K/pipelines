@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+/// Returns a [String] of the workflow name
 String? getWorkflowName() {
   try {
     var workflowResult = Process.runSync(
@@ -27,8 +28,10 @@ String? getWorkflowName() {
       print('No workflow runs found.');
       return null;
     }
-  } catch (e) {
-    print('Error in get_workflow_name: $e');
+  } catch (e, s) {
+    print('Unexpected error: ');
+    print('Error: $e');
+    print('Stack Trace: $s');
     return null;
   }
 }

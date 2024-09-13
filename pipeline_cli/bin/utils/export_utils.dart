@@ -3,7 +3,7 @@ export 'extract_pubspec_info.dart';
 export 'get_commit_hash.dart';
 export 'get_date_time.dart';
 export 'get_flutter_dart_version.dart';
-export 'get_label.dart';
+export 'get_app_name.dart';
 export 'get_platform_type.dart';
 export 'get_pubspec_contents.dart';
 export 'get_pubspec_path.dart';

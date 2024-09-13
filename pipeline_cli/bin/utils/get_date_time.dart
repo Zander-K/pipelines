@@ -1,8 +1,10 @@
 import 'package:intl/intl.dart';
 
-(String, String) getDateTime() {
+/// Returns a [Record] with the current date and time
+({String date, String time}) getDateTime() {
   var now = DateTime.now().toUtc();
   var formattedDate = DateFormat('yyyy-MM-dd').format(now);
   var formattedTime = DateFormat('HH:mm:ss').format(now);
-  return (formattedDate, formattedTime);
+
+  return (date: formattedDate, time: formattedTime);
 }
