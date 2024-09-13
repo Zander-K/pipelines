@@ -173,9 +173,18 @@ runs:
         SLACK_ICON_EMOJI: ":rocket:"
         SLACK_TITLE: "Pipeline Build Notification"
         SLACK_CUSTOM_PAYLOAD: '{
-          "contents": "${{ env.CLI_OUTPUT }}",
-          "artifact_url": "${{ steps.artifact-upload-step.outputs.artifact-url }}",
-          "mrkdwn": true
+          "contents": {
+          "text": "A new QA build was distributed.\n\nDownload the artifact using the link below:\n<${{ steps.artifact-upload-step.outputs.artifact-url }}|Complete Build Workflow>\n\nLast Commit\n${{ steps.artifact-upload-step.outputs.artifact-url}}\n${{ env.CLI_OUTPUT }}",
+          "blocks": [
+          {
+          "type": "section",
+          "text": {
+          "type": "mrkdwn",
+          "text": "*A new QA build was distributed.*\n\nDownload the artifact using the button below.\n<${{ steps.artifact-upload-step.outputs.artifact-url }}|Complete Build Workflow>\n\nLast Commit: `${{ steps.artifact-upload-step.outputs.artifact-url}}`"
+          }
+          }
+          ]
+          }
           }'
         ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         CLI_OUTPUT: ${{ env.CLI_OUTPUT }}
