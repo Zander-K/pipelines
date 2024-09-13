@@ -73,26 +73,37 @@ jobs:
           echo 'Artifact URL is ${{ steps.artifact-upload-step.outputs.artifact-url }}'
           echo "ARTIFACT_URL=${{ steps.artifact-upload-step.outputs.artifact-url }}" >> $GITHUB_ENV
 
-      - name: Send notification to Slack
-        env:
-          SLACK_PIPELINE_URL: ${{ secrets.SLACK_PIPELINE_URL }}
-          ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
-        run: |
-          curl -X POST -H 'Content-type: application/json' --data '{
-              "artifact_url": "A new production build has finished. You can download a file with all the information here:\n'${ARTIFACT_URL}'",
-              "artifact_contents": "" 
-              }' $SLACK_PIPELINE_URL
+      # - name: Send notification to Slack
+      #   env:
+      #     SLACK_PIPELINE_URL: ${{ secrets.SLACK_PIPELINE_URL }}
+      #     ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
+      #   run: |
+      #     curl -X POST -H 'Content-type: application/json' --data '{
+      #         "artifact_url": "A new production build has finished. You can download a file with all the information here:\n'${ARTIFACT_URL}'",
+      #         "artifact_contents": "" 
+      #         }' $SLACK_PIPELINE_URL
 
       - name: Send notification to Slack with Artifact Upload
         uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_PIPELINE_URL }} 
+          # SLACK_WEBHOOK: ${{ secrets.SLACK_PIPELINE_URL }}
+          SLACK_WEBBOOK: ${{ secrets.SLACK_WORKFLOW_WEBHOOK }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           SLACK_CHANNEL: 'riga-pipeline'      
           SLACK_USERNAME: 'GitHub Actions'             
           SLACK_COLOR: ${{ job.status }}                 
           SLACK_ICON_EMOJI: ':rocket:'                     
           SLACK_TITLE: 'Production Build Notification'
+          SLACK_CUSTOM_PAYLOAD: '{
+            "contents": "
+            A new production build has finished.
+            Download the artifact using the link below:
+            ${{ steps.artifact-upload-step.outputs.artifact-url }}
+
+            Contents of file.txt:
+            ${{ env.CLI_OUTPUT }}", 
+            "artifact_url": "${{ steps.artifact-upload-step.outputs.artifact-url }}"
+            }'
           SLACK_MESSAGE: |
             A new production build has finished.
             Download the artifact using the link below:
