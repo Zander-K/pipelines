@@ -2,9 +2,11 @@ import 'package:intl/intl.dart';
 
 /// Returns a [Record] with the current date and time
 DateAndTime getDateTime() {
-  var now = DateTime.now().toLocal();
-  var formattedDate = DateFormat('yyyy-MM-dd').format(now);
-  var formattedTime = DateFormat('HH:mm:ss').format(now);
+  final utc = DateTime.now().toUtc();
+  final sast = utc.add(Duration(hours: 2));
+
+  final formattedDate = DateFormat('yyyy-MM-dd').format(sast);
+  final formattedTime = DateFormat('HH:mm:ss').format(sast);
 
   return DateAndTime(date: formattedDate, time: formattedTime);
 }
