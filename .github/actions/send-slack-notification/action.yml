@@ -21,18 +21,7 @@ runs:
         SLACK_TITLE: ${{ inputs.SLACK_TITLE }}
         SLACKIFY_MARKDOWN: true
         SLACK_MESSAGE: ${{ inputs.SLACK_MESSAGE }}
-        #   A new build has finished.
-        #   Download the artifact using the link below:
-        #   ${{ inputs.ARTIFACT_URL }}
-
-        #   Contents of file.txt:
-        #   ${{ inputs.CLI_OUTPUT }}
-        # SLACK_MESSAGE_ON_SUCCESS: |
-        #   A new build has finished.
-        #   Download the artifact using the link below:
-        #   ${{ inputs.ARTIFACT_URL }}
-
-        #   ${{ inputs.CLI_OUTPUT }}
+        SLACK_MESSAGE_ON_SUCCESS: ${{ inputs.SLACK_MESSAGE_ON_SUCCESS }}
         SLACK_MESSAGE_ON_FAILURE: ${{ inputs.SLACK_MESSAGE_ON_FAILURE }}
         SLACK_FOOTER: ${{ inputs.SLACK_FOOTER }}
         SLACK_CUSTOM_PAYLOAD: ${{ inputs.SLACK_CUSTOM_PAYLOAD }}
@@ -63,14 +52,17 @@ inputs:
     description: "Slack Notification Title"
     required: true
     default: "Pipeline Build Notification"
+  SLACK_MESSAGE:
+    description: "Message when the build is done"
+    required: false
+  SLACK_MESSAGE_ON_SUCCESS:
+    description: "Success message when the build passes"
+    required: false
   SLACK_MESSAGE_ON_FAILURE:
     description: "Message when the build fails"
     required: false
     default: |
       An error occurred while running this workflow.
-  SLACK_MESSAGE:
-    description: "Message when the build passes"
-    required: false
   SLACK_FOOTER:
     description: "Slack footer"
     required: false

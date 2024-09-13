@@ -172,16 +172,8 @@ runs:
         SLACK_COLOR: ${{ job.status }}
         SLACK_ICON_EMOJI: ":rocket:"
         SLACK_TITLE: "Pipeline Build Notification"
-        SLACK_MESSAGE: '{
-          "contents": "${{ env.CLI_OUTPUT }}",
-          "artifact_url": "${{ steps.artifact-upload-step.outputs.artifact-url }}",
-          "mrkdwn": true
-          }'
-        # SLACK_CUSTOM_PAYLOAD: '{
-        #   "contents": "${{ env.CLI_OUTPUT }}",
-        #   "artifact_url": "${{ steps.artifact-upload-step.outputs.artifact-url }}",
-        #   "mrkdwn": true
-        #   }'
+        SLACK_MESSAGE: "${{ env.CLI_OUTPUT }}"
+        SLACK_MESSAGE_ON_SUCCESS: "${{ env.CLI_OUTPUT }}"
         ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         CLI_OUTPUT: ${{ env.CLI_OUTPUT }}
 
@@ -196,11 +188,4 @@ inputs:
 
   WORKFLOW:
     description: "Determines the workflow type"
-    required:
-      true
-
-      # A new production build has finished.\n\n
-
-      # Download the artifact using the link below:
-      # ${{ steps.artifact-upload-step.outputs.artifact-url }}
-      # \n\n
+    required: true
