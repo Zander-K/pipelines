@@ -81,9 +81,9 @@ class MessageContents {
       title: 'A new QA build was distributed.',
       body: '''
 Download the artifact using the button below.\n
-<https://github.com/${Globals.repository}/commit/$lastCommit|$workflowName>\n
+[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
 Last Commit\n
-<https://github.com/${Globals.repository}/commit/$lastCommit|$lastCommit>
+[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)
 ''',
     );
   }

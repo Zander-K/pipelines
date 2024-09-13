@@ -19,6 +19,7 @@ runs:
         SLACK_COLOR: ${{ inputs.SLACK_COLOR }}
         SLACK_ICON_EMOJI: ${{ inputs.SLACK_ICON_EMOJI }}
         SLACK_TITLE: ${{ inputs.SLACK_TITLE }}
+        SLACKIFY_MARKDOWN: true
         SLACK_MESSAGE: |
           A new build has finished.
           Download the artifact using the link below:
