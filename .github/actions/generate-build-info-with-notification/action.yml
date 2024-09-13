@@ -1,0 +1,190 @@
+name: "Generate Build Info"
+description: "Setup Flutter, activate pipeline CLI, extract details, upload artifact, and send Slack notification."
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+
+    #################################
+    # Setup FLUTTER
+    #################################
+    # - name: Setup Flutter
+    #   uses: ./.github/actions/setup-flutter
+
+    #################################
+    # Setup DART
+    #################################
+    - name: Setup Dart
+      uses: dart-lang/setup-dart@v1
+
+    #################################
+    # Activate PIPELINE CLI
+    #################################
+    - name: Activate Pipeline CLI
+      shell: bash
+      run: |
+        dart pub global activate -s path ./pipeline_cli
+
+    - name: Export PIPELINE_CLI_CONFIG
+      shell: bash
+      run: echo "PIPELINE_CLI_CONFIG=${{ inputs.PIPELINE_CLI_CONFIG }}" >> $GITHUB_ENV
+
+    #################################
+    # Create PIPELINE CLI CONFIG
+    #################################
+    - name: Create pipeline_cli_config.json from base64 secret
+      env:
+        PIPELINE_CLI_CONFIG: ${{ inputs.PIPELINE_CLI_CONFIG }}
+      shell: bash
+      run: |
+        touch pipeline_cli_config.json
+        echo ${{ env.PIPELINE_CLI_CONFIG }} | base64 -d > pipeline_cli_config.json
+      working-directory: ./
+
+    #################################
+    # Extract SECRETS
+    #################################
+    - name: Extract secrets from config file
+      id: pipeline_cli_config
+      shell: bash
+      run: |
+
+        token=$(jq -r '.SLACK_TOKEN' pipeline_cli_config.json)
+        url=$(jq -r '.SLACK_PIPELINE_URL' pipeline_cli_config.json)
+        release=$(jq -r '.RELEASE_REPO_SECRET' pipeline_cli_config.json)
+
+        qa_gc=$(jq -r '.SLACK_QA_GC' pipeline_cli_config.json)
+        beta_gc=$(jq -r '.SLACK_BETA_GC' pipeline_cli_config.json)
+        prod_gc=$(jq -r '.SLACK_PROD_GC' pipeline_cli_config.json)
+        qa_mb=$(jq -r '.SLACK_QA_MB' pipeline_cli_config.json)
+        beta_mb=$(jq -r '.SLACK_BETA_MB' pipeline_cli_config.json)
+        prod_mb=$(jq -r '.SLACK_PROD_MB' pipeline_cli_config.json)
+
+        echo "::add-mask::$token"
+        echo "::add-mask::$url"
+        echo "::add-mask::$release"
+
+        echo "::add-mask::$qa_gc"
+        echo "::add-mask::$beta_gc"
+        echo "::add-mask::$prod_gc"
+        echo "::add-mask::$qa_mb"
+        echo "::add-mask::$beta_mb"
+        echo "::add-mask::$prod_mb"
+
+        echo "SLACK_TOKEN=$token" >> $GITHUB_OUTPUT
+        echo "SLACK_WEBHOOK=$url" >> $GITHUB_OUTPUT
+        echo "RELEASE_REPO_SECRET=$release" >> $GITHUB_OUTPUT
+
+        echo "SLACK_QA_GC=$qa_gc" >> $GITHUB_OUTPUT
+        echo "SLACK_BETA_GC=$beta_gc" >> $GITHUB_OUTPUT
+        echo "SLACK_PROD_GC=$prod_gc" >> $GITHUB_OUTPUT
+        echo "SLACK_QA_MB=$qa_mb" >> $GITHUB_OUTPUT
+        echo "SLACK_BETA_MB=$beta_mb" >> $GITHUB_OUTPUT
+        echo "SLACK_PROD_MB=$prod_mb" >> $GITHUB_OUTPUT
+
+    #################################
+    # Determine WEBHOOK and CHANNEL
+    #################################
+    - name: Determine Slack Webhook
+      id: set_webhook
+      shell: bash
+      run: |
+        case "${{ inputs.WORKFLOW }}" in
+          "QA_GC")
+            echo "SLACK_WEBHOOK=${{ steps.pipeline_cli_config.outputs.SLACK_QA_GC }}" >> $GITHUB_OUTPUT
+            echo "SLACK_CHANNEL=riga-distribution-qa-gc" >> $GITHUB_OUTPUT
+            ;;
+          "BETA_GC")
+            echo "SLACK_WEBHOOK=${{ steps.pipeline_cli_config.outputs.SLACK_BETA_GC }}" >> $GITHUB_OUTPUT
+            echo "SLACK_CHANNEL=riga-distribution-beta-gc" >> $GITHUB_OUTPUT
+            ;;
+          "PROD_GC")
+            echo "SLACK_WEBHOOK=${{ steps.pipeline_cli_config.outputs.SLACK_PROD_GC }}" >> $GITHUB_OUTPUT
+            echo "SLACK_CHANNEL=riga-distribution-prod-gc" >> $GITHUB_OUTPUT
+            ;;
+          "QA_MB")
+            echo "SLACK_WEBHOOK=${{ steps.pipeline_cli_config.outputs.SLACK_QA_MB }}" >> $GITHUB_OUTPUT
+            echo "SLACK_CHANNEL=riga-distribution-qa-mb" >> $GITHUB_OUTPUT
+            ;;
+          "BETA_MB")
+            echo "SLACK_WEBHOOK=${{ steps.pipeline_cli_config.outputs.SLACK_BETA_MB }}" >> $GITHUB_OUTPUT
+            echo "SLACK_CHANNEL=riga-distribution-beta-mb" >> $GITHUB_OUTPUT
+            ;;
+          "PROD_MB")
+            echo "SLACK_WEBHOOK=${{ steps.pipeline_cli_config.outputs.SLACK_PROD_MB }}" >> $GITHUB_OUTPUT
+            echo "SLACK_CHANNEL=riga-distribution-prod-mb" >> $GITHUB_OUTPUT
+            ;;
+          *)
+            echo "Invalid WORKFLOW type"
+            exit 1
+            ;;
+        esac
+
+    #################################
+    # EXTRACT BUILD DETAILS
+    #################################
+    - name: Extract PR details or branch commit
+      id: extract-pr-details
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.GH_TOKEN }}
+      run: |
+        BRANCH_NAME="${{ github.event.pull_request.head.ref || github.ref_name }}"
+
+        CLI_OUTPUT=$(pipe -g --branch "$BRANCH_NAME")
+
+        echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
+        echo -e "$CLI_OUTPUT" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+
+        echo -e "${CLI_OUTPUT}\n\n" >> file.txt
+
+    #################################
+    # UPLOAD ARTIFACT
+    #################################
+    - name: Upload Output File
+      id: artifact-upload-step
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-info
+        path: file.txt
+
+    #################################
+    # SEND SLACK NOTIFICATION
+    #################################
+    - name: Send Slack Notification
+      uses: ./.github/actions/send-slack-notification
+      with:
+        SLACK_WEBHOOK: ${{ steps.set_webhook.outputs.SLACK_WEBHOOK }}
+        SLACK_TOKEN: ${{ steps.pipeline_cli_config.outputs.SLACK_TOKEN }}
+        SLACK_CHANNEL: ${{ steps.set_webhook.outputs.SLACK_CHANNEL }}
+        SLACK_USERNAME: "GitHub Actions"
+        SLACK_COLOR: ${{ job.status }}
+        SLACK_ICON_EMOJI: ":rocket:"
+        SLACK_TITLE: "Pipeline Build Notification"
+        SLACK_CUSTOM_PAYLOAD: '{
+          "contents": "
+          A new production build has finished.\n\n
+
+          Download the artifact using the link below:
+          ${{ steps.artifact-upload-step.outputs.artifact-url }}
+          \n\n
+          ${{ env.CLI_OUTPUT }}",
+          "artifact_url": "${{ steps.artifact-upload-step.outputs.artifact-url }}"
+          }'
+        ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
+        CLI_OUTPUT: ${{ env.CLI_OUTPUT }}
+
+inputs:
+  PIPELINE_CLI_CONFIG:
+    description: "Base64-encoded pipeline CLI config"
+    required: true
+
+  GH_TOKEN:
+    description: "GitHub Token"
+    required: true
+
+  WORKFLOW:
+    description: "Determines the workflow type"
+    required: true
