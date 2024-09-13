@@ -174,7 +174,8 @@ runs:
         SLACK_TITLE: "Pipeline Build Notification"
         SLACK_CUSTOM_PAYLOAD: '{
           "contents": "${{ env.CLI_OUTPUT }}",
-          "artifact_url": "${{ steps.artifact-upload-step.outputs.artifact-url }}"
+          "artifact_url": "${{ steps.artifact-upload-step.outputs.artifact-url }}",
+          "mrkdwn": true
           }'
         ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         CLI_OUTPUT: ${{ env.CLI_OUTPUT }}
