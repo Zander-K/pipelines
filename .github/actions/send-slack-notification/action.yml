@@ -25,6 +25,33 @@ runs:
         # SLACK_MESSAGE_ON_FAILURE: ${{ inputs.SLACK_MESSAGE_ON_FAILURE }}
         SLACK_FOOTER: ${{ inputs.SLACK_FOOTER }}
         # SLACK_CUSTOM_PAYLOAD: ${{ inputs.SLACK_CUSTOM_PAYLOAD }}
+        SLACK_CUSTOM_PAYLOAD: '
+          {
+          "blocks": [
+          {
+          "type": "section",
+          "text": {
+          "type": "mrkdwn",
+          "text": "Click the button below to download the file:"
+          }
+          },
+          {
+          "type": "actions",
+          "elements": [
+          {
+          "type": "button",
+          "text": {
+          "type": "plain_text",
+          "text": "Download File"
+          },
+          "url": "https://your-url-to-download.com/file.zip", // Link to the file
+          "action_id": "download_file"
+          }
+          ]
+          }
+          ]
+          }
+          '
 
 inputs:
   SLACK_WEBHOOK:
