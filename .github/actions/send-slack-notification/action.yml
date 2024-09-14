@@ -44,13 +44,14 @@ runs:
           "type": "plain_text",
           "text": "Download File"
           },
-          "url": "https://your-url-to-download.com/file.zip", // Link to the file
+          "url": "${{ inputs.ARTIFACT_URL }}",
           "action_id": "download_file"
           }
           ]
           }
           ]
           }
+
           '
 
 inputs:
