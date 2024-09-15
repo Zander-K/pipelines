@@ -138,8 +138,11 @@ runs:
         SLACK_USERNAME: "GitHub Actions"
         SLACK_COLOR: ${{ job.status }}
         SLACK_ICON_EMOJI: ":rocket:"
-        SLACK_TITLE: "Pipeline Build Notification"
-        SLACK_MESSAGE: "${{ env.CLI_OUTPUT }}"
+        # SLACK_TITLE: "Pipeline Build Notification"
+        SLACK_MESSAGE: "
+          ${{ env.CLI_OUTPUT }}\n
+          URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
+          "
         # SLACK_MESSAGE_ON_SUCCESS: '{"text":"${{ env.CLI_OUTPUT }}"}'
         ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         CLI_OUTPUT: ${{ env.CLI_OUTPUT }}
