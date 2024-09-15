@@ -4,7 +4,7 @@ import 'dart:io';
 String? searchConfigFile(String directoryPath) {
   final configFilePattern = RegExp(r'^.*_config\.json$');
 
-  final directory = Directory('$directoryPath/');
+  final directory = Directory(directoryPath);
 
   if (!directory.existsSync()) {
     print('Directory not found: $directoryPath');
@@ -15,9 +15,13 @@ String? searchConfigFile(String directoryPath) {
     final List<FileSystemEntity> files = directory.listSync();
 
     for (var file in files) {
-      if (file is File &&
-          configFilePattern.hasMatch(file.uri.pathSegments.last)) {
+      if (file is File) {
+        if (configFilePattern.hasMatch(file.uri.pathSegments.last)) {
+          return file.path;
+        }
+
         /// In case there are multiple file, return the first one.
+
         return file.path;
       }
     }
