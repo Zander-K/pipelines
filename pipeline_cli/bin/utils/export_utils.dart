@@ -11,6 +11,7 @@ export 'get_total_build_time.dart';
 export 'get_workflow_name.dart';
 export 'get_workflow_type.dart';
 
+export 'message_contents.dart';
 export 'parser.dart';
 export 'prompts.dart';
 export 'usage.dart';

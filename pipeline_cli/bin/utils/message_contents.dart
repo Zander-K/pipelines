@@ -37,8 +37,9 @@ class MessageContents {
     String? title,
     String? body,
   }) {
-    final newTitle = title ?? 'A new build is out.';
-    final newBody = body ?? 'Download the artifact using the button below.';
+    final newTitle = title ?? 'New Build Distribution';
+    final newBody = body ??
+        'A new build is out. \n Download the file using the artifact URL.';
     final lastCommit = getLastCommitHash(branch);
     final platformType = getPlatformType(workflowName);
     final pubspecDir = getPubspecDirectory(workflowName);
@@ -73,17 +74,14 @@ class MessageContents {
     required String branch,
     required String workflowName,
   }) {
-    final lastCommit = getLastCommitHash(branch);
-
     return MessageContents._(
       branch: branch,
       workflowName: workflowName,
-      title: 'A new build was distributed.',
+      title: 'New Build Distribution',
       body: '''
-[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
-Last Commit\n
-[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
-Download the artifact using the link below.\n
+A new build was distributed.
+
+Download the file using the artifact URL below.\n
 ''',
     );
   }
@@ -92,17 +90,14 @@ Download the artifact using the link below.\n
     required String branch,
     required String workflowName,
   }) {
-    final lastCommit = getLastCommitHash(branch);
-
     return MessageContents._(
       branch: branch,
       workflowName: workflowName,
-      title: 'A new QA build was distributed for Grosvenor.',
+      title: 'New Grosvenor QA Distribution',
       body: '''
-[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
-Last Commit\n
-[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
-Download the artifact using the link below.\n
+A new *QA* build was distributed for Grosvenor.
+
+Download the file using the artifact URL below.\n
 ''',
     );
   }
@@ -111,17 +106,14 @@ Download the artifact using the link below.\n
     required String branch,
     required String workflowName,
   }) {
-    final lastCommit = getLastCommitHash(branch);
-
     return MessageContents._(
       branch: branch,
       workflowName: workflowName,
-      title: 'A new QA build was distributed for Mecca Bingo',
+      title: 'New MeccaBingo QA Distribution',
       body: '''
-[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
-Last Commit\n
-[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
-Download the artifact using the link below.\n
+A new *QA* build was distributed for MeccaBingo.
+
+Download the file using the artifact URL below.\n
 ''',
     );
   }
@@ -130,17 +122,14 @@ Download the artifact using the link below.\n
     required String branch,
     required String workflowName,
   }) {
-    final lastCommit = getLastCommitHash(branch);
-
     return MessageContents._(
       branch: branch,
       workflowName: workflowName,
-      title: 'A new BETA build was distributed for Grosvenor',
+      title: 'New Grosvenor BETA Distribution',
       body: '''
-[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
-Last Commit\n
-[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
-Download the artifact using the link below.\n
+A new *BETA* build was distributed for Grosvenor.
+
+Download the file using the artifact URL below.\n
 ''',
     );
   }
@@ -149,18 +138,14 @@ Download the artifact using the link below.\n
     required String branch,
     required String workflowName,
   }) {
-    final lastCommit = getLastCommitHash(branch);
-
     return MessageContents._(
       branch: branch,
       workflowName: workflowName,
-      title: 'A new BETA build was distributed for Mecca Bingo',
+      title: 'New MeccaBingo BETA Distribution',
       body: '''
-Download the artifact using the button below.\n
-[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
-Last Commit\n
-[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
-Download the artifact using the link below.\n
+A new *BETA* build was distributed for MeccaBingo.
+
+Download the file using the artifact URL below.\n
 ''',
     );
   }
@@ -169,17 +154,14 @@ Download the artifact using the link below.\n
     required String branch,
     required String workflowName,
   }) {
-    final lastCommit = getLastCommitHash(branch);
-
     return MessageContents._(
       branch: branch,
       workflowName: workflowName,
-      title: 'A new *production* build has been published for Grosvenor',
+      title: 'New Grosvenor Production Distribution',
       body: '''
-[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
-Last Commit\n
-[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
-Download the artifact using the link below.\n
+A new *production* build has been published for Grosvenor.
+
+ Download the file using the artifact URL below.\n
 ''',
     );
   }
@@ -188,17 +170,14 @@ Download the artifact using the link below.\n
     required String branch,
     required String workflowName,
   }) {
-    final lastCommit = getLastCommitHash(branch);
-
     return MessageContents._(
       branch: branch,
       workflowName: workflowName,
-      title: 'A new *production* build has been published for Mecca Bingo',
+      title: 'New MeccaBingo Production Distribution',
       body: '''
-[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit )\n
-Last Commit\n
-[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)\n
-Download the artifact using the link below.\n
+A new *production* build has been published for MeccaBingo.
+
+ Download the file using the artifact URL below.\n
 ''',
     );
   }
@@ -206,7 +185,7 @@ Download the artifact using the link below.\n
   String getContents() {
     var outputBuffer = StringBuffer();
 
-    outputBuffer.writeln('$title\n');
+    outputBuffer.writeln('**$title**\n');
     outputBuffer.writeln(body);
     outputBuffer
         .writeln('**-----------------------------------------------------**');
@@ -215,11 +194,14 @@ Download the artifact using the link below.\n
         .writeln('** ⏱️\tCurrent Time: \t\t** ${dateAndTime.time} SAST **');
     outputBuffer
         .writeln('**-----------------------------------------------------**');
-    outputBuffer.writeln('** 🛠️\tWorkflow Name: \t\t** $workflowName **');
+    outputBuffer.writeln(
+        '** 🛠️\tWorkflow Name: \t\t** [$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit/checks) **');
     outputBuffer.writeln('** 📱\tPlatform: \t\t\t** $platformType **');
     outputBuffer.writeln('** 🏷️\tApp Name: \t\t** $appName **');
-    outputBuffer.writeln('** 🔖\tCommit Hash: \t\t** $lastCommit **');
-    outputBuffer.writeln('** 🪵\tBranch Name: \t\t** $branch **');
+    outputBuffer.writeln(
+        '** 🔖\tCommit Hash: \t\t** [$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit) **');
+    outputBuffer.writeln(
+        '** 🪵\tBranch Name: \t\t** [$branch](https://github.com/${Globals.repository}/tree/$branch) **');
     outputBuffer
         .writeln('** ⏱️\tTotal Build Time: \t** $totalBuildTimeFormatted **');
     outputBuffer.writeln(

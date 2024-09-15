@@ -1,3 +1,8 @@
+import '../export.dart';
+
+/// Returns a [WorkflowType] given a [workflowName]
+///
+/// For example, `WorkflowType.qaGC` or `WorkflowType.prodMB`å
 WorkflowType? getWorkflowType(String workflowName) {
   final workflow = workflowName.toLowerCase();
 
@@ -22,17 +27,4 @@ WorkflowType? getWorkflowType(String workflowName) {
     return WorkflowType.prodGC;
   }
   return null;
-}
-
-enum WorkflowType {
-  qaGC('QA_GC'),
-  betaGC('BETA_GC'),
-  prodGC('PROD_GC'),
-  qaMB('QA_MB'),
-  betaMB('BETA_MB'),
-  prodMB('PROD_MB');
-
-  const WorkflowType(this.type);
-
-  final String type;
 }

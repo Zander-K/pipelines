@@ -1,6 +1,4 @@
 import '../export.dart';
-import '../extensions/string.dart';
-import '../utils/message_contents.dart';
 
 void generate({
   required String? branch,

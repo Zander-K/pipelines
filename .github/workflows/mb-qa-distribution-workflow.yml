@@ -5,13 +5,13 @@
 name: mb-qa-distribution-pipeline
 
 on:
-  pull_request:
-    branches: ["develop", "rc-mb"]
-    types:
-      - closed
-  # pull_request: 
-  #   branches: 
-  #     - main
+  # pull_request:
+  #   branches: ["develop", "rc-mb"]
+  #   types:
+  #     - closed
+  pull_request: 
+    branches: 
+      - main
 jobs:
   build-apps:
     if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'Mecca')
