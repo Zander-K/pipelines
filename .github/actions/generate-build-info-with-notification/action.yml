@@ -143,6 +143,7 @@ runs:
           ${{ env.CLI_OUTPUT }}\n
           URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
           "
+        SLACK_MESSAGE_ON_FAILURE: "No message contents."
         ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         CLI_OUTPUT: ${{ env.CLI_OUTPUT }}
 
