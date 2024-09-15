@@ -141,7 +141,7 @@ runs:
     - name: Results
       shell: bash
       run: |
-        echo "release cli output=${{ env.CLI_OUTPUT }}"
+        echo "release cli output=\n${{ env.CLI_OUTPUT }}"
 
 inputs:
   PIPELINE_CLI_CONFIG:
