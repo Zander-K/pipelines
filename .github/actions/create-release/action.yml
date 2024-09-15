@@ -70,24 +70,24 @@ runs:
         search_artifacts: true
         name: ${{ inputs.APK_ARTIFACT_NAME }}
         if_no_artifact_found: fail
-    - name: Download IPA Artifact
-      id: download-artifact-ipa
-      uses: dawidd6/action-download-artifact@v6
-      with:
-        workflow: ${{ inputs.WORKFLOW_NAME }}
-        workflow_conclusion: success
-        search_artifacts: true
-        name: ${{ inputs.APK_ARTIFACT_NAME }}
-        if_no_artifact_found: fail
-    - name: Download ZIP Artifact
-      id: download-artifact-zip
-      uses: dawidd6/action-download-artifact@v6
-      with:
-        workflow: ${{ inputs.WORKFLOW_NAME }}
-        workflow_conclusion: success
-        search_artifacts: true
-        name: ${{ inputs.ZIP_ARTIFACT_NAME }}
-        if_no_artifact_found: fail
+    # - name: Download IPA Artifact
+    #   id: download-artifact-ipa
+    #   uses: dawidd6/action-download-artifact@v6
+    #   with:
+    #     workflow: ${{ inputs.WORKFLOW_NAME }}
+    #     workflow_conclusion: success
+    #     search_artifacts: true
+    #     name: ${{ inputs.APK_ARTIFACT_NAME }}
+    #     if_no_artifact_found: fail
+    # - name: Download ZIP Artifact
+    #   id: download-artifact-zip
+    #   uses: dawidd6/action-download-artifact@v6
+    #   with:
+    #     workflow: ${{ inputs.WORKFLOW_NAME }}
+    #     workflow_conclusion: success
+    #     search_artifacts: true
+    #     name: ${{ inputs.ZIP_ARTIFACT_NAME }}
+    #     if_no_artifact_found: fail
 
     #################################
     # Get ENVIRONMENT from APK/IPA
