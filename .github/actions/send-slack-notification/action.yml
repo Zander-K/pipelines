@@ -19,22 +19,40 @@ runs:
         SLACK_COLOR: ${{ inputs.SLACK_COLOR }}
         SLACK_ICON_EMOJI: ${{ inputs.SLACK_ICON_EMOJI }}
         SLACK_TITLE: ${{ inputs.SLACK_TITLE }}
-        SLACK_MESSAGE: |
-          A new build has finished.
-          Download the artifact using the link below:
-          ${{ inputs.ARTIFACT_URL }}
-
-          Contents of file.txt:
-          ${{ inputs.CLI_OUTPUT }}
-        SLACK_MESSAGE_ON_SUCCESS: |
-          A new build has finished.
-          Download the artifact using the link below:
-          ${{ inputs.ARTIFACT_URL }}
-
-          ${{ inputs.CLI_OUTPUT }}
-        SLACK_MESSAGE_ON_FAILURE: ${{ inputs.SLACK_MESSAGE_ON_FAILURE }}
+        SLACKIFY_MARKDOWN: true
+        SLACK_MESSAGE: ${{ inputs.SLACK_MESSAGE }}
+        # SLACK_MESSAGE_ON_SUCCESS: ${{ inputs.SLACK_MESSAGE_ON_SUCCESS }}
+        # SLACK_MESSAGE_ON_FAILURE: ${{ inputs.SLACK_MESSAGE_ON_FAILURE }}
         SLACK_FOOTER: ${{ inputs.SLACK_FOOTER }}
-        SLACK_CUSTOM_PAYLOAD: ${{ inputs.SLACK_CUSTOM_PAYLOAD }}
+        # SLACK_CUSTOM_PAYLOAD: ${{ inputs.SLACK_CUSTOM_PAYLOAD }}
+        # SLACK_CUSTOM_PAYLOAD: '
+        #   {
+        #   "blocks": [
+        #   {
+        #   "type": "section",
+        #   "text": {
+        #   "type": "mrkdwn",
+        #   "text": "Click the button below to download the file:"
+        #   }
+        #   },
+        #   {
+        #   "type": "actions",
+        #   "elements": [
+        #   {
+        #   "type": "button",
+        #   "text": {
+        #   "type": "plain_text",
+        #   "text": "Download File"
+        #   },
+        #   "url": "${{ inputs.ARTIFACT_URL }}",
+        #   "action_id": "download_file"
+        #   }
+        #   ]
+        #   }
+        #   ]
+        #   }
+
+        #   '
 
 inputs:
   SLACK_WEBHOOK:
@@ -61,7 +79,13 @@ inputs:
   SLACK_TITLE:
     description: "Slack Notification Title"
     required: true
-    default: "Pipeline Build Notification"
+    # default: "Pipeline Build Notification"
+  SLACK_MESSAGE:
+    description: "Message when the build is done"
+    required: false
+  SLACK_MESSAGE_ON_SUCCESS:
+    description: "Success message when the build passes"
+    required: false
   SLACK_MESSAGE_ON_FAILURE:
     description: "Message when the build fails"
     required: false

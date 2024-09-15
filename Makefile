@@ -2,6 +2,8 @@ SCRIPT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
 cli:
 	@echo "Checking if CLIs are installed..."
+
+	# Pipeline CLI
 	@if dart pub global list | grep -q 'pipeline'; then \
 		echo "Pipeline CLI is already installed. Reinstalling..."; \
 		dart pub global deactivate pipeline; \

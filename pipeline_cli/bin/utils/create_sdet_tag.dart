@@ -1,33 +1,28 @@
 import '../export.dart';
 
-String createSDETTag({String? type, String? env}) {
+String createSDETTag({String? type, String? env, String? branch}) {
   final releaseType = type ?? 'RC';
 
-  var workflowName = getWorkflowName() ?? '';
-  var pubspecPath = getPubspecPath(workflowName);
+  final workflowName = getWorkflowName(branch ?? 'develop') ?? '';
+  final pubspecDir = getPubspecDirectory(workflowName);
 
-  final environment = env ?? getEnvFromConfig(pubspecPath);
+  final environment = env ?? getEnvFromConfig(dirPath: pubspecDir);
 
-  var versionBuildDetails = getVersionAndBuildDetails(
+  final versionBuildDetails = getVersionAndBuildDetails(
     workflowName,
-    pubspecPath,
+    pubspecDir,
     returnSeparately: true,
   );
 
-  if (versionBuildDetails?.build == null) {
+  if (versionBuildDetails.build == null) {
     print('Error. No build number.');
     return '';
   }
 
-  var appVersion = versionBuildDetails?.version;
-  var buildNumber = versionBuildDetails?.build;
+  final appVersion = versionBuildDetails.versionOrBuild;
+  final buildNumber = versionBuildDetails.build;
 
-  var buildTag = '${appVersion}_$buildNumber.$releaseType.$environment';
-  // if (releaseType == 'RC') {
-  //   buildTag = '${appVersion}_$buildNumber.$releaseType.$environment';
-  // } else {
-  //   buildTag = '${appVersion}_$buildNumber.$releaseType.$environment';
-  // }
+  final buildTag = '${appVersion}_$buildNumber.$releaseType.$environment';
 
   return buildTag;
 }

@@ -6,19 +6,20 @@ This CLI can be used to gather and create a file with all the  information from 
 
 ## Installing
 
-In ``rank_mobile_core/`` use the following to install the CLI:
+In ``rank_mobile_core/`` use the following to *install* the CLI:
 
 ```bash
-dart pub global activate -s path ./pipeline_cli
+make cli
 ```
 
 or
 
 ```sh
+dart pub global activate -s path ./pipeline_cli
 dart pub global run ./pipeline_cli
 ```
 
-Use the following to confirm install:
+Use the following to confirm the installation:
 
 ```bash
 dart pub global list  
@@ -50,25 +51,34 @@ OR
 pipe -w
 ```
 
-### Generate file
+### Generate contents
 
-To generate a file, use the `-g` flag and pass in the branch name requested interactively where the workflow is running from. Alternatively, use `-b <branch_name>` with `-g`:
+To extract and generate a build's info, use the `-g` flag and pass in the branch name requested interactively where the workflow is running from. Alternatively, use `-b <branch_name>` with `-g`:
 
 ```sh
 pipe -g
 ```
 
-OR
+or without the interactivity
 
 ```sh
-pipe -g -b <branch-name>
+pipe -g --branch <branch-name>
+```
+
+**Write to File**
+To write the contents to a file, use
+
+```sh
+pipe -g --branch <branch-name> >> fileName.txt
 ```
 
 ---
 
 ## Features
 
-`-g or --generate`: Used along side `-b` to generate the build info
+`-g or --generate`: Used along side `-b` to generate the build info as a string
+
+`-b or --branch`: Used with flag `-g` to generate output
 
 `-h or --help`: Used to display all features and usage
 
@@ -78,13 +88,11 @@ pipe -g -b <branch-name>
 
 `-w or --welcome`: Used to display a welcome message
 
-`-b or --branch`: Used with flag `-g` to generate output
-
 ---
 
 ## Additional information
 
-_Documentation_ can be found here: [Pipeline CLI and Slack Bot](https://daubltd.atlassian.net/wiki/x/OACMMzI)
+*Documentation* can be found here: [Pipeline CLI and Slack Bot](https://daubltd.atlassian.net/wiki/x/OACMMzI)
 
 Author: Zander Kotze
 Date: 20 Aug 2024

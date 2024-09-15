@@ -1,14 +1,6 @@
 import 'dart:io';
 
-String _runCommand(List<String> command) {
-  var result = Process.runSync(command[0], command.sublist(1));
-  if (result.exitCode != 0) {
-    throw Exception(
-        'Error running command: ${command.join(' ')}\n${result.stderr}');
-  }
-  return result.stdout.trim();
-}
-
+/// Returns a [String]? of the current Flutter version
 String? getFlutterVersion() {
   try {
     var flutterVersionOutput = _runCommand(['flutter', '--version']);
@@ -16,12 +8,15 @@ String? getFlutterVersion() {
         .firstMatch(flutterVersionOutput)
         ?.group(1);
     return flutterVersion;
-  } catch (e) {
-    print('Failed to get Flutter version: $e');
+  } catch (e, s) {
+    print('Unexpected error: ');
+    print('Error: $e');
+    print('Stack Trace: $s');
     return null;
   }
 }
 
+/// Returns a [String]? of the current Dart version
 String? getDartVersion() {
   try {
     var dartVersionOutput = _runCommand(['dart', '--version']);
@@ -29,8 +24,19 @@ String? getDartVersion() {
         .firstMatch(dartVersionOutput)
         ?.group(1);
     return dartVersion;
-  } catch (e) {
-    print('Failed to get Dart version: $e');
+  } catch (e, s) {
+    print('Unexpected error: ');
+    print('Error: $e');
+    print('Stack Trace: $s');
     return null;
   }
+}
+
+String _runCommand(List<String> command) {
+  var result = Process.runSync(command[0], command.sublist(1));
+  if (result.exitCode != 0) {
+    throw Exception(
+        'Error running command: ${command.join(' ')}\n${result.stderr}');
+  }
+  return result.stdout.trim();
 }

@@ -4,9 +4,9 @@ import 'dart:io';
 import '../extensions/string.dart';
 import 'get_config_file.dart';
 
-String? getEnvFromConfig(String filePath) {
+String? getEnvFromConfig({required String dirPath}) {
   try {
-    final configFilePath = searchConfigFile(filePath) ?? '';
+    final configFilePath = searchConfigFile(dirPath) ?? '';
 
     final file = File(configFilePath);
     if (!file.existsSync()) {

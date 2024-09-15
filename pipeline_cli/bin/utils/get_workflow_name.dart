@@ -1,36 +1,49 @@
 import 'dart:convert';
 import 'dart:io';
 
-String? getWorkflowName() {
+import '../exceptions/workflow_name_exception.dart';
+import '../extensions/string.dart';
+
+/// Returns a [String] of the workflow name given a [branch]
+String? getWorkflowName(String branch) {
   try {
-    var workflowResult = Process.runSync(
-        'gh', ['run', 'list', '--json', 'name', '--limit', '1']);
+    String? workflow = Platform.environment['GITHUB_WORKFLOW'];
 
-    if (workflowResult.exitCode != 0) {
-      print('Error fetching the workflow name: ${workflowResult.stderr}');
-      return null;
+    if (workflow.isNullOrEmpty) {
+      final workflowResult = Process.runSync('gh', [
+        'run',
+        'list',
+        '--json',
+        'name',
+        '--branch',
+        branch,
+        '--limit',
+        '1',
+      ]);
+
+      if (workflowResult.exitCode != 0) {
+        throw WorkflowNameException(workflowResult.stderr);
+      }
+
+      final workflowList = jsonDecode(workflowResult.stdout);
+
+      if (workflowList.isEmpty) {
+        throw WorkflowNameException('No workflow runs found.');
+      }
+
+      workflow = workflowList[0]['name'];
     }
 
-    var workflowList = jsonDecode(workflowResult.stdout);
-
-    if (workflowList.isNotEmpty) {
-      final String workflowName = workflowList[0]['name'];
-
-      // if (workflowName.toLowerCase().contains('production') ||
-      //     workflowName.toLowerCase().contains('distribution')) {
-      //   return workflowName;
-      // }
-      return workflowName;
-
-      // ignore: dead_code
-      print('No distribution or production workflow run.');
-      return 'Unknown';
-    } else {
-      print('No workflow runs found.');
-      return null;
-    }
-  } catch (e) {
-    print('Error in get_workflow_name: $e');
+    return workflow;
+  } on WorkflowNameException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
+    return null;
+  } catch (e, s) {
+    print('Unexpected error: ');
+    print('Error: $e');
+    print('Stack Trace: $s');
     return null;
   }
 }

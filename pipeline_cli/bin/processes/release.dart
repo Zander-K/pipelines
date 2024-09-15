@@ -41,7 +41,7 @@ void release({
       type = 'QA';
     }
 
-    final generatedTag = createSDETTag(env: env, type: type);
+    final generatedTag = createSDETTag(env: env, type: type, branch: branch);
     if (generatedTag.isEmpty) {
       print('Error. Tag is empty.');
       return;
