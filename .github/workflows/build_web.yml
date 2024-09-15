@@ -22,5 +22,5 @@ jobs:
       - name: Upload the file as an artifact
         uses: actions/upload-artifact@v4
         with:
-          name: simple-file
+          name: SIMPLE_FILE
           path: simple-file.txt
