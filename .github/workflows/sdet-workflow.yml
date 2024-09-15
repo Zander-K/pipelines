@@ -39,7 +39,7 @@ jobs:
       with:
         PIPELINE_CLI_CONFIG: ${{ secrets.PIPELINE_CLI_CONFIG }}
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        WORKFLOW_NAME: $GITHUB_WORKFLOW
+        WORKFLOW_NAME: build_web.yml
         APK_ARTIFACT_NAME: SIMPLE_FILE
         IPA_ARTIFACT_NAME: 
         ZIP_ARTIFACT_NAME:
