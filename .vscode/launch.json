@@ -24,15 +24,17 @@
                 "-r",
                 "--source-token",
                 "token",
+                "--notes",
+                "./apps/grosvenor_prod/CHANGELOG.txt",
+                "--target-repo",
+                "rankengineering/sdet_dummy",
+                "--no-interactive",
+                "--assets",
+                "./simple-file.txt",
                 "--branch",
                 "sdet-pipeline",
-                // "--tag",
-                // "v3",
-                // "--title",
-                // "title",
-                "--no-interactive",
-                // "--assets",
-                // "/Users/zanderk/Workspace/Personal/pipelines/pipeline_cli/bin/processes/export_processes.dart,/Users/zanderk/Downloads/app-staging-release.apk"
+                "--environment",
+                ""
             ]
         },
         {

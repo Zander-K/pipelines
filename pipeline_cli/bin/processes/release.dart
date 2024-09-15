@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:path/path.dart' as path;
 
 import '../export.dart';
 
@@ -61,7 +60,6 @@ void release({
 
     final String releaseTag = inputTag ?? generatedTag;
     final String releaseTitle = inputTitle ?? releaseTag;
-    // final String releaseNotes = inputNotes ?? Defaults.notes;
     final String releaseTargetRepo = inputTargetRepo ?? Defaults.repo;
     final String releaseSourceToken = inputSourceToken ?? Defaults.token;
 
@@ -70,7 +68,7 @@ void release({
       'release',
       'create',
       releaseTag,
-      ...releasePaths,
+      ...?releasePaths,
       '--repo',
       releaseTargetRepo,
       '--title',
@@ -111,7 +109,7 @@ Map<String, dynamic> _getInputs({
 }) {
   if (tag.isNull) {
     if (isInteractive) {
-      tag = promptTag();
+      tag = Prompts.promptTag();
     } else {
       tag = null;
     }
@@ -119,7 +117,7 @@ Map<String, dynamic> _getInputs({
 
   if (title.isNull) {
     if (isInteractive) {
-      title = promptTitle();
+      title = Prompts.promptTitle();
 
       if (title.isNull) {
         title = tag;
@@ -131,7 +129,7 @@ Map<String, dynamic> _getInputs({
 
   if (notes.isNull) {
     if (isInteractive) {
-      notes = promptNotes();
+      notes = Prompts.promptNotes();
     } else {
       notes = null;
     }
@@ -139,7 +137,7 @@ Map<String, dynamic> _getInputs({
 
   if (repo.isNull) {
     if (isInteractive) {
-      repo = promptRepo();
+      repo = Prompts.promptRepo();
     } else {
       repo = null;
     }
@@ -147,7 +145,7 @@ Map<String, dynamic> _getInputs({
 
   if (token.isNull) {
     if (isInteractive) {
-      token = promptToken();
+      token = Prompts.promptToken();
     } else {
       token = null;
     }
@@ -156,7 +154,7 @@ Map<String, dynamic> _getInputs({
   List<String>? paths;
   if (assets == null || assets.isEmpty) {
     if (isInteractive) {
-      paths = promptPaths();
+      paths = Prompts.promptPaths();
     } else {
       paths = null;
     }
@@ -172,107 +170,4 @@ Map<String, dynamic> _getInputs({
     'token': token,
     'paths': paths,
   };
-}
-
-String? promptTag() {
-  print(
-      'Enter the tag for the release (defaults to automatically increments): ');
-  String? input = stdin.readLineSync();
-  final tag = (input == null || input.isEmpty) ? null : input;
-
-  return tag;
-}
-
-String? promptTitle() {
-  print('Enter the title for the release (defaults to tag): ');
-  String? input = stdin.readLineSync();
-  final title = (input == null || input.isEmpty) ? null : input;
-
-  return title;
-}
-
-String? promptNotes() {
-  print('Enter the release notes (defaults to ${Defaults.notes}): ');
-  String? input = stdin.readLineSync();
-  final notes = (input == null || input.isEmpty) ? null : input;
-
-  return notes;
-}
-
-String? promptRepo() {
-  print('Enter the GitHub repository (defaults to ${Defaults.repo}): ');
-  String? input = stdin.readLineSync();
-  final repo = (input == null || input.isEmpty) ? null : input;
-
-  return repo;
-}
-
-String? promptToken() {
-  print('Enter your GitHub token (default token will be used if left blank): ');
-  String? input = stdin.readLineSync();
-  final token = (input == null || input.isEmpty) ? null : input;
-
-  return token;
-}
-
-List<String>? promptPaths() {
-  List<String> paths = [];
-
-  while (true) {
-    print(
-        'Enter the path to a file or directory to include in the release (or press Enter to finish): ');
-    String? path = stdin.readLineSync();
-    if (path == null || path.isEmpty) {
-      break;
-    }
-    paths.add(path);
-  }
-
-  if (paths.isEmpty) {
-    return null;
-  }
-
-  return paths;
-}
-
-String? generateAssetFile(String filePath) {
-  if (filePath.endsWith('apk') || filePath.endsWith('ipa')) {
-    return filePath;
-  }
-
-  final dir = _getDirectoryPath(filePath);
-  final baseName = path.basenameWithoutExtension(filePath);
-
-  String zipFileName = '$baseName.zip';
-  final zipPath = '$dir/$zipFileName';
-
-  var result = Process.runSync('zip', ['-r', zipPath, filePath]);
-
-  if (result.exitCode != 0) {
-    print('Error while zipping files.');
-    print(result.stderr);
-    return null;
-  }
-
-  return zipPath;
-}
-
-String _getDirectoryPath(String filePath) {
-  return path.dirname(filePath);
-}
-
-List<String> getReleasePaths(List<String>? paths) {
-  final releasePaths = <String>[];
-
-  if (paths != null && paths.isNotEmpty) {
-    print('Zipping files...');
-    for (var path in paths) {
-      final newPath = generateAssetFile(path) ?? '';
-
-      releasePaths.add(newPath);
-    }
-    print('Zipping complete.');
-  }
-
-  return releasePaths;
 }

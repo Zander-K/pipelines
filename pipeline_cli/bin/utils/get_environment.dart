@@ -18,6 +18,10 @@ String? getEnvFromConfig({required String dirPath}) {
     }
 
     final jsonString = file.readAsStringSync();
+    if (jsonString.isNullOrEmpty) {
+      throw Exception('JSON String is null or empty to get Env');
+    }
+
     final Map<String, dynamic> jsonData = jsonDecode(jsonString);
 
     if (jsonData.containsKey('config_name')) {
@@ -33,6 +37,11 @@ String? getEnvFromConfig({required String dirPath}) {
     } else {
       return 'Production';
     }
+  } on Exception catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print('$s');
+    return null;
   } catch (e, s) {
     print('Unexpected error: ');
     print('Error: $e');

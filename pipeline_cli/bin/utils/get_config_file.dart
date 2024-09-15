@@ -21,8 +21,6 @@ String? searchConfigFile(String directoryPath) {
         }
 
         /// In case there are multiple file, return the first one.
-
-        return file.path;
       }
     }
   } catch (e) {
