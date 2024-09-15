@@ -5,17 +5,17 @@
 name: qa-distribution-pipeline
 
 on:
-  # pull_request:
-  #   branches: ["rc-phase1.1", "develop", "rc-gc", "rc-mb"]
-  #   types:
-  #     - closed
+  pull_request:
+    branches: ["rc-phase1.1", "develop", "rc-gc", "rc-mb"]
+    types:
+      - closed
   # pull_request:
   #   types: [opened, synchronize, reopened]
   #   branches: 
   #     - '**'
-  pull_request: 
-    branches: 
-      - main
+  # pull_request: 
+  #   branches: 
+  #     - main
 jobs:
   build-apps:
     # if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'Grosvenor')

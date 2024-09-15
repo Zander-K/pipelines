@@ -126,7 +126,7 @@ runs:
             --source-token "${{ steps.pipeline_cli_config.outputs.RELEASE_REPO_SECRET }}" \
             --notes './apps/grosvenor_prod/CHANGELOG.txt' \
             --target-repo 'rankengineering/sdet_dummy' \
-            --assets './app-${{ env.env }}-release.apk','./Runner.ipa' \
+            --assets './simple-file.txt' \
             --no-interactive \
             --branch "$BRANCH_NAME" \
             --environment '${{ env.env }}')
