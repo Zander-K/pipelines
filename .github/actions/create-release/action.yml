@@ -89,29 +89,28 @@ runs:
     #     name: ${{ inputs.ZIP_ARTIFACT_NAME }}
     #     if_no_artifact_found: fail
 
-    #################################
-    # Get ENVIRONMENT from APK/IPA
-    #################################
-    - name: Identify environment from APK or IPA
-      id: env_check
-      shell: bash
-      run: |
-        apk_file=$(ls *.apk 2>/dev/null || echo "")
-        ipa_file=$(ls *.ipa 2>/dev/null || echo "")
+    # #################################
+    # # Get ENVIRONMENT from APK
+    # #################################
+    # - name: Identify environment from APK
+    #   id: env_check
+    #   shell: bash
+    #   run: |
+    #     apk_file=$(ls *.apk 2>/dev/null || echo "")
 
-        if [[ "$apk_file" == *dev*.apk ]] || [[ "$ipa_file" == *dev*.ipa ]]; then
-          echo "Found a dev environment file"
-          echo "env=dev" >> $GITHUB_ENV
-        elif [[ "$apk_file" == *staging*.apk ]] || [[ "$ipa_file" == *staging*.ipa ]]; then
-          echo "Found a staging environment file"
-          echo "env=staging" >> $GITHUB_ENV
-        elif [[ "$apk_file" == *prod*.apk ]] || [[ "$ipa_file" == *prod*.ipa ]]; then
-          echo "Found a production environment file"
-          echo "env=production" >> $GITHUB_ENV
-        else
-          echo "No matching environment found"
-          exit 1
-        fi
+    #     if [[ "$apk_file" == *dev*.apk ]]; then
+    #       echo "Found a dev environment APK file"
+    #       echo "env=dev" >> $GITHUB_ENV
+    #     elif [[ "$apk_file" == *staging*.apk ]]; then
+    #       echo "Found a staging environment APK file"
+    #       echo "env=staging" >> $GITHUB_ENV
+    #     elif [[ "$apk_file" == *prod*.apk ]]; then
+    #       echo "Found a production environment APK file"
+    #       echo "env=production" >> $GITHUB_ENV
+    #     else
+    #       echo "No matching environment APK found"
+    #       exit 1
+    #     fi
 
     #################################
     # Create RELEASE
