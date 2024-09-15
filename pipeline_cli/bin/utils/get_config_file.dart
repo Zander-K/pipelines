@@ -1,5 +1,6 @@
 import 'dart:io';
 
+/// Returns a [String]? of config file path given a [directoryPath].
 String? searchConfigFile(String directoryPath) {
   final configFilePattern = RegExp(r'^.*_config\.json$');
 

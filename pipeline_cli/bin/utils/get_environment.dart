@@ -4,6 +4,9 @@ import 'dart:io';
 import '../extensions/string.dart';
 import 'get_config_file.dart';
 
+/// Returns a [String]? with the environment give a [filePath] to the config file.
+///
+/// For example, `Development` or `Production` if no config file is found.
 String? getEnvFromConfig({required String dirPath}) {
   try {
     final configFilePath = searchConfigFile(dirPath) ?? '';
@@ -30,8 +33,10 @@ String? getEnvFromConfig({required String dirPath}) {
     } else {
       return 'Production';
     }
-  } catch (e) {
-    print('Error reading or parsing the file: $e');
+  } catch (e, s) {
+    print('Unexpected error: ');
+    print('Error: $e');
+    print('Stack Trace: $s');
     return null;
   }
 }

@@ -138,12 +138,11 @@ runs:
         SLACK_USERNAME: "GitHub Actions"
         SLACK_COLOR: ${{ job.status }}
         SLACK_ICON_EMOJI: ":rocket:"
-        # SLACK_TITLE: "Pipeline Build Notification"
+        SLACK_TITLE: ""
         SLACK_MESSAGE: "
           ${{ env.CLI_OUTPUT }}\n
           URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
           "
-        # SLACK_MESSAGE_ON_SUCCESS: '{"text":"${{ env.CLI_OUTPUT }}"}'
         ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         CLI_OUTPUT: ${{ env.CLI_OUTPUT }}
 
@@ -156,6 +155,13 @@ inputs:
     description: "GitHub Token"
     required: true
 
+  # Possible values that can be passed into the action for WORKFLOW
+  # QA_GC
+  # BETA_GC
+  # PROD_GC
+  # QA_MB
+  # BETA_MB
+  # PROD_MB
   WORKFLOW:
     description: "Determines the workflow type"
     required: true

@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import '../exceptions/workflow_name_exception.dart';
-import '../extensions/string.dart';
+import '../export.dart';
 
 /// Returns a [String] of the workflow name given a [branch]
 String? getWorkflowName(String branch) {

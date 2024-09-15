@@ -3,7 +3,10 @@ import 'dart:io';
 import '../export.dart';
 
 /// Returns a [Record] with the label and version and/or build number given a
-/// workflow name and directory path
+/// [workflowName] and [dirPath].
+///
+/// If [returnSeparately] is true, it will return the version and build numbers
+/// separately.
 ///
 /// An iOS workflow returns `Version+Build Nr` and `1.0.0+876`
 /// An Android workflow returns `Build Nr` and `876`

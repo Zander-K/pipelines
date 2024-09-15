@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-/// Returns a [Record] with the current date and time
+/// Returns a [Record] with the current date and time.
 DateAndTime getDateTime() {
   final utc = DateTime.now().toUtc();
   final sast = utc.add(Duration(hours: 2));

@@ -2,9 +2,9 @@ import 'dart:io';
 
 import '../export.dart';
 
-/// Returns a [String]? with the last commit hash of a given branch
+/// Returns a [String]? with the last commit hash of a given [branchName].
 String? getLastCommitHash(String branch) {
-  return _getLastCommitSha(Globals.repository, branch);
+  return _getLastCommitSha(Globals.sourceRepo, branch);
 }
 
 String? _getLastCommitSha(

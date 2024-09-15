@@ -2,9 +2,9 @@ import 'dart:io';
 
 import '../export.dart';
 
-/// Returns a [String]? of the app name given a directory to the pubspec.yaml
+/// Returns a [String]? of the app name given a [dirPath] to the pubspec.yaml.
 ///
-/// For example, `grosvenor_prod`
+/// For example, `grosvenor_prod`.
 String? getAppName(String dirPath) {
   try {
     final path = getPubspecPath(dirPath: dirPath);

@@ -1,10 +1,12 @@
+import '../export.dart';
+
 class Defaults {
-  static String title = 'vTest';
+  static String title = '';
   static String notes = 'Release notes';
-  static String tag = 'vTest';
+  static String tag = 'v1.0.0';
 
   /// <OWNER/REPO> for the Target Repo
-  static String repo = 'Zander-K/json_editor';
+  static String repo = Globals.targetRepo;
 
   /// Token secret from the source repo
   static String token = '';

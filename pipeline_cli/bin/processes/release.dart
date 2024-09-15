@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
-import '../const/defaults.dart';
-import '../extensions/string.dart';
-import '../utils/create_sdet_tag.dart';
+import '../export.dart';
 
 void release({
   required String? title,
@@ -26,7 +24,7 @@ void release({
       repo: repo,
       token: token,
       assets: assets,
-      isInteractive: isInteractive ?? true,
+      isInteractive: isInteractive ?? false,
     );
 
     if (inputs.isEmpty) {
@@ -41,7 +39,11 @@ void release({
       type = 'QA';
     }
 
-    final generatedTag = createSDETTag(env: env, type: type, branch: branch);
+    final generatedTag = createSDETTag(
+      env: env,
+      type: type,
+      branch: branch,
+    );
     if (generatedTag.isEmpty) {
       print('Error. Tag is empty.');
       return;
@@ -54,11 +56,12 @@ void release({
     final String? inputSourceToken = inputs['token'];
     List<String>? paths = inputs['paths'] ?? [];
 
+    final releaseNotesContents = getReleaseNotes(inputNotes ?? Defaults.notes);
     final releasePaths = getReleasePaths(paths);
 
     final String releaseTag = inputTag ?? generatedTag;
     final String releaseTitle = inputTitle ?? releaseTag;
-    final String releaseNotes = inputNotes ?? Defaults.notes;
+    // final String releaseNotes = inputNotes ?? Defaults.notes;
     final String releaseTargetRepo = inputTargetRepo ?? Defaults.repo;
     final String releaseSourceToken = inputSourceToken ?? Defaults.token;
 
@@ -73,7 +76,7 @@ void release({
       '--title',
       releaseTitle,
       '--notes',
-      releaseNotes
+      releaseNotesContents
     ];
 
     Map<String, String>? envVars = {

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-/// Returns a [String]? of the current Flutter version
+/// Returns a [String]? of the current Flutter version.
 String? getFlutterVersion() {
   try {
     var flutterVersionOutput = _runCommand(['flutter', '--version']);
@@ -16,7 +16,7 @@ String? getFlutterVersion() {
   }
 }
 
-/// Returns a [String]? of the current Dart version
+/// Returns a [String]? of the current Dart version.
 String? getDartVersion() {
   try {
     var dartVersionOutput = _runCommand(['dart', '--version']);
