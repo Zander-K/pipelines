@@ -148,7 +148,7 @@ runs:
           ${{ env.CLI_OUTPUT }}\n
           URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
           "}'
-        SLACK_FILE_UPLOAD: file.txt
+        SLACK_FILE_UPLOAD: ${{ github.workspace }}/file.txt
         ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         CLI_OUTPUT: ${{ env.CLI_OUTPUT }}
 
