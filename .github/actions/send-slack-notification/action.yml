@@ -24,7 +24,8 @@ runs:
         # SLACK_MESSAGE_ON_SUCCESS: ${{ inputs.SLACK_MESSAGE_ON_SUCCESS }}
         # SLACK_MESSAGE_ON_FAILURE: ${{ inputs.SLACK_MESSAGE_ON_FAILURE }}
         SLACK_FOOTER: ${{ inputs.SLACK_FOOTER }}
-        # SLACK_CUSTOM_PAYLOAD: ${{ inputs.SLACK_CUSTOM_PAYLOAD }}
+        SLACK_CUSTOM_PAYLOAD: ${{ inputs.SLACK_CUSTOM_PAYLOAD }}
+        SLACK_FILE_UPLOAD: ${{ inputs.SLACK_FILE_UPLOAD }}
         # SLACK_CUSTOM_PAYLOAD: '
         #   {
         #   "blocks": [
@@ -98,6 +99,9 @@ inputs:
       Created by RIGA for RIGA
   SLACK_CUSTOM_PAYLOAD:
     description: "Custom Slack Message"
+    required: false
+  SLACK_FILE_UPLOAD:
+    description: "File to Upload with Custom Payload"
     required: false
   ARTIFACT_URL:
     description: "URL of the upload as an artifact"

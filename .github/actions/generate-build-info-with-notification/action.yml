@@ -9,8 +9,8 @@ runs:
     #################################
     # Setup FLUTTER
     #################################
-    - name: Setup Flutter
-      uses: ./.github/actions/setup-flutter
+    # - name: Setup Flutter
+    #   uses: ./.github/actions/setup-flutter
 
     #################################
     # Setup DART
@@ -139,11 +139,16 @@ runs:
         SLACK_COLOR: ${{ job.status }}
         SLACK_ICON_EMOJI: ":rocket:"
         # SLACK_TITLE: "Pipeline Build Notification"
-        SLACK_MESSAGE: "
+        # SLACK_MESSAGE: "
+        #   ${{ env.CLI_OUTPUT }}\n
+        #   URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
+        #   "
+        # SLACK_MESSAGE_ON_SUCCESS: '{"text":"${{ env.CLI_OUTPUT }}"}'
+        SLACK_CUSTOM_PAYLOAD: "
           ${{ env.CLI_OUTPUT }}\n
           URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
           "
-        # SLACK_MESSAGE_ON_SUCCESS: '{"text":"${{ env.CLI_OUTPUT }}"}'
+        SLACK_FILE_UPLOAD: ./file.txt
         ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         CLI_OUTPUT: ${{ env.CLI_OUTPUT }}
 
