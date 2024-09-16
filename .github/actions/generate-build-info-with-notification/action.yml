@@ -135,12 +135,12 @@ runs:
         name: build-info-double
         path: ${{ github.workspace }}/file.txt
 
-    - name: Debug file path
-      shell: bash
-      run: |
-        echo "Workspace: ${{ github.workspace }}"
-        ls -l ${{ github.workspace }}
-        cat ${{ github.workspace }}/file.txt
+    # - name: Debug file path
+    #   shell: bash
+    #   run: |
+    #     echo "Workspace: ${{ github.workspace }}"
+    #     ls -l ${{ github.workspace }}
+    #     cat ${{ github.workspace }}/file.txt
 
     #################################
     # SEND SLACK NOTIFICATION
@@ -164,7 +164,6 @@ runs:
           ${{ env.CLI_OUTPUT }}\n
           URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
           "}'
-        # SLACK_FILE_UPLOAD: ${{ github.workspace }}/file.txt
         SLACK_FILE_UPLOAD: "/home/runner/work/pipelines/pipelines/file.txt"
         ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         CLI_OUTPUT: ${{ env.CLI_OUTPUT }}
