@@ -130,7 +130,6 @@ runs:
     # UPLOAD ARTIFACT
     #################################
     - name: Upload Output File
-      id: artifact-upload-step
       uses: actions/upload-artifact@v4
       with:
         name: build-info
