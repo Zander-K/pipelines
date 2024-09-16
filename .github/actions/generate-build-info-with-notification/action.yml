@@ -127,6 +127,23 @@ runs:
         path: file.txt
 
     #################################
+    # UPLOAD ARTIFACT
+    #################################
+    - name: Upload Output File
+      id: artifact-upload-step
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-info
+        path: ${{ github.workspace }}/file.txt
+
+    - name: Debug file path
+      shell: bash
+      run: |
+        echo "Workspace: ${{ github.workspace }}"
+        ls -l ${{ github.workspace }}
+        cat ${{ github.workspace }}/file.txt
+
+    #################################
     # SEND SLACK NOTIFICATION
     #################################
     - name: Send Slack Notification
