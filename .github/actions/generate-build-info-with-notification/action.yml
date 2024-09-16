@@ -144,10 +144,10 @@ runs:
         #   URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         #   "
         # SLACK_MESSAGE_ON_SUCCESS: '{"text":"${{ env.CLI_OUTPUT }}"}'
-        SLACK_CUSTOM_PAYLOAD: "
+        SLACK_CUSTOM_PAYLOAD: '{"text": "
           ${{ env.CLI_OUTPUT }}\n
           URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
-          "
+          "}'
         SLACK_FILE_UPLOAD: ./file.txt
         ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         CLI_OUTPUT: ${{ env.CLI_OUTPUT }}
