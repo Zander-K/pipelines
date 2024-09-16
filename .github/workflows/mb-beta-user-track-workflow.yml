@@ -7,9 +7,10 @@ on:
         description: 'Branch to checkout'
         required: true
         default: 'main'
-  pull_request: 
-    branches: 
-      - main
+  # pull_request: 
+  #   branches: 
+  #     - main
+  
 jobs:
   build_android:
     name: Build Android app bundle and distribute to beta
