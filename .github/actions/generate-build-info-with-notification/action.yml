@@ -133,7 +133,7 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: build-info-double
-        path: ${{ github.workspace }}/file.txt
+        path: /home/runner/work/pipelines/pipelines/pubspec.yaml
 
     # - name: Debug file path
     #   shell: bash
@@ -164,7 +164,7 @@ runs:
           ${{ env.CLI_OUTPUT }}\n
           URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
           "}'
-        SLACK_FILE_UPLOAD: "/home/runner/work/pipelines/pipelines/file.txt"
+        SLACK_FILE_UPLOAD: "/home/runner/work/pipelines/pipelines/pubspec.yaml"
         ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         CLI_OUTPUT: ${{ env.CLI_OUTPUT }}
 
