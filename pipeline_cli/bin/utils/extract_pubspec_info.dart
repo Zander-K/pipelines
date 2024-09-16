@@ -1,45 +1,71 @@
 import 'dart:io';
 
-(String, String) getVersionAndBuildDetails(
-  String workflowName,
-  String filePath,
-) {
-  final versionBuild = _getVersionAndBuild(filePath);
+import '../export.dart';
 
-  final version = versionBuild.$1;
-  final build = versionBuild.$2;
+/// Returns a [Record] with the label and version and/or build number given a
+/// workflow name and directory path
+///
+/// An iOS workflow returns `Version+Build Nr` and `1.0.0+876`
+/// An Android workflow returns `Build Nr` and `876`
+///
+/// Otherwise, `Version+Build Nr` and `Undetermined`
+VersionBuildDetails getVersionAndBuildDetails(
+  String workflowName,
+  String dirPath,
+) {
+  final versionBuild = _getVersionAndBuild(dirPath);
+
+  final version = versionBuild?.$1 ?? '';
+  final build = versionBuild?.$2 ?? '';
 
   if (workflowName.toLowerCase().contains('ios') ||
       workflowName.toLowerCase().contains('distribution')) {
-    return ('Version+Build Nr', '$version+$build');
+    return VersionBuildDetails(
+        label: 'Version+Build Nr', versionOrBuild: '$version+$build');
   } else if (workflowName.toLowerCase().contains('android')) {
-    return ('Build Nr', build);
+    return VersionBuildDetails(label: 'Build Nr', versionOrBuild: build);
   } else {
-    return ('Version+Build Nr', 'Undetermined');
+    return VersionBuildDetails(
+        label: 'Version+Build Nr', versionOrBuild: 'Undetermined');
   }
 }
 
-(String, String) _getVersionAndBuild(String filePath) {
+(String?, String?)? _getVersionAndBuild(String dirPath) {
   try {
-    var file = File('$filePath/pubspec.yaml');
-    if (!file.existsSync()) {
-      print('pubspec.yaml file not found');
-      return ('', '');
-    }
-    var contents = file.readAsStringSync();
+    final path = getPubspecPath(dirPath: dirPath);
+    final file = File(path);
 
-    var versionRegex = RegExp(r'version:\s*([^\+]+)');
-    var versionMatch = versionRegex.firstMatch(contents);
-    var version =
+    final contents = file.readAsStringSync();
+
+    final versionRegex = RegExp(r'version:\s*([^\+]+)');
+    final versionMatch = versionRegex.firstMatch(contents);
+    final version =
         versionMatch != null ? versionMatch.group(1)?.trim() : 'Unknown';
 
-    var buildRegex = RegExp(r'\+\s*(\d+)');
-    var buildMatch = buildRegex.firstMatch(contents);
-    var build = buildMatch != null ? buildMatch.group(1)?.trim() : 'Unknown';
+    final buildRegex = RegExp(r'\+\s*(\d+)');
+    final buildMatch = buildRegex.firstMatch(contents);
+    final build = buildMatch != null ? buildMatch.group(1)?.trim() : 'Unknown';
 
-    return (version ?? '', build ?? '');
-  } catch (e) {
-    print('Error in extract_pubspec_info and reading pubspec.yaml file: $e');
-    return ('', '');
+    return (version, build);
+  } on PubspecException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
+    return null;
+  } catch (e, s) {
+    print('Unexpected error: $e');
+    print('Stack Trace:');
+    print('$s');
+    return null;
   }
+}
+
+class VersionBuildDetails {
+  VersionBuildDetails({
+    required this.label,
+    required this.versionOrBuild,
+  });
+
+  final String label;
+  final String versionOrBuild;
 }

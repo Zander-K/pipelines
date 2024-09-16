@@ -1,3 +1,6 @@
+/// Returns a [String] with the platform type given a workflow name
+///
+/// For example, `iOS` or `Android`
 String getPlatformType(String workflowName) {
   final String platform;
 

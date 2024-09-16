@@ -1,40 +1,45 @@
 import 'dart:io';
 
-import '../const/export_const.dart';
+import '../export.dart';
 
-String? getLastCommitHash(String branchName) {
-  var lastCommitSha =
-      _getLastCommitSha(Globals.owner, Globals.repo, branchName);
-
-  if (lastCommitSha != null) {
-    return lastCommitSha;
-  } else {
-    print('Failed to retrieve the last commit SHA.');
-    return null;
-  }
+/// Returns a [String]? with the last commit hash of a given branch
+String? getLastCommitHash(String branch) {
+  return _getLastCommitSha(Globals.repository, branch);
 }
 
 String? _getLastCommitSha(
-  String owner,
   String repo,
   String branchName,
 ) {
   try {
     var result = Process.runSync('gh', [
       'api',
-      'repos/$owner/$repo/commits?sha=$branchName',
+      'repos/$repo/commits?sha=$branchName',
       '--jq',
-      '.[0].sha'
+      '.[0].sha',
     ]);
 
     if (result.exitCode != 0) {
-      print('Error fetching the last commit SHA: ${result.stderr}');
-      return null;
+      throw CommitHashException(
+          'Error fetching the last commit SHA: ${result.stderr}');
+    }
+
+    var lastCommitSha = result.stdout.trim();
+
+    if (lastCommitSha == null) {
+      throw CommitHashException('Failed to retrieve the last commit SHA.');
     }
 
     return result.stdout.trim();
-  } catch (e) {
-    print('Error in get_commit_hash: $e');
+  } on CommitHashException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
+    return null;
+  } catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
     return null;
   }
 }
