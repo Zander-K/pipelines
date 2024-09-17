@@ -16,7 +16,7 @@ doc/api/
 
 # dotenv environment variables file
 .env*
-**/pipeline_cli_config.json
+**/pipeline_cli_config*.json
 **/*.zip
 
 # Avoid committing generated Javascript files:
