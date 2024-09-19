@@ -66,7 +66,7 @@ void generate({
         );
     }
 
-    print(message.getContents());
+    // print(message.getContents());
     print(message.getContentsTable());
   } on BranchNameException catch (e, s) {
     print('\n$e');

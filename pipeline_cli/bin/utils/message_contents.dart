@@ -237,25 +237,30 @@ A new *production* build has been published for MeccaBingo.
     //     .writeln('**-----------------------------------------------------**');
     table.insertRow(['📅 Current Date:', dateAndTime.date]);
     table.insertRow(['⏱️ Current Time:', '${dateAndTime.time} SAST']);
-    outputBuffer.writeln('** 📅\tCurrent Date: \t\t** ${dateAndTime.date} **');
-    outputBuffer
-        .writeln('** ⏱️\tCurrent Time: \t\t** ${dateAndTime.time} SAST **');
     outputBuffer
         .writeln('**-----------------------------------------------------**');
-    outputBuffer.writeln(
-        '** 🛠️\tWorkflow Name: \t\t** [$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit/checks) **');
-    outputBuffer.writeln('** 📱\tPlatform: \t\t\t** $platformType **');
-    outputBuffer.writeln('** 🏷️\tApp Name: \t\t** $appName **');
-    outputBuffer.writeln(
-        '** 🔖\tCommit Hash: \t\t** [$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit) **');
-    outputBuffer.writeln(
-        '** 🪵\tBranch Name: \t\t** [$branch](https://github.com/${Globals.repository}/tree/$branch) **');
-    outputBuffer
-        .writeln('** ⏱️\tTotal Build Time: \t** $totalBuildTimeFormatted **');
-    outputBuffer.writeln(
-        '** 🔢\t${versionBuildDetails.label}: \t** ${versionBuildDetails.versionOrBuild} **');
-    outputBuffer.writeln('** 🦋\tFlutter Version: \t\t** $flutterVersion **');
-    outputBuffer.writeln('** 🎯\tDart Version: \t\t\t** $dartVersion **\n');
+
+    table.insertRow([
+      '🛠️ Workflow Name:',
+      '[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit/checks)'
+    ]);
+    table.insertRow(['📱 Platform:', platformType]);
+    table.insertRow(['🏷️ App Name:', appName.toString()]);
+    table.insertRow([
+      '🔖 Commit Hash:',
+      '[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)'
+    ]);
+    table.insertRow([
+      '🪵 Branch Name:',
+      '[$branch](https://github.com/${Globals.repository}/tree/$branch)'
+    ]);
+    table.insertRow(['⏱️ Total Build Time:', totalBuildTimeFormatted]);
+    table.insertRow([
+      '🔢 ${versionBuildDetails.label}:',
+      (versionBuildDetails.versionOrBuild)
+    ]);
+    table.insertRow(['🦋 Flutter Version:', flutterVersion.toString()]);
+    table.insertRow(['🎯 Dart Version:', dartVersion.toString()]);
     outputBuffer
         .writeln('**-----------------------------------------------------**');
 
