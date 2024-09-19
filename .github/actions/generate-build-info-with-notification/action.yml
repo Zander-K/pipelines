@@ -140,11 +140,9 @@ runs:
         SLACK_ICON_EMOJI: ":rocket:"
         SLACK_TITLE: ""
         SLACK_MESSAGE: "
-          URL: [Download Here](${{ steps.artifact-upload-step.outputs.artifact-url }})
+          URL: [Download Here](${{ steps.artifact-upload-step.outputs.artifact-url }})\n
           ${{ env.CLI_OUTPUT }}\n
           "
-        # SLACK_MESSAGE_ON_SUCCESS: "Successful build."
-        # SLACK_MESSAGE_ON_FAILURE: "No message contents."
         ARTIFACT_URL: ${{ steps.artifact-upload-step.outputs.artifact-url }}
         CLI_OUTPUT: ${{ env.CLI_OUTPUT }}
 

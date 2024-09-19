@@ -39,7 +39,7 @@ jobs:
         with:
           PIPELINE_CLI_CONFIG: ${{ secrets.PIPELINE_CLI_CONFIG }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WORKFLOW: QA_GC
+          WORKFLOW: BETA_GC
 
 ## TESTS
 # QA_GC     works

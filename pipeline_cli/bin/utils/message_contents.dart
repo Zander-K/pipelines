@@ -1,3 +1,5 @@
+import 'package:dart_console/dart_console.dart';
+
 import '../export.dart';
 
 class MessageContents {
@@ -220,4 +222,67 @@ A new *production* build has been published for MeccaBingo.
 
     return outputBuffer.toString();
   }
+
+  String getContentsTable() {
+    var outputBuffer = StringBuffer();
+    final table = Table();
+
+    outputBuffer.writeln('**$title**\n');
+    outputBuffer.writeln(body);
+
+    table
+      ..insertColumn(header: 'Item')
+      ..insertColumn(header: 'Data');
+    // outputBuffer
+    //     .writeln('**-----------------------------------------------------**');
+    table.insertRow(['📅 Current Date:', dateAndTime.date]);
+    table.insertRow(['⏱️ Current Time:', '${dateAndTime.time} SAST']);
+    outputBuffer.writeln('** 📅\tCurrent Date: \t\t** ${dateAndTime.date} **');
+    outputBuffer
+        .writeln('** ⏱️\tCurrent Time: \t\t** ${dateAndTime.time} SAST **');
+    outputBuffer
+        .writeln('**-----------------------------------------------------**');
+    outputBuffer.writeln(
+        '** 🛠️\tWorkflow Name: \t\t** [$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit/checks) **');
+    outputBuffer.writeln('** 📱\tPlatform: \t\t\t** $platformType **');
+    outputBuffer.writeln('** 🏷️\tApp Name: \t\t** $appName **');
+    outputBuffer.writeln(
+        '** 🔖\tCommit Hash: \t\t** [$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit) **');
+    outputBuffer.writeln(
+        '** 🪵\tBranch Name: \t\t** [$branch](https://github.com/${Globals.repository}/tree/$branch) **');
+    outputBuffer
+        .writeln('** ⏱️\tTotal Build Time: \t** $totalBuildTimeFormatted **');
+    outputBuffer.writeln(
+        '** 🔢\t${versionBuildDetails.label}: \t** ${versionBuildDetails.versionOrBuild} **');
+    outputBuffer.writeln('** 🦋\tFlutter Version: \t\t** $flutterVersion **');
+    outputBuffer.writeln('** 🎯\tDart Version: \t\t\t** $dartVersion **\n');
+    outputBuffer
+        .writeln('**-----------------------------------------------------**');
+
+    outputBuffer.writeln('**PUBSPEC.LOCK CONTENTS: Installed Packages**');
+    outputBuffer
+        .writeln('**-----------------------------------------------------**\n');
+    outputBuffer.write(pubspecContents);
+    outputBuffer
+        .writeln('**-----------------------------------------------------**');
+
+    print(table.render());
+
+    return outputBuffer.toString();
+  }
+}
+
+void main() {
+  final table = Table();
+
+  table.insertColumn(header: 'test');
+  table.insertRow(['d']);
+  // ..addColumn('Column1')
+  // ..addColumn('Column2')
+  // ..addColumn('Column3')
+  // ..addRow(['Value1', 'Value2', 'Value3'])
+  // ..addRow(['ItemA', 'ItemB', 'ItemC']);
+
+  table.render();
+  print(table.render());
 }

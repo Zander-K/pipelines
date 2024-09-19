@@ -10,6 +10,8 @@ environment:
 
 dependencies:
   args: ^2.4.2
+  console: ^4.1.0
+  dart_console: ^4.1.0
   intl: ^0.19.0
   path: ^1.9.0
   process_run: ^1.0.1
