@@ -33,7 +33,8 @@ String? getDartVersion() {
 }
 
 String _runCommand(List<String> command) {
-  var result = Process.runSync(command[0], command.sublist(1));
+  var result =
+      Process.runSync(command[0], command.sublist(1), runInShell: true);
   if (result.exitCode != 0) {
     throw Exception(
         'Error running command: ${command.join(' ')}\n${result.stderr}');

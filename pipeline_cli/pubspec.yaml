@@ -1,5 +1,5 @@
 name: pipeline
-description: A cli to be used alongside production pipelines
+description: A cli to be used alongside pipelines and workflows
 version: 0.0.1
 
 executables:

@@ -3,22 +3,26 @@ import 'dart:io';
 
 import '../export.dart';
 
-/// Returns a [String] of the workflow name given a [branch]
+/// Returns a [String] of the workflow name given a [branch].
 String? getWorkflowName(String branch) {
   try {
     String? workflow = Platform.environment['GITHUB_WORKFLOW'];
 
     if (workflow.isNullOrEmpty) {
-      final workflowResult = Process.runSync('gh', [
-        'run',
-        'list',
-        '--json',
-        'name',
-        '--branch',
-        branch,
-        '--limit',
-        '1',
-      ]);
+      final workflowResult = Process.runSync(
+        'gh',
+        [
+          'run',
+          'list',
+          '--json',
+          'name',
+          '--branch',
+          branch,
+          '--limit',
+          '1',
+        ],
+        runInShell: true,
+      );
 
       if (workflowResult.exitCode != 0) {
         throw WorkflowNameException(workflowResult.stderr);

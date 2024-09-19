@@ -16,6 +16,7 @@ import '../export.dart';
       'dart',
       ['pub', 'deps', '--style=list'],
       workingDirectory: path,
+      runInShell: true,
     );
 
     if (result.exitCode != 0) {

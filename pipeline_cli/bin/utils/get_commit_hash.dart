@@ -12,12 +12,16 @@ String? _getLastCommitSha(
   String branchName,
 ) {
   try {
-    var result = Process.runSync('gh', [
-      'api',
-      'repos/$repo/commits?sha=$branchName',
-      '--jq',
-      '.[0].sha',
-    ]);
+    var result = Process.runSync(
+      'gh',
+      [
+        'api',
+        'repos/$repo/commits?sha=$branchName',
+        '--jq',
+        '.[0].sha',
+      ],
+      runInShell: true,
+    );
 
     if (result.exitCode != 0) {
       throw CommitHashException(

@@ -8,6 +8,7 @@ bool checksBranch(String branch) {
     ProcessResult result = Process.runSync(
       'gh',
       ['api', 'repos/${Globals.sourceRepo}/branches/$branch'],
+      runInShell: true,
     );
 
     if (result.exitCode == 0) {

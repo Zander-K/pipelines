@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../export.dart';
 
 void generate({
@@ -69,13 +71,16 @@ void generate({
     print('\n$e');
     print('Stack Trace:');
     print(s);
+    exit(1);
   } on WorkflowNameException catch (e, s) {
     print('\n$e');
     print('Stack Trace:');
     print(s);
+    exit(1);
   } catch (e, s) {
     print('Unexpected error: $e');
     print('Stack Trace:');
     print('$s');
+    exit(1);
   }
 }

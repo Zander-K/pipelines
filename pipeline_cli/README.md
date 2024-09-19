@@ -6,6 +6,9 @@ This CLI is created to allow us to rework and clean up our workflows by replacin
 
 ## Installing
 
+> **Installing the GitHub CLI**
+> The pipeline CLI uses the GitHub CLI to generate or gather information directly instead of passing it in manually. Furthermore, to run the `pipe` commands locally, it requires that the GitHub CLI is installed and authenticated. Follow [this link](https://daubltd.atlassian.net/wiki/x/JgCPNTI) on how to set it up.
+
 In ``rank_mobile_core/`` use the following to *install* the CLI:
 
 ```bash
@@ -27,15 +30,21 @@ dart pub global list
 
 with output looking something like `pipeline 0.0.2 at path "/Users/...`
 
-Unistall to update then reinstall install:
+To update with a reinstall, use:
+
+```sh
+make cli
+```
+
+or alternatively,
 
 ```bash
 dart pub global deactivate pipeline  
 dart pub global activate -s path ./pipeline_cli
 ```
 
-**Alternatively:**
-Use `make cli` to reinstall all CLI's.
+**Note:**
+Use `make cli` to reinstall all our CLI's.
 
 ---
 

@@ -24,16 +24,20 @@ String getTotalBuildTime(String workflowName) {
 /// Returns an [int]? of the total build time given [workflowName].
 int? _getBuildTimeInSeconds(String workflowName) {
   try {
-    final latestRunIdResult = Process.runSync('gh', [
-      'run',
-      'list',
-      '--workflow',
-      workflowName,
-      '--limit',
-      '1',
-      '--json',
-      'databaseId'
-    ]);
+    final latestRunIdResult = Process.runSync(
+      'gh',
+      [
+        'run',
+        'list',
+        '--workflow',
+        workflowName,
+        '--limit',
+        '1',
+        '--json',
+        'databaseId',
+      ],
+      runInShell: true,
+    );
 
     if (latestRunIdResult.exitCode != 0) {
       throw TotalBuildTimeException(latestRunIdResult.stderr);
@@ -43,7 +47,10 @@ int? _getBuildTimeInSeconds(String workflowName) {
     final latestRunId = latestRunData[0]['databaseId'].toString();
 
     final durationResult = Process.runSync(
-        'gh', ['run', 'view', latestRunId, '--json', 'createdAt,updatedAt']);
+      'gh',
+      ['run', 'view', latestRunId, '--json', 'createdAt,updatedAt'],
+      runInShell: true,
+    );
 
     if (durationResult.exitCode != 0) {
       throw TotalBuildTimeException(durationResult.stderr);
