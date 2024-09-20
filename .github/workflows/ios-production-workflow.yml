@@ -1,0 +1,61 @@
+name: ios-production-pipeline 
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to checkout'
+        required: true
+        default: 'main'
+  # pull_request: 
+  #   branches: 
+  #     - main
+jobs:
+  deploy:
+    name: Deploy to Testflight
+    runs-on: macos-13
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+         ref: ${{github.event.inputs.branch}}
+      #################################
+      # Flutter Setup
+      #################################
+      - name: Setup Flutter
+        uses: ./.github/actions/setup-flutter
+
+      #################################
+      # Rename App
+      #################################
+      # - name: Rename
+      #   run: flutter pub run rename_app:main ios="Grosvenor Casino Online Games"
+      #   working-directory: ./apps/grosvenor_prod 
+      #################################
+      # Set pubspec.yaml version
+      #################################  
+      - name: set pubspec app version
+        shell: bash
+        run: |
+            sed -i '' -E "s/version: ([0-9]+\.[0-9]+\.[0-9]+\+[0-9]+)/version: ${{ secrets.GC_PROD_IOS_VERSION }}/" pubspec.yaml
+        working-directory: ./apps/grosvenor_prod
+
+        
+  extract:
+    name: Gather Info and Send Notification
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: | 
+            ${{ github.event.inputs.branch || github.event.pull_request.head.ref || github.ref_name }}
+      
+      - name: Generate File and Send Notification
+        uses: ./.github/actions/generate-build-info-with-notification
+        with:
+          PIPELINE_CLI_CONFIG: ${{ secrets.PIPELINE_CLI_CONFIG }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WORKFLOW: PROD_GC

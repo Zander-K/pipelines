@@ -1,0 +1,25 @@
+name: Download Artifact from Previous Workflow
+
+on:
+  workflow_run:
+    workflows: ["Build Web"]
+    types:
+      - completed
+  workflow_dispatch: 
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v6
+        with:
+            workflow: build-workflow.yml
+            workflow_conclusion: success
+            search_artifacts: true
+            name: build-info
+            if_no_artifact_found: fail
+
+            

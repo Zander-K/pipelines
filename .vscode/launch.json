@@ -5,25 +5,36 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Pipeline CLI",
+            "name": "Pipeline CLI - generate",
             "request": "launch",
             "type": "dart",
             "program": "pipeline_cli/bin/pipe.dart",
             "args": [
                 "-g",
                 "-b",
-                "test-pr",
+                "generate-pipeline",
             ]
         },
         {
-            "name": "Pipeline CLI 2",
+            "name": "Pipeline CLI - release",
             "request": "launch",
             "type": "dart",
             "program": "pipeline_cli/bin/pipe.dart",
             "args": [
-                "-g",
-                "-l",
-                "test-pr",
+                "-r",
+                "--source-token",
+                "token",
+                "--notes",
+                "./apps/grosvenor_prod/CHANGELOG.txt",
+                "--target-repo",
+                "rankengineering/sdet_dummy",
+                "--no-interactive",
+                "--assets",
+                "./simple-file.txt",
+                "--branch",
+                "sdet-pipeline",
+                "--environment",
+                ""
             ]
         },
         {

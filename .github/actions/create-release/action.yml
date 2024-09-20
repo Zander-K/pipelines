@@ -1,0 +1,170 @@
+name: "Create a Release"
+description: "Setup Flutter, activate pipeline CLI, get details, and do a release"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+
+    #################################
+    # Setup FLUTTER
+    #################################
+    # - name: Setup Flutter
+    #   uses: ./.github/actions/setup-flutter
+
+    #################################
+    # Setup DART
+    #################################
+    - name: Setup Dart
+      uses: dart-lang/setup-dart@v1
+
+    #################################
+    # Activate PIPELINE CLI
+    #################################
+    - name: Activate Pipeline CLI
+      shell: bash
+      run: make cli
+
+    - name: Export PIPELINE_CLI_CONFIG
+      shell: bash
+      run: echo "PIPELINE_CLI_CONFIG=${{ inputs.PIPELINE_CLI_CONFIG }}" >> $GITHUB_ENV
+
+    #################################
+    # Create PIPELINE CLI CONFIG
+    #################################
+    - name: Create pipeline_cli_config.json from base64 secret
+      env:
+        PIPELINE_CLI_CONFIG: ${{ inputs.PIPELINE_CLI_CONFIG }}
+      shell: bash
+      run: |
+        touch pipeline_cli_config.json
+        echo ${{ env.PIPELINE_CLI_CONFIG }} | base64 -d > pipeline_cli_config.json
+      working-directory: ./
+
+    #################################
+    # Extract SECRETS
+    #################################
+    - name: Extract secrets from config file
+      id: pipeline_cli_config
+      shell: bash
+      run: |
+        keys=("SLACK_TOKEN" "SLACK_PIPELINE_URL" "RELEASE_REPO_SECRET" "SLACK_QA_GC" "SLACK_BETA_GC" "SLACK_PROD_GC" "SLACK_QA_MB" "SLACK_BETA_MB" "SLACK_PROD_MB")
+
+        # Loop through the keys and extract each value, then mask it
+        for key in "${keys[@]}"; do
+          value=$(jq -r ".$key" pipeline_cli_config.json)
+          echo "::add-mask::$value"
+          
+          echo "$key=$value" >> $GITHUB_OUTPUT
+        done
+
+    #################################
+    # Download APK, IPA, and ZIP
+    #################################
+    - name: Download APK Artifact
+      id: download-artifact-apk
+      uses: dawidd6/action-download-artifact@v6
+      with:
+        workflow: ${{ inputs.WORKFLOW_NAME }}
+        workflow_conclusion: success
+        search_artifacts: true
+        name: ${{ inputs.APK_ARTIFACT_NAME }}
+        if_no_artifact_found: fail
+    # - name: Download IPA Artifact
+    #   id: download-artifact-ipa
+    #   uses: dawidd6/action-download-artifact@v6
+    #   with:
+    #     workflow: ${{ inputs.WORKFLOW_NAME }}
+    #     workflow_conclusion: success
+    #     search_artifacts: true
+    #     name: ${{ inputs.APK_ARTIFACT_NAME }}
+    #     if_no_artifact_found: fail
+    # - name: Download ZIP Artifact
+    #   id: download-artifact-zip
+    #   uses: dawidd6/action-download-artifact@v6
+    #   with:
+    #     workflow: ${{ inputs.WORKFLOW_NAME }}
+    #     workflow_conclusion: success
+    #     search_artifacts: true
+    #     name: ${{ inputs.ZIP_ARTIFACT_NAME }}
+    #     if_no_artifact_found: fail
+
+    # #################################
+    # # Get ENVIRONMENT from APK
+    # #################################
+    # - name: Identify environment from APK
+    #   id: env_check
+    #   shell: bash
+    #   run: |
+    #     apk_file=$(ls *.apk 2>/dev/null || echo "")
+
+    #     if [[ "$apk_file" == *dev*.apk ]]; then
+    #       echo "Found a dev environment APK file"
+    #       echo "env=dev" >> $GITHUB_ENV
+    #     elif [[ "$apk_file" == *staging*.apk ]]; then
+    #       echo "Found a staging environment APK file"
+    #       echo "env=staging" >> $GITHUB_ENV
+    #     elif [[ "$apk_file" == *prod*.apk ]]; then
+    #       echo "Found a production environment APK file"
+    #       echo "env=production" >> $GITHUB_ENV
+    #     else
+    #       echo "No matching environment APK found"
+    #       exit 1
+    #     fi
+
+    #################################
+    # Create RELEASE
+    #################################
+    - name: Create release
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+      run: |
+        BRANCH_NAME="${{ github.event.pull_request.head.ref || github.ref_name }}"
+
+        CLI_OUTPUT=$(pipe -r \
+            --source-token "${{ steps.pipeline_cli_config.outputs.RELEASE_REPO_SECRET }}" \
+            --notes './apps/grosvenor_prod/CHANGELOG.txt' \
+            --target-repo 'rankengineering/sdet_dummy' \
+            --assets './simple-file.txt' \
+            --no-interactive \
+            --branch "$BRANCH_NAME" \
+            --environment '${{ env.env }}')
+
+        echo "CLI_OUTPUT<<EOF" >> $GITHUB_ENV
+        echo -e "$CLI_OUTPUT" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+
+    #################################
+    # Print RESULTS of Release
+    #################################
+    - name: Results
+      shell: bash
+      run: |
+        echo "release cli output=
+        ${{ env.CLI_OUTPUT }}"
+
+inputs:
+  PIPELINE_CLI_CONFIG:
+    description: "Base64-encoded pipeline CLI config"
+    required: true
+
+  GH_TOKEN:
+    description: "GitHub Token"
+    required: true
+
+  WORKFLOW_NAME:
+    description: "Workflow where to get the artifacts"
+    required: true
+
+  APK_ARTIFACT_NAME:
+    description: "APK Artifact Name"
+    required: true
+
+  IPA_ARTIFACT_NAME:
+    description: "IPA Artifact Name"
+    required: true
+
+  ZIP_ARTIFACT_NAME:
+    description: "ZIP Artifact Name"
+    required: true

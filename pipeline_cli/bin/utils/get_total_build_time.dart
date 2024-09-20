@@ -1,47 +1,89 @@
 import 'dart:convert';
 import 'dart:io';
 
-int? getBuildTimeInSeconds(String workflowName) {
-  try {
-    var latestRunIdResult = Process.runSync('gh', [
-      'run',
-      'list',
-      '--workflow',
-      workflowName,
-      '--limit',
-      '1',
-      '--json',
-      'databaseId'
-    ]);
+import '../export.dart';
 
-    if (latestRunIdResult.exitCode != 0) {
-      print('Error fetching latest run ID: ${latestRunIdResult.stderr}');
-      return null;
+/// Returns a [String] with the total build time given a [workflowName].
+///
+/// For example, `10 minutes and 9 seconds`.
+String getTotalBuildTime(String workflowName) {
+  String totalBuildTimeFormatted = 'No build time';
+
+  if (!workflowName.contains('Unknown')) {
+    final totalBuildTimeInSeconds = _getBuildTimeInSeconds(workflowName) ?? 0;
+
+    final totalBuildTime = Duration(seconds: totalBuildTimeInSeconds);
+
+    totalBuildTimeFormatted =
+        "${totalBuildTime.inMinutes} minutes and ${totalBuildTime.inSeconds % 60} seconds";
+  }
+
+  return totalBuildTimeFormatted;
+}
+
+/// Returns an [int]? of the total build time given [workflowName].
+int? _getBuildTimeInSeconds(String workflowName) {
+  try {
+    final result = Process.runSync(
+      'gh',
+      [
+        'run',
+        'list',
+        '--workflow',
+        workflowName,
+        '--limit',
+        '1',
+        '--json',
+        'databaseId',
+      ],
+      runInShell: true,
+    );
+
+    if (result.stderr.contains('gh')) {
+      throw GhException(result.stderr);
     }
 
-    var latestRunData = jsonDecode(latestRunIdResult.stdout);
-    var latestRunId = latestRunData[0]['databaseId'].toString();
+    if (result.exitCode != 0) {
+      throw TotalBuildTimeException(result.stderr);
+    }
 
-    var durationResult = Process.runSync(
-        'gh', ['run', 'view', latestRunId, '--json', 'createdAt,updatedAt']);
+    final latestRunData = jsonDecode(result.stdout);
+    final latestRunId = latestRunData[0]['databaseId'].toString();
+
+    final durationResult = Process.runSync(
+      'gh',
+      ['run', 'view', latestRunId, '--json', 'createdAt,updatedAt'],
+      runInShell: true,
+    );
 
     if (durationResult.exitCode != 0) {
-      print('Error fetching run details: ${durationResult.stderr}');
-      return null;
+      throw TotalBuildTimeException(durationResult.stderr);
     }
 
-    var durationData = jsonDecode(durationResult.stdout);
-    var startTime = durationData['createdAt'];
-    var endTime = durationData['updatedAt'];
+    final durationData = jsonDecode(durationResult.stdout);
+    final startTime = durationData['createdAt'];
+    final endTime = durationData['updatedAt'];
 
-    var startTimeSec =
+    final startTimeSec =
         DateTime.parse(startTime).toUtc().millisecondsSinceEpoch ~/ 1000;
-    var endTimeSec =
+    final endTimeSec =
         DateTime.parse(endTime).toUtc().millisecondsSinceEpoch ~/ 1000;
 
     return endTimeSec - startTimeSec;
-  } catch (e) {
-    print('Error in get_total_build_time: $e');
+  } on TotalBuildTimeException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
+    return null;
+  } on GhException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
+    exit(1);
+  } catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
     return null;
   }
 }

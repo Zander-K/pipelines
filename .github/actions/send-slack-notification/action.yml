@@ -1,0 +1,81 @@
+name: "Upload Artifact and Send Slack Notification"
+description: "Uploads an artifact and sends a Slack notification with the artifact URL and build status."
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+
+    #################################
+    # SEND SLACK NOTIFICATION
+    #################################
+    - name: Send Notification to Slack
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ inputs.SLACK_WEBHOOK }}
+        SLACK_TOKEN: ${{ inputs.SLACK_TOKEN }}
+        SLACK_CHANNEL: ${{ inputs.SLACK_CHANNEL }}
+        SLACK_USERNAME: ${{ inputs.SLACK_USERNAME }}
+        SLACK_COLOR: ${{ inputs.SLACK_COLOR }}
+        SLACK_ICON_EMOJI: ${{ inputs.SLACK_ICON_EMOJI }}
+        SLACK_FOOTER: ${{ inputs.SLACK_FOOTER }}
+        SLACK_TITLE: ${{ inputs.SLACK_TITLE }}
+        SLACKIFY_MARKDOWN: true
+        SLACK_MESSAGE: ${{ inputs.SLACK_MESSAGE }}
+        # SLACK_MESSAGE_ON_SUCCESS: ${{ inputs.SLACK_MESSAGE_ON_SUCCESS }}
+        # SLACK_MESSAGE_ON_FAILURE: ${{ inputs.SLACK_MESSAGE_ON_FAILURE }}
+        # SLACK_CUSTOM_PAYLOAD: ${{ inputs.SLACK_CUSTOM_PAYLOAD }}
+        # SLACK_FILE_UPLOAD: ${{ inputs.SLACK_FILE_UPLOAD }}
+
+inputs:
+  SLACK_WEBHOOK:
+    description: "Slack Webhook"
+    required: true
+  SLACK_TOKEN:
+    description: "Slack Token"
+    required: true
+  SLACK_CHANNEL:
+    description: "Slack Channel"
+    required: true
+    default: "riga-pipeline"
+  SLACK_USERNAME:
+    description: "Slack Username"
+    required: true
+    default: "GitHub Actions"
+  SLACK_COLOR:
+    description: "Slack Message Color"
+    required: true
+  SLACK_ICON_EMOJI:
+    description: "Slack Icon Emoji"
+    required: false
+    default: ":rocket:"
+  SLACK_TITLE:
+    description: "Slack Notification Title"
+    required: true
+  SLACK_MESSAGE:
+    description: "Message when the build is done"
+    required: false
+  SLACK_MESSAGE_ON_SUCCESS:
+    description: "Success message when the build passes"
+    required: false
+  SLACK_MESSAGE_ON_FAILURE:
+    description: "Message when the build fails"
+    required: false
+  SLACK_FOOTER:
+    description: "Slack footer"
+    required: false
+    default: |
+      Created by RIGA for RIGA
+  SLACK_CUSTOM_PAYLOAD:
+    description: "Custom Slack Message"
+    required: false
+  SLACK_FILE_UPLOAD:
+    description: "File to Upload with Custom Payload"
+    required: false
+  ARTIFACT_URL:
+    description: "URL of the upload as an artifact"
+    required: true
+  CLI_OUTPUT:
+    description: "The string that is printed as output"
+    required: false
+    default: "None"

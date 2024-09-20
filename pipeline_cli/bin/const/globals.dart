@@ -1,5 +1,8 @@
 class Globals {
+  /// Generate Process
   static String repository = 'Zander-K/pipelines';
-  static var owner = 'Zander-K';
-  static var repo = 'pipelines';
+
+  /// Release Process
+  static String sourceRepo = 'Zander-K/pipelines';
+  static String targetRepo = 'rankengineering/sdet_dummy';
 }
