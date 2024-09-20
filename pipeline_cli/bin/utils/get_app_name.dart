@@ -5,9 +5,9 @@ import '../export.dart';
 /// Returns a [String]? of the app name given a [dirPath] to the pubspec.yaml.
 ///
 /// For example, `grosvenor_prod`.
-String? getAppName(String dirPath) {
+String? getAppName(String workflowName) {
   try {
-    final path = getPubspecPath(dirPath: dirPath);
+    final path = getPubspec(workflowName: workflowName);
     final file = File(path);
 
     final content = file.readAsStringSync();
@@ -20,6 +20,11 @@ String? getAppName(String dirPath) {
     }
 
     return match.group(1);
+  } on PubspecException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
+    return null;
   } catch (e, s) {
     print('Unexpected error: ');
     print('Error: $e');

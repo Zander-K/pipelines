@@ -3,7 +3,7 @@ import 'package:path/path.dart' as path;
 
 import '../../export.dart';
 
-String? _generateAssetFile(String filePath) {
+String _generateAssetFile(String filePath) {
   if (filePath.endsWith('apk') || filePath.endsWith('ipa')) {
     return filePath;
   }
@@ -26,8 +26,9 @@ String? _generateAssetFile(String filePath) {
 
   if (result.exitCode != 0) {
     print('Error while zipping files.');
+    print(result.stdout);
     print(result.stderr);
-    return null;
+    return '';
   }
 
   return zipPath;
@@ -52,7 +53,7 @@ List<String>? getReleasePaths(List<String>? paths) {
   if (cleanPaths.isNotEmpty) {
     print('Zipping files...');
     for (var path in cleanPaths) {
-      final newPath = _generateAssetFile(path) ?? '';
+      final newPath = _generateAssetFile(path);
 
       releasePaths.add(newPath);
     }

@@ -66,8 +66,7 @@ void generate({
         );
     }
 
-    // print(message.getContents());
-    print(message.getContentsTable());
+    print(message.getContents());
   } on BranchNameException catch (e, s) {
     print('\n$e');
     print('Stack Trace:');

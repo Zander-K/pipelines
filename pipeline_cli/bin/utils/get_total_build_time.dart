@@ -24,7 +24,7 @@ String getTotalBuildTime(String workflowName) {
 /// Returns an [int]? of the total build time given [workflowName].
 int? _getBuildTimeInSeconds(String workflowName) {
   try {
-    final latestRunIdResult = Process.runSync(
+    final result = Process.runSync(
       'gh',
       [
         'run',
@@ -39,11 +39,15 @@ int? _getBuildTimeInSeconds(String workflowName) {
       runInShell: true,
     );
 
-    if (latestRunIdResult.exitCode != 0) {
-      throw TotalBuildTimeException(latestRunIdResult.stderr);
+    if (result.stderr.contains('gh')) {
+      throw GhException(result.stderr);
     }
 
-    final latestRunData = jsonDecode(latestRunIdResult.stdout);
+    if (result.exitCode != 0) {
+      throw TotalBuildTimeException(result.stderr);
+    }
+
+    final latestRunData = jsonDecode(result.stdout);
     final latestRunId = latestRunData[0]['databaseId'].toString();
 
     final durationResult = Process.runSync(
@@ -71,6 +75,11 @@ int? _getBuildTimeInSeconds(String workflowName) {
     print('Stack Trace:');
     print(s);
     return null;
+  } on GhException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
+    exit(1);
   } catch (e, s) {
     print('\n$e');
     print('Stack Trace:');

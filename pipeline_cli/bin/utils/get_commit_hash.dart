@@ -23,6 +23,10 @@ String? _getLastCommitSha(
       runInShell: true,
     );
 
+    if (result.stderr.contains('gh')) {
+      throw GhException(result.stderr);
+    }
+
     if (result.exitCode != 0) {
       throw CommitHashException(
           'Error fetching the last commit SHA: ${result.stderr}');
@@ -40,6 +44,11 @@ String? _getLastCommitSha(
     print('Stack Trace:');
     print(s);
     return null;
+  } on GhException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
+    exit(1);
   } catch (e, s) {
     print('\n$e');
     print('Stack Trace:');

@@ -81,18 +81,27 @@ void release({
       'GH_TOKEN': releaseSourceToken,
     };
 
-    var releaseResult = Process.runSync(
+    var result = Process.runSync(
       'gh',
       releaseCommand,
       environment: envVars,
     );
 
-    if (releaseResult.exitCode != 0) {
-      print('Error creating GitHub release: ${releaseResult.stderr}');
+    if (result.stderr.contains('gh')) {
+      throw GhException(result.stderr);
+    }
+
+    if (result.exitCode != 0) {
+      print('Error creating GitHub release: ${result.stderr}');
       return;
     }
 
-    print('Release created successfully: ${releaseResult.stdout}');
+    print('Release created successfully: ${result.stdout}');
+  } on GhException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
+    exit(1);
   } catch (e, s) {
     print('An error occurred: $e, $s');
   }

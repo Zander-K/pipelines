@@ -13,8 +13,7 @@ String createSDETTag({
   String? environment = env;
 
   final workflowName = getWorkflowName(branch ?? 'develop') ?? '';
-  final pubspecDir = getPubspecDirectory(workflowName);
-  final pubspec = getPubspecPath(dirPath: pubspecDir, onlyDirectory: true);
+  final pubspec = getPubspec(workflowName: workflowName, onlyDirectory: true);
 
   if (env.isNullOrEmpty) {
     environment = getEnvFromConfig(dirPath: pubspec);
@@ -22,7 +21,6 @@ String createSDETTag({
 
   final versionBuildDetails = getVersionAndBuildDetails(
     workflowName,
-    pubspecDir,
     returnSeparately: true,
   );
 

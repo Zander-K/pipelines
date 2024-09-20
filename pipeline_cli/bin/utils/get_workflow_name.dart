@@ -9,7 +9,7 @@ String? getWorkflowName(String branch) {
     String? workflow = Platform.environment['GITHUB_WORKFLOW'];
 
     if (workflow.isNullOrEmpty) {
-      final workflowResult = Process.runSync(
+      final result = Process.runSync(
         'gh',
         [
           'run',
@@ -24,11 +24,15 @@ String? getWorkflowName(String branch) {
         runInShell: true,
       );
 
-      if (workflowResult.exitCode != 0) {
-        throw WorkflowNameException(workflowResult.stderr);
+      if (result.stderr.contains('gh')) {
+        throw GhException(result.stderr);
       }
 
-      final workflowList = jsonDecode(workflowResult.stdout);
+      if (result.exitCode != 0) {
+        throw WorkflowNameException(result.stderr);
+      }
+
+      final workflowList = jsonDecode(result.stdout);
 
       if (workflowList.isEmpty) {
         throw WorkflowNameException('No workflow runs found.');
@@ -43,6 +47,11 @@ String? getWorkflowName(String branch) {
     print('Stack Trace:');
     print(s);
     return null;
+  } on GhException catch (e, s) {
+    print('\n$e');
+    print('Stack Trace:');
+    print(s);
+    exit(1);
   } catch (e, s) {
     print('Unexpected error: ');
     print('Error: $e');

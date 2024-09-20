@@ -13,11 +13,10 @@ import '../export.dart';
 ///
 /// Otherwise, `Version+Build Nr` and `Undetermined`
 VersionBuildDetails getVersionAndBuildDetails(
-  String workflowName,
-  String dirPath, {
+  String workflowName, {
   bool? returnSeparately = false,
 }) {
-  final versionBuild = _getVersionAndBuild(dirPath);
+  final versionBuild = _getVersionAndBuild(workflowName);
 
   if (versionBuild == null) {
     return VersionBuildDetails(
@@ -60,9 +59,9 @@ VersionBuildDetails getVersionAndBuildDetails(
   }
 }
 
-(String?, String?)? _getVersionAndBuild(String dirPath) {
+(String?, String?)? _getVersionAndBuild(String workflowName) {
   try {
-    final path = getPubspecPath(dirPath: dirPath);
+    final path = getPubspec(workflowName: workflowName);
     final file = File(path);
 
     final contents = file.readAsStringSync();

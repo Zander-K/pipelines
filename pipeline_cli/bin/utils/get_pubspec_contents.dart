@@ -5,10 +5,10 @@ import '../export.dart';
 /// Returns a [Record] with the Flutter version, Dart version, and contents
 /// of installed packages given a [dirPath].
 ({String flutter, String dart, String contents})? getPubspecInstalledPackages(
-    String dirPath) {
+    String workflowName) {
   try {
-    final path = getPubspecPath(
-      dirPath: dirPath,
+    final path = getPubspec(
+      workflowName: workflowName,
       onlyDirectory: true,
     );
 

@@ -1,5 +1,3 @@
-import 'package:dart_console/dart_console.dart';
-
 import '../export.dart';
 
 class MessageContents {
@@ -44,12 +42,10 @@ class MessageContents {
         'A new build is out. \n Download the file using the artifact URL.';
     final lastCommit = getLastCommitHash(branch);
     final platformType = getPlatformType(workflowName);
-    final pubspecDir = getPubspecDirectory(workflowName);
     final totalBuildTimeFormatted = getTotalBuildTime(workflowName);
-    final versionBuildDetails =
-        getVersionAndBuildDetails(workflowName, pubspecDir);
-    final appName = getAppName(pubspecDir);
-    final pubspec = getPubspecInstalledPackages(pubspecDir);
+    final versionBuildDetails = getVersionAndBuildDetails(workflowName);
+    final appName = getAppName(workflowName);
+    final pubspec = getPubspecInstalledPackages(workflowName);
     final flutterVersion = pubspec?.flutter;
     final dartVersion = pubspec?.dart;
     final pubspecContents = pubspec?.contents;
@@ -191,25 +187,29 @@ A new *production* build has been published for MeccaBingo.
     outputBuffer.writeln(body);
     outputBuffer
         .writeln('**-----------------------------------------------------**');
-    outputBuffer.writeln('** 📅\tCurrent Date: \t\t** ${dateAndTime.date} **');
-    outputBuffer
-        .writeln('** ⏱️\tCurrent Time: \t\t** ${dateAndTime.time} SAST **');
+    outputBuffer.writeln(
+        '${'** 📅\tCurrent Date:'.padRight(30)}** ${dateAndTime.date} **');
+    outputBuffer.writeln(
+        '${'** ⏱️\tCurrent Time:'.padRight(30)}** ${dateAndTime.time} SAST **');
     outputBuffer
         .writeln('**-----------------------------------------------------**');
     outputBuffer.writeln(
-        '** 🛠️\tWorkflow Name: \t\t** [$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit/checks) **');
-    outputBuffer.writeln('** 📱\tPlatform: \t\t\t** $platformType **');
-    outputBuffer.writeln('** 🏷️\tApp Name: \t\t** $appName **');
-    outputBuffer.writeln(
-        '** 🔖\tCommit Hash: \t\t** [$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit) **');
-    outputBuffer.writeln(
-        '** 🪵\tBranch Name: \t\t** [$branch](https://github.com/${Globals.repository}/tree/$branch) **');
+        '${'** 🛠️\tWorkflow Name:'.padRight(30)}** [$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit/checks) **');
     outputBuffer
-        .writeln('** ⏱️\tTotal Build Time: \t** $totalBuildTimeFormatted **');
+        .writeln('${'** 📱\tPlatform:'.padRight(30)}** $platformType **');
+    outputBuffer.writeln('${'** 🏷️\tApp Name:'.padRight(30)}** $appName **');
     outputBuffer.writeln(
-        '** 🔢\t${versionBuildDetails.label}: \t** ${versionBuildDetails.versionOrBuild} **');
-    outputBuffer.writeln('** 🦋\tFlutter Version: \t\t** $flutterVersion **');
-    outputBuffer.writeln('** 🎯\tDart Version: \t\t\t** $dartVersion **\n');
+        '${'** 🔖\tCommit Hash:'.padRight(30)}** [$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit) **');
+    outputBuffer.writeln(
+        '${'** 🪵\tBranch Name:'.padRight(30)}** [$branch](https://github.com/${Globals.repository}/tree/$branch) **');
+    outputBuffer.writeln(
+        '${'** ⏱️\tTotal Build Time:'.padRight(30)}** $totalBuildTimeFormatted **');
+    outputBuffer.writeln(
+        '${'** 🔢\t${versionBuildDetails.label}:'.padRight(30)}** ${versionBuildDetails.versionOrBuild} **');
+    outputBuffer.writeln(
+        '${'** 🦋\tFlutter Version:'.padRight(30)}** $flutterVersion **');
+    outputBuffer
+        .writeln('${'** 🎯\tDart Version:'.padRight(30)}** $dartVersion **\n');
     outputBuffer
         .writeln('**-----------------------------------------------------**');
 
@@ -222,72 +222,4 @@ A new *production* build has been published for MeccaBingo.
 
     return outputBuffer.toString();
   }
-
-  String getContentsTable() {
-    var outputBuffer = StringBuffer();
-    final table = Table();
-
-    outputBuffer.writeln('**$title**\n');
-    outputBuffer.writeln(body);
-
-    table
-      ..insertColumn(header: 'Item')
-      ..insertColumn(header: 'Data');
-    // outputBuffer
-    //     .writeln('**-----------------------------------------------------**');
-    table.insertRow(['📅 Current Date:', dateAndTime.date]);
-    table.insertRow(['⏱️ Current Time:', '${dateAndTime.time} SAST']);
-    outputBuffer
-        .writeln('**-----------------------------------------------------**');
-
-    table.insertRow([
-      '🛠️ Workflow Name:',
-      '[$workflowName](https://github.com/${Globals.repository}/commit/$lastCommit/checks)'
-    ]);
-    table.insertRow(['📱 Platform:', platformType]);
-    table.insertRow(['🏷️ App Name:', appName.toString()]);
-    table.insertRow([
-      '🔖 Commit Hash:',
-      '[$lastCommit](https://github.com/${Globals.repository}/commit/$lastCommit)'
-    ]);
-    table.insertRow([
-      '🪵 Branch Name:',
-      '[$branch](https://github.com/${Globals.repository}/tree/$branch)'
-    ]);
-    table.insertRow(['⏱️ Total Build Time:', totalBuildTimeFormatted]);
-    table.insertRow([
-      '🔢 ${versionBuildDetails.label}:',
-      (versionBuildDetails.versionOrBuild)
-    ]);
-    table.insertRow(['🦋 Flutter Version:', flutterVersion.toString()]);
-    table.insertRow(['🎯 Dart Version:', dartVersion.toString()]);
-    outputBuffer
-        .writeln('**-----------------------------------------------------**');
-
-    outputBuffer.writeln('**PUBSPEC.LOCK CONTENTS: Installed Packages**');
-    outputBuffer
-        .writeln('**-----------------------------------------------------**\n');
-    outputBuffer.write(pubspecContents);
-    outputBuffer
-        .writeln('**-----------------------------------------------------**');
-
-    print(table.render());
-
-    return outputBuffer.toString();
-  }
-}
-
-void main() {
-  final table = Table();
-
-  table.insertColumn(header: 'test');
-  table.insertRow(['d']);
-  // ..addColumn('Column1')
-  // ..addColumn('Column2')
-  // ..addColumn('Column3')
-  // ..addRow(['Value1', 'Value2', 'Value3'])
-  // ..addRow(['ItemA', 'ItemB', 'ItemC']);
-
-  table.render();
-  print(table.render());
 }
